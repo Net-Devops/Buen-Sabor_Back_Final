@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.entities.ArticuloManufacturadoDetalle;
 import NetDevops.BuenSabor.entities.ImagenArticulo;
@@ -24,7 +25,7 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
     @Autowired
     private ImagenArticuloRepository imagenRepository;
 
-
+//region Crud Basico
 
     //region Cargar
     @Override
@@ -108,6 +109,8 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
 
     //endregion
 
+    //region Actualizar
+
     @Override
     public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloManufacturado articuloManufacturado) throws Exception {
         try {
@@ -158,4 +161,37 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
             throw new Exception(e);
         }
     }
+    //endregion
+
+    //endregion
+
+    //region Dtos
+
+    public Set<ArticuloManufacturadoTablaDto> tablaArticuloManufacturado() throws Exception {
+        try {
+            Set<ArticuloManufacturado> articulos = articuloManufacturadoRepository.findByEliminadoFalse();
+            Set<ArticuloManufacturadoTablaDto> articulosDto = new HashSet<>();
+
+            for (ArticuloManufacturado articulo : articulos) {
+                ArticuloManufacturadoTablaDto dto = new ArticuloManufacturadoTablaDto();
+                dto.setId(articulo.getId());
+                dto.setCodigo(articulo.getCodigo());
+                dto.setDenominacion(articulo.getDenominacion());
+                dto.setImagen(articulo.getImagenes().iterator().next().getUrl()); // Asume que hay al menos una imagen
+                dto.setPrecioVenta(articulo.getPrecioVenta());
+                dto.setDescripcion(articulo.getDescripcion());
+                dto.setTiempoEstimadoCocina(articulo.getTiempoEstimadoMinutos());
+
+                articulosDto.add(dto);
+            }
+
+            return articulosDto;
+
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+    }
+
+
+    //endregion
 }

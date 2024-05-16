@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.service;
 
+import NetDevops.BuenSabor.dto.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public ArticuloManufacturado buscarPorId(Long id) throws Exception;
 public Set<ArticuloManufacturado> listaArticuloManufacturado() throws Exception;
 public boolean eliminarArticuloManufacturado(Long id) throws Exception;
 public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloManufacturado articuloManufacturado) throws Exception;
+public Set<ArticuloManufacturadoTablaDto> tablaArticuloManufacturado() throws Exception;
 }

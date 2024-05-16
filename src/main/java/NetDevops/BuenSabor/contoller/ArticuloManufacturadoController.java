@@ -61,4 +61,21 @@ public class ArticuloManufacturadoController {
     }
     //endregion
 
+    //region Dtos
+
+    @GetMapping("/tabla/")
+    public ResponseEntity<?> tabla() {
+        try {
+
+            return ResponseEntity.ok().body(articuloManufacturadoService.tablaArticuloManufacturado());
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    //endregion
+
+
+
 }
