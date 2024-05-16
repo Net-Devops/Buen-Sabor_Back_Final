@@ -21,6 +21,7 @@ public abstract class Articulo extends Base{
     protected String denominacion;
     protected String descripcion;
     protected String codigo;
+    protected Double precioVenta;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "articulo")
     protected Set<ImagenArticulo> imagenes = new HashSet<>();
