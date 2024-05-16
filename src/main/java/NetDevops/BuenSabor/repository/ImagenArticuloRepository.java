@@ -10,5 +10,5 @@ import java.util.Set;
 @Repository
 public interface ImagenArticuloRepository extends JpaRepository<ImagenArticulo, Long> {
     List<ImagenArticulo> findByEliminadoFalse();
-    Set<ImagenArticulo> findByArticuloManufacturado_Id(Long id);
+    Set<ImagenArticulo> findByArticulo_Id(Long id);
 }

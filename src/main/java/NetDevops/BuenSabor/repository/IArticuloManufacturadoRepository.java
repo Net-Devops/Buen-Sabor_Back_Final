@@ -11,7 +11,7 @@ import java.util.Set;
 @Repository
 public interface IArticuloManufacturadoRepository extends JpaRepository<ArticuloManufacturado, Long> {
     Set<ArticuloManufacturado> findByEliminadoFalse();
-    ArticuloManufacturado findByEliminadoFalse(Long id);
+    ArticuloManufacturado findByIdAndEliminadoFalse(Long id);
     boolean existsByDenominacionAndEliminadoFalse(String denominacion);
     boolean existsByCodigoAndEliminadoFalse(String codigo);
 

@@ -50,7 +50,7 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
     public ArticuloManufacturado buscarPorId(Long id) throws Exception {
         try {
 
-            ArticuloManufacturado Manufacturado = articuloManufacturadoRepository.findByEliminadoFalse(id);
+            ArticuloManufacturado Manufacturado = articuloManufacturadoRepository.findByIdAndEliminadoFalse(id);
             if (Manufacturado == null) {
                 throw new Exception("No se encontro el articulo");
             }
@@ -113,7 +113,7 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
 
 
             //region Logica para eliminar Detalles
-            List<ArticuloManufacturadoDetalle> detallesViejos = detalleRepository.findByArticuloManufacturado_Id(id);
+            Set<ArticuloManufacturadoDetalle> detallesViejos = detalleRepository.findByArticuloManufacturado_Id(id);
             Set<ArticuloManufacturadoDetalle> detallesNuevos = articuloManufacturado.getArticuloManufacturadoDetalles();
 
             detallesViejos.forEach(detalleViejo -> {
@@ -124,7 +124,7 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
             //endregion
 
             //region Logica para eliminar Imagenes
-            Set<ImagenArticulo> imagenesViejas = imagenRepository.findByArticuloManufacturado_Id(id);
+            Set<ImagenArticulo> imagenesViejas = imagenRepository.findByArticulo_Id(id);
             Set<ImagenArticulo> imagenesNuevas = articuloManufacturado.getImagenes();
 
             imagenesViejas.forEach(imagenVieja -> {

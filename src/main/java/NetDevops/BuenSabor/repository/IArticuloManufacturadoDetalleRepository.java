@@ -5,10 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface IArticuloManufacturadoDetalleRepository extends JpaRepository<ArticuloManufacturadoDetalle, Long> {
-    List<ArticuloManufacturadoDetalle> findByEliminadoFalse();
+    Set<ArticuloManufacturadoDetalle> findByEliminadoFalse();
 
-    List<ArticuloManufacturadoDetalle> findByArticuloManufacturado_Id(Long id);
+    Set<ArticuloManufacturadoDetalle> findByArticuloManufacturado_Id(Long id);
 }
