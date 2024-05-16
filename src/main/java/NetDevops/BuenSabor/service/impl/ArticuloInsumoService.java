@@ -3,17 +3,21 @@ package NetDevops.BuenSabor.service.impl;
 import NetDevops.BuenSabor.entities.ArticuloInsumo;
 import NetDevops.BuenSabor.entities.ImagenArticulo;
 import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
+import NetDevops.BuenSabor.repository.ImagenArticuloRepository;
 import NetDevops.BuenSabor.service.IArticuloInsumoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ArticuloInsumoService implements IArticuloInsumoService {
 
     @Autowired
     private IAriticuloInsumoRepository articuloInsumoRepository;
+    @Autowired
+    private ImagenArticuloRepository imagenRepository;
 
     //region Eliminacion
     @Override
@@ -98,6 +102,22 @@ public class ArticuloInsumoService implements IArticuloInsumoService {
             if (articuloInsumoRepository.existsByDenominacionAndEliminadoFalseAndIdNot(articuloInsumo.getDenominacion(), id)){
                 throw new Exception("Ya existe un articulo con esa denominacion");
             }
+
+            //region Logica para eliminar Imagenes
+            Set<ImagenArticulo> imagenesViejas = imagenRepository.findByArticulo_Id(id);
+            Set<ImagenArticulo> imagenesNuevas = articuloInsumo.getImagenes();
+
+            imagenesViejas.forEach(imagenVieja -> {
+                if (!imagenesNuevas.contains(imagenVieja)) {
+                    imagenVieja.setEliminado(true);
+                    imagenVieja.setArticulo(null);
+                    imagenRepository.save(imagenVieja);
+                }
+            });
+            //endregion
+
+
+
             return articuloInsumoRepository.save(articuloInsumo);
 
         } catch (Exception e) {
