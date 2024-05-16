@@ -25,7 +25,6 @@ public abstract class Articulo extends Base{
     protected Double precioVenta;
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "articulo")
-
     protected Set<ImagenArticulo> imagenes = new HashSet<>();
     @ManyToOne
     protected UnidadMedida unidadMedida;

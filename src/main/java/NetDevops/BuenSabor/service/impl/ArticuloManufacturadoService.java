@@ -37,9 +37,13 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
             if (articuloManufacturadoRepository.existsByCodigoAndEliminadoFalse(articuloManufacturado.getCodigo())) {
                 throw new Exception("Ya existe un articulo con ese codigo");
             }
+            for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+                detalle.setArticuloManufacturado(articuloManufacturado);
+            }
+
             return articuloManufacturadoRepository.save(articuloManufacturado);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e);
         }
     }
 
@@ -82,6 +86,19 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
                 throw new Exception("No se encontro el articulo");
             }
             articuloManufacturado.setEliminado(true);
+
+            // Eliminar de manera lógica ArticuloManufacturadoDetalle
+            for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+                detalle.setEliminado(true);
+                detalleRepository.save(detalle); // Asegúrate de tener un repositorio para ArticuloManufacturadoDetalle
+            }
+
+            // Eliminar de manera lógica las imágenes
+            for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
+                imagen.setEliminado(true);
+                imagenRepository.save(imagen); // Asegúrate de tener un repositorio para ImagenArticulo
+            }
+
             articuloManufacturadoRepository.save(articuloManufacturado);
             return true;
         }catch (Exception e){
