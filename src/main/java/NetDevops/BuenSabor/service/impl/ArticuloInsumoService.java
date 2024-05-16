@@ -1,6 +1,7 @@
 package NetDevops.BuenSabor.service.impl;
 
 import NetDevops.BuenSabor.entities.ArticuloInsumo;
+import NetDevops.BuenSabor.entities.ImagenArticulo;
 import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
 import NetDevops.BuenSabor.service.IArticuloInsumoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,12 @@ public class ArticuloInsumoService implements IArticuloInsumoService {
             if (articuloInsumoRepository.existsByDenominacionAndEliminadoFalse(articuloInsumo.getDenominacion())){
                 throw new Exception("Ya existe un articulo con esa denominacion");
             }
-            return articuloInsumoRepository.save(articuloInsumo);
+
+            for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
+                imagen.setArticulo(articuloInsumo);
+            }
+            articuloInsumoRepository.save(articuloInsumo);
+            return articuloInsumoRepository.findById(articuloInsumo.getId()).get();
 
         } catch (Exception e) {
             //e.printStackTrace();

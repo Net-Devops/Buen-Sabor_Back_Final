@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,8 +23,9 @@ public abstract class Articulo extends Base{
     protected String descripcion;
     protected String codigo;
     protected Double precioVenta;
-
+    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "articulo")
+
     protected Set<ImagenArticulo> imagenes = new HashSet<>();
     @ManyToOne
     protected UnidadMedida unidadMedida;

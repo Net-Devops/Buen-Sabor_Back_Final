@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArticuloManufacturado extends Articulo{
-    private String descripcion;
+
     private Integer tiempoEstimadoMinutos;
     private String preparacion;
 
