@@ -5,14 +5,22 @@ import NetDevops.BuenSabor.entities.ImagenArticulo;
 import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
 import NetDevops.BuenSabor.repository.ImagenArticuloRepository;
 import NetDevops.BuenSabor.service.IArticuloInsumoService;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class ArticuloInsumoService implements IArticuloInsumoService {
+    private final Path root = Paths.get("images");
 
     @Autowired
     private IAriticuloInsumoRepository articuloInsumoRepository;
@@ -58,11 +66,38 @@ public class ArticuloInsumoService implements IArticuloInsumoService {
                 throw new Exception("Ya existe un articulo con esa denominacion");
             }
 
-            for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
-                imagen.setArticulo(articuloInsumo);
+//            for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
+//                imagen.setArticulo(articuloInsumo);
+//            }
+//            articuloInsumoRepository.save(articuloInsumo);
+//            return articuloInsumoRepository.findById(articuloInsumo.getId()).get();
+
+            if (articuloInsumo.getImagenes() != null) {
+                for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
+                    // Decodificar la imagen base64 en un array de bytes
+                    byte[] bytes = Base64.decodeBase64(imagen.getUrl());
+
+                    // Crear un InputStream a partir del array de bytes
+                    InputStream inputStream = new ByteArrayInputStream(bytes);
+
+                    // Generar un nombre de archivo único para cada imagen
+                    String filename = UUID.randomUUID().toString() + ".jpg";
+
+                    // Usar Files.copy() para guardar la imagen en el directorio deseado
+                    Path path = this.root.resolve(filename);
+                    Files.copy(inputStream, path);
+
+                    // Actualizar el campo url en ImagenArticulo
+                    imagen.setUrl(path.toString());
+                    imagen.setArticulo(articuloInsumo);
+                }
             }
+
             articuloInsumoRepository.save(articuloInsumo);
             return articuloInsumoRepository.findById(articuloInsumo.getId()).get();
+
+
+
 
         } catch (Exception e) {
             //e.printStackTrace();
