@@ -130,6 +130,7 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
             imagenesViejas.forEach(imagenVieja -> {
                 if (!imagenesNuevas.contains(imagenVieja)) {
                     imagenVieja.setEliminado(true);
+                    imagenVieja.setArticulo(null);
                     imagenRepository.save(imagenVieja);
                 }
             });
