@@ -12,12 +12,9 @@ import lombok.*;
 @ToString
 public class ArticuloInsumo extends Articulo{
 
-    @JsonView(Views.Public.class)
+
     private Double precioCompra;
-
     private Integer stockActual;
-
     private Integer stockMaximo;
-    @JsonView(Views.Public.class)
     private Boolean esParaElaborar;
 }

@@ -34,7 +34,7 @@ public class ArticuloManufacturadoController {
         }
     }
 
-    //@JsonView(Views.Public.class)
+
     @PostMapping("/")
     public ResponseEntity<?> cargarArticuloManufacturado(@RequestBody ArticuloManufacturado articuloManufacturado) {
         try {
@@ -66,13 +66,11 @@ public class ArticuloManufacturadoController {
     @GetMapping("/tabla/")
     public ResponseEntity<?> tabla() {
         try {
-
             return ResponseEntity.ok().body(articuloManufacturadoService.tablaArticuloManufacturado());
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 
     //endregion
 
