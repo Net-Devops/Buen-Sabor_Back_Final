@@ -1,8 +1,87 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.entities.UnidadMedida;
+import NetDevops.BuenSabor.repository.IUnidadMedidaRepository;
 import NetDevops.BuenSabor.service.IUnidadMedidaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 public class UnidadMedidaService implements IUnidadMedidaService {
+
+    @Autowired
+    private IUnidadMedidaRepository unidadMedidaRepository;
+
+    @Override
+    public UnidadMedida buscarPorId(Long id) throws Exception {
+        try {
+            return unidadMedidaRepository.findByIdAndEliminadoFalse(id);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public UnidadMedida cargar(UnidadMedida unidadMedida) throws Exception {
+        try {
+                if (unidadMedida.getDenominacion() == null || unidadMedida.getDenominacion().isEmpty()){
+                    throw new Exception("El nombre de la unidad de medida no puede ser nulo");
+                }
+                if (unidadMedidaRepository.existsByDenominacionAndEliminadoFalse(unidadMedida.getDenominacion())){
+                    throw new Exception("Ya existe una unidad de medida con ese nombre");
+                }
+            return unidadMedidaRepository.save(unidadMedida);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public UnidadMedida actualizar(Long id, UnidadMedida unidadMedida) throws Exception {
+        try {
+
+            if (!unidadMedidaRepository.existsById(id)){
+                throw new Exception("La unidad de medida no puede ser nula");
+            }
+            if (unidadMedida.getDenominacion() == null || unidadMedida.getDenominacion().isEmpty()){
+                throw new Exception("El nombre de la unidad de medida no puede ser nulo");
+            }
+            if (unidadMedidaRepository.existsByDenominacionAndEliminadoFalse(unidadMedida.getDenominacion())){
+                throw new Exception("Ya existe una unidad de medida con ese nombre");
+            }
+            return unidadMedidaRepository.save(unidadMedida);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+    @Override
+    public boolean deleteById(Long id) throws Exception {
+        try {
+            UnidadMedida unidadMedida = unidadMedidaRepository.findByIdAndEliminadoFalse(id);
+            if (unidadMedida == null){
+                throw new Exception("La unidad de medida no puede ser nula");
+            }
+            unidadMedida.setEliminado(true);
+            unidadMedidaRepository.save(unidadMedida);
+            return true;
+
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public Set<UnidadMedida> mostrarLista() throws Exception {
+
+        try {
+            return unidadMedidaRepository.findByEliminadoFalse();
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+    }
 }

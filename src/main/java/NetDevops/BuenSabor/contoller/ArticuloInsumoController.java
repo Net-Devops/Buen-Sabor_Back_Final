@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/articulos/insumos")
 public class ArticuloInsumoController {
 
-
     @Autowired
     private IArticuloInsumoService articuloInsumoService;
-
-
 
     //region CRUD Basico
     @GetMapping("/")

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// GET http://localhost:8080/api/articulos/manufacturados/
+
 @RestController
 @RequestMapping("/api/articulos/manufacturados")
 public class ArticuloManufacturadoController {
