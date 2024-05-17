@@ -8,12 +8,12 @@ import NetDevops.BuenSabor.repository.IArticuloManufacturadoDetalleRepository;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.ImagenArticuloRepository;
 import NetDevops.BuenSabor.service.IArticuloManufacturadoService;
+import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
