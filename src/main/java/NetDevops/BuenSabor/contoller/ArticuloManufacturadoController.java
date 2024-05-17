@@ -1,9 +1,7 @@
 package NetDevops.BuenSabor.contoller;
 
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
-import NetDevops.BuenSabor.entities.Views;
 import NetDevops.BuenSabor.service.IArticuloManufacturadoService;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +16,7 @@ public class ArticuloManufacturadoController {
 
 
     //region CRUD Basico
-    @JsonView(Views.Public.class)
+
     @GetMapping("/")
     public ResponseEntity<?> Lista() {
         try {

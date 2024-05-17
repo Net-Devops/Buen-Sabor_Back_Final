@@ -153,7 +153,7 @@ public ArticuloInsumo buscarPorId(Long id) throws Exception {
     //endregion
 
     //region Actualizar
-   @Override
+ @Override
 public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws Exception {
     try {
         if (!articuloInsumoRepository.existsById(id)){
@@ -179,7 +179,6 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
             }
         });
 
-        //region Logica para eliminar Imagenes base64
         if (articuloInsumo.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
                 // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
@@ -187,6 +186,7 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
                 try {
                     String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), filename);
                     imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
+                    imagen.setArticulo(articuloInsumo); // Asignar el artículo a la imagen
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -194,15 +194,12 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
                 // Verificar si la imagen ya existe en el conjunto de imágenes viejas
                 boolean exists = imagenesViejas.stream().anyMatch(oldImage -> oldImage.getUrl().equals(imagen.getUrl()));
 
-                // Si la imagen no existe, marcarla como eliminada
-                if (!exists) {
-                    imagen.setEliminado(true);
-                    imagen.setArticulo(null);
+                // Si la imagen no existe en las imágenes viejas y existe en las nuevas, guardarla
+                if (!exists && imagenesNuevas.contains(imagen)) {
                     imagenRepository.save(imagen);
                 }
             }
         }
-        //endregion
 
         return articuloInsumoRepository.save(articuloInsumo);
 
