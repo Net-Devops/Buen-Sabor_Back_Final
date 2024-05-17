@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// GET http://localhost:8080/api/categorias/
+
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriaControllador {
@@ -38,9 +40,9 @@ public class CategoriaControllador {
         }
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Categoria categoria) {
+    public ResponseEntity<?> actualizarCategoriaPadre(@PathVariable Long id, @RequestBody Categoria categoria) {
         try {
-            return ResponseEntity.ok().body(categoriaService.actualizar(id, categoria));
+            return ResponseEntity.ok().body(categoriaService.actualizarCategoriaPadre(id, categoria));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -55,7 +57,7 @@ public class CategoriaControllador {
     }
 
     //agrega una subcategoria a una categoria
-    @PostMapping("/crear/subcategoria/")
+    @PostMapping("/agregar/subcategoria/{id}")
     public ResponseEntity<?> crearSubCategoria(@PathVariable Long id, @RequestBody Categoria categoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.agregarSubCategoria(id, categoria));
@@ -65,14 +67,25 @@ public class CategoriaControllador {
     }
 
     //agrega un articulo a una categoria
-    @PostMapping("/crear/articulo/")
-    public ResponseEntity<?> crearArticulo(@PathVariable Long id, @RequestBody Articulo articulo) {
-        try {
-            return ResponseEntity.ok().body(categoriaService.agregarArticulo(id, articulo));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+//    @PutMapping("/agregar/articulo/")
+//    public ResponseEntity<?> agregarArticulo(@PathVariable Long id, @RequestBody Articulo articulo) {
+//        try {
+//            return ResponseEntity.ok().body(categoriaService.agregarArticulo(id, articulo));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
+
+   @PostMapping("/agregar/articulo")
+public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCategoria, @RequestParam("idArticulo") Long idArticulo) {
+    try {
+        return ResponseEntity.ok().body(categoriaService.agregarArticulo(idCategoria, idArticulo));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
+}
+
+
     //obtiene todas las subcategorias
     @GetMapping("/subcategorias/")
     public ResponseEntity<?> obtenerSubCategorias() {
@@ -87,6 +100,23 @@ public class CategoriaControllador {
     public ResponseEntity<?> obtenerCategoriasConSubCategorias() {
         try {
             return ResponseEntity.ok().body(categoriaService.obtenerCategoriasConSubCategorias());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/eliminar/articulo/{idSubCategoria}/{idArticulo}")
+    public ResponseEntity<?> eliminarArticuloDeSubCategoria(@PathVariable Long idSubCategoria, @PathVariable Long idArticulo) {
+        try {
+            return ResponseEntity.ok().body(categoriaService.eliminarArticuloDeSubCategoria(idSubCategoria, idArticulo));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PutMapping("/actualizar/subcategoria/{idSubCategoria}")
+    public ResponseEntity<?> actualizarSubCategoria(@PathVariable Long idSubCategoria, @RequestBody Categoria nuevaSubCategoria) {
+        try {
+            return ResponseEntity.ok().body(categoriaService.actualizarSubCategoria(idSubCategoria, nuevaSubCategoria));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
