@@ -122,4 +122,13 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
         }
     }
 
+    @DeleteMapping("/eliminar/subcategoria")
+public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long idCategoria, @RequestParam("idSubCategoria") Long idSubCategoria) {
+    try {
+        return ResponseEntity.ok().body(categoriaService.eliminarSubCategoria(idCategoria, idSubCategoria));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
+
 }

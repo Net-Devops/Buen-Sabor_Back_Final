@@ -109,6 +109,31 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
         }
     }
 
+    @Override
+    public boolean eliminarSubCategoria(Long idCategoria, Long idSubCategoria) throws Exception {
+        try {
+            if (!categoriaRepository.existsByIdAndEliminadoFalse(idCategoria)) {
+                throw new Exception("No existe una categoria con ese id");
+            }
+            Categoria categoria = categoriaRepository.findByIdAndEliminadoFalse(idCategoria);
+            Categoria subCategoria = null;
+            for (Categoria subCat : categoria.getSubCategorias()) {
+                if (subCat.getId().equals(idSubCategoria)) {
+                    subCategoria = subCat;
+                    break;
+                }
+            }
+            if (subCategoria == null) {
+                throw new Exception("No existe una subcategoria con ese id en la categoria especificada");
+            }
+            categoria.getSubCategorias().remove(subCategoria);
+            categoriaRepository.save(categoria);
+            return true;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
 
 
 
