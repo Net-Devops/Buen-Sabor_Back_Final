@@ -29,20 +29,9 @@ public class Promocion extends Base{
 
 
     @OneToMany(cascade = CascadeType.ALL)
-    //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
-    //DE ESTA MANERA PONE EL FOREIGN KEY 'pedido_id' EN LA TABLA DE LOS MANY
-    @JoinColumn(name = "promocion_id")
-    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
-    @Builder.Default
     private Set<PromocionDetalle> promocionDetalles = new HashSet<>();
 
-    @OneToMany
-    //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
-    //DE ESTA MANERA PONE EL FOREIGN KEY 'promocion_id' EN LA TABLA DE LOS MANY
-    @JoinColumn(name = "promocion_id")
-    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
-    @Builder.Default
-    //@NotAudited
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<ImagenPromocion> imagenes = new HashSet<>();
 
 

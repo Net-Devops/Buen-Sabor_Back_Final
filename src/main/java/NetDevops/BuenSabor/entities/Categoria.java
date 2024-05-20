@@ -11,7 +11,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Categoria extends Base{
 
 //    @ManyToMany(mappedBy = "categorias")
@@ -20,7 +19,7 @@ public class Categoria extends Base{
 //    private Set<Sucursal> sucursales = new HashSet<>();
 
     private String denominacion;
-    @OneToMany
+    @OneToMany(mappedBy = "categoria")
     private Set<Articulo> articulos = new HashSet<>();
 
     @OneToMany(mappedBy = "categoriaPadre")

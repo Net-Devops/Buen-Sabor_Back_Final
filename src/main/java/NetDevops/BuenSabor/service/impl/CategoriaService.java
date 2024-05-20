@@ -134,9 +134,6 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
         }
     }
 
-
-
-
 //    public Categoria agregarArticulo(Long id, Articulo articulo) throws Exception {
 //        try {
 //            if (!categoriaRepository.existsByIdAndEliminadoFalse(id)) {
