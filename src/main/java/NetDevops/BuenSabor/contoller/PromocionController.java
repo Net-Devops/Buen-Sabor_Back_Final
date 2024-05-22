@@ -31,7 +31,7 @@ public class PromocionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("")
+    @PostMapping("/")
     public ResponseEntity save(@RequestBody Promocion promocion) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(promocionService.save(promocion));
