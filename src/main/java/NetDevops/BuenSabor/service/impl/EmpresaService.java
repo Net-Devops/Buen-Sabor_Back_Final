@@ -20,6 +20,10 @@ public class EmpresaService implements IEmpresaService {
     @Override
     public Empresa save(Empresa empresa) throws Exception {
         try {
+            if (empresaRepository.existsByCuil(empresa.getCuil())) {
+                throw new Exception("Ya existe una empresa con el CUIL proporcionado");
+            }
+
             return empresaRepository.save(empresa);
         } catch (Exception e) {
             throw new Exception(e.getMessage());

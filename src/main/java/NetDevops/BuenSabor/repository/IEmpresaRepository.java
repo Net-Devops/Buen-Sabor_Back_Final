@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IEmpresaRepository extends JpaRepository<Empresa, Long> {
+    boolean existsByCuil(Long cuil);
 }
