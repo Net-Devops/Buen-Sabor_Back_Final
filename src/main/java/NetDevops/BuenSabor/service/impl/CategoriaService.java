@@ -311,16 +311,18 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
                 Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
                 Set<CategoriaDto> listaDto = new HashSet<>();
             for (Categoria lista: listaCategoriaOriginal){
-                Set<Categoria> ListaSubcategoria = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(lista.getId());
+                Set<Categoria> ListaSubcategoria = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
                     CategoriaDto categoriadto = new CategoriaDto();
-                    categoriadto.setDenominacio(lista.getDenominacion());
+                    categoriadto.setDenominacion(lista.getDenominacion());
                     categoriadto.setId(lista.getId());
+                    categoriadto.setEliminado(lista.isEliminado());
 
                 for (Categoria sub : ListaSubcategoria){
                     SubCategoriaDto subCategoria = new SubCategoriaDto();
                     subCategoria.setDenominacion(sub.getDenominacion());
                     subCategoria.setId(sub.getId());
                     subCategoria.setIdCategoriaPadre(lista.getId());
+                    subCategoria.setEliminado(sub.isEliminado());
                     categoriadto.getSubCategoriaDtos().add(subCategoria);
                 }
                     listaDto.add(categoriadto);

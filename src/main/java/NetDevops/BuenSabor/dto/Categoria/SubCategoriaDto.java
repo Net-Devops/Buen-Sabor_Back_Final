@@ -8,6 +8,7 @@ public class SubCategoriaDto extends BaseDto {
 
     private String denominacion;
     private Long idCategoriaPadre;
+    private boolean eliminado;
 
 
 }

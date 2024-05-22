@@ -10,6 +10,7 @@ import java.util.Set;
 @Data
 public class CategoriaDto extends BaseDto {
 
-    private String denominacio;
+    private String denominacion;
+    private Boolean eliminado;
     private Set<SubCategoriaDto> subCategoriaDtos = new HashSet<>();
 }

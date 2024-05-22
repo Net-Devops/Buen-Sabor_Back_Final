@@ -16,6 +16,7 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Categoria findByIdAndEliminadoFalse(Long id);
     Set<Categoria> findByCategoriaPadreIsNotNull();
     Set<Categoria> findByCategoriaPadre_IdAndEliminadoFalse(Long categoriaPadreId);
+    Set<Categoria> findByCategoriaPadre_Id(Long categoriaPadreId);
     //para traer las subcategoria
     Set<Categoria> findByCategoriaPadreIsNotNullAndEliminadoFalse();
 
