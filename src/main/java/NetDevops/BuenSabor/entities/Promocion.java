@@ -1,8 +1,10 @@
 package NetDevops.BuenSabor.entities;
 
 import NetDevops.BuenSabor.enums.TipoPromocion;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,9 +21,13 @@ import java.util.Set;
 public class Promocion extends Base{
 
     private String denominacion;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaDesde;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaHasta;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime horaDesde;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime horaHasta;
     private String descripcionDescuento;
     private Double precioPromocional;

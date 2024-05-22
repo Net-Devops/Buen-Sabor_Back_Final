@@ -4,12 +4,13 @@ import NetDevops.BuenSabor.entities.Promocion;
 import NetDevops.BuenSabor.service.IPromocionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+//     http://localhost:8080/api/promociones/
+
 @RestController
-@RequestMapping("/promociones")
+@RequestMapping("/api/promociones")
 public class PromocionController {
     @Autowired
     private IPromocionService promocionService;
