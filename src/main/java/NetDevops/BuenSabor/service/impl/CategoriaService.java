@@ -221,8 +221,9 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
                 throw new Exception("No existe una categoria con ese id");
             }
             Categoria categoria = categoriaRepository.findByIdAndEliminadoFalse(id);
-            categoria.agregarSubCategoria(subCategoria);
-            return categoriaRepository.save(categoria);
+            subCategoria.setCategoriaPadre(categoria);
+
+            return categoriaRepository.save(subCategoria);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
