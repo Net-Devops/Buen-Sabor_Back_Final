@@ -73,4 +73,13 @@ public class SucursalService implements ISucursalService {
             throw new Exception(e.getMessage());
         }
     }
+
+    @Override
+    public List<Sucursal> traerPorEmpresaId(Long empresaId) throws Exception {
+        try {
+            return sucursalRepository.findByEmpresaId(empresaId);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 }

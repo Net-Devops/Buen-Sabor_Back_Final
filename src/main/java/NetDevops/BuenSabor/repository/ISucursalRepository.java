@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ISucursalRepository extends JpaRepository<Sucursal, Long> {
     List<Sucursal> findByEmpresaIdAndEliminadoFalse(Long empresaId);
+    List<Sucursal> findByEmpresaId(Long empresaId);
 }

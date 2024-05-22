@@ -68,5 +68,13 @@ public class SucursalController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/lista-sucursal/{empresaId}")
+    public ResponseEntity<?> traerPorEmpresaId(@PathVariable Long empresaId){
+        try {
+            return ResponseEntity.ok(sucursalService.traerPorEmpresaId(empresaId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }
