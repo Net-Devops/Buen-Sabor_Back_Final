@@ -3,6 +3,7 @@ package NetDevops.BuenSabor.service;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ICategoriaService {
@@ -21,6 +22,6 @@ public interface ICategoriaService {
     public Categoria agregarArticulo(Long idCategoria, Long idArticulo) throws Exception;
     public Categoria actualizarSubCategoria(Long idSubCategoria, Categoria nuevaSubCategoria) throws Exception;
     public Categoria eliminarArticuloDeSubCategoria(Long idSubCategoria, Long idArticulo) throws Exception;
-
-
+    public boolean reactivate(Long id) throws Exception;
+    public List<Categoria> traerTodo() throws Exception;
 }

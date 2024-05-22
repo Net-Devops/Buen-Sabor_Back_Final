@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -249,6 +250,50 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
             return categoriaRepository.findAllByEliminadoFalse();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean reactivate(Long id) throws Exception {
+        try {
+            if (categoriaRepository.existsById(id)) {
+                Categoria categoria = categoriaRepository.findById(id).get();
+                if (categoria.isEliminado()) {
+                    categoria.setEliminado(false);
+
+                    // Reactivar los Articulos asociados
+                    for (Articulo articulo : categoria.getArticulos()) {
+                        if (articulo.isEliminado()) {
+                            articulo.setEliminado(false);
+                        }
+                    }
+
+                    // Reactivar las SubCategorias asociadas
+                    for (Categoria subCategoria : categoria.getSubCategorias()) {
+                        if (subCategoria.isEliminado()) {
+                            subCategoria.setEliminado(false);
+                        }
+                    }
+
+                    categoriaRepository.save(categoria);
+                    return true;
+                } else {
+                    throw new Exception("La categoria con el id proporcionado no está eliminada");
+                }
+            } else {
+                throw new Exception("No existe la categoria con el id proporcionado");
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Categoria> traerTodo() throws Exception {
+        try {
+            return categoriaRepository.findAll();
+        } catch (Exception e) {
+            throw new Exception(e);
         }
     }
 

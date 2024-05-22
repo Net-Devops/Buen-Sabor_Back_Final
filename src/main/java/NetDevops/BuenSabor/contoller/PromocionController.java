@@ -15,7 +15,7 @@ public class PromocionController {
     @Autowired
     private IPromocionService promocionService;
 
-    @GetMapping("")
+    @GetMapping("/traer-todo/")
     public ResponseEntity getAll() {
             try {
                 return ResponseEntity.ok().body(promocionService.getAll());
@@ -51,6 +51,15 @@ public class PromocionController {
     public ResponseEntity delete(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(promocionService.delete(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reactivar/{id}")
+    public ResponseEntity reactivate(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(promocionService.reactivate(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

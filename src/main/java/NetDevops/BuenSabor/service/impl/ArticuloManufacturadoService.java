@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -247,6 +248,42 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
         throw new Exception(e);
     }
 }
+
+
+    @Override
+    public boolean reactivate(Long id) throws Exception {
+        try {
+            ArticuloManufacturado articuloManufacturado = articuloManufacturadoRepository.findById(id).orElse(null);
+            if (articuloManufacturado == null) {
+                throw new Exception("No se encontro el articulo");
+            }
+            articuloManufacturado.setEliminado(false);
+            // Reactivar de manera lógica ArticuloManufacturadoDetalle
+            for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+                detalle.setEliminado(false);
+                detalleRepository.save(detalle); // Asegúrate de tener un repositorio para ArticuloManufacturadoDetalle
+            }
+            // Reactivar de manera lógica las imágenes
+            for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
+                imagen.setEliminado(false);
+                imagenRepository.save(imagen); // Asegúrate de tener un repositorio para ImagenArticulo
+            }
+
+            articuloManufacturadoRepository.save(articuloManufacturado);
+            return true;
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    public List<ArticuloManufacturado> traerTodos() throws Exception {
+        try {
+            return articuloManufacturadoRepository.findAll();
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
 
 
     //endregion

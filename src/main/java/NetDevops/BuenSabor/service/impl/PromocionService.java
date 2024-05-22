@@ -7,9 +7,7 @@ import NetDevops.BuenSabor.repository.IPromocionRepository;
 import NetDevops.BuenSabor.service.IPromocionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -104,19 +102,76 @@ public Promocion update(Long id, Promocion newPromocion) {
 
 
 
+   @Override
+public boolean delete(Long id) throws Exception {
+    try {
+        if (promocionRepository.existsById(id)) {
+            Promocion promocion = promocionRepository.findById(id).get();
+            promocion.setEliminado(true);
+
+            // Realizar la eliminación lógica de las ImagenPromocion asociadas
+            for (ImagenPromocion imagen : promocion.getImagenes()) {
+                imagen.setEliminado(true);
+            }
+
+            // Realizar la eliminación lógica de las PromocionDetalle asociadas
+            for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
+                detalle.setEliminado(true);
+            }
+
+            promocionRepository.save(promocion);
+            return true;
+        } else {
+            throw new Exception();
+        }
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
+    }
+}
+
     @Override
-    public boolean delete(Long id) throws Exception {
+    public Set<Promocion> getAllNotDeleted() throws Exception {
+        try {
+            return promocionRepository.findByEliminadoFalse().stream().collect(Collectors.toSet());
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean reactivate(Long id) throws Exception {
         try {
             if (promocionRepository.existsById(id)) {
                 Promocion promocion = promocionRepository.findById(id).get();
-                promocion.setEliminado(true);
-                promocionRepository.save(promocion);
-                return true;
+                if (promocion.isEliminado()) {
+                    promocion.setEliminado(false);
+
+                    // Reactivar las ImagenPromocion asociadas
+                    for (ImagenPromocion imagen : promocion.getImagenes()) {
+                        if (imagen.isEliminado()) {
+                            imagen.setEliminado(false);
+                        }
+                    }
+
+                    // Reactivar las PromocionDetalle asociadas
+                    for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
+                        if (detalle.isEliminado()) {
+                            detalle.setEliminado(false);
+                        }
+                    }
+
+                    promocionRepository.save(promocion);
+                    return true;
+                } else {
+                    throw new Exception("La promoción con el id proporcionado no está eliminada");
+                }
             } else {
-                throw new Exception();
+                throw new Exception("No existe la promoción con el id proporcionado");
             }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
+
+
 }

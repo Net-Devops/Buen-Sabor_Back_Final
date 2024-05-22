@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.service.ICategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -130,5 +131,23 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
+
+    @PostMapping("/reactivate/{id}")
+    public ResponseEntity<?> reactivate(@PathVariable Long id) {
+        try {
+            categoriaService.reactivate(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/traer-todo/")
+    public ResponseEntity<?> traerTodo() {
+        try {
+            return ResponseEntity.ok(categoriaService.traerTodo());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }
