@@ -13,10 +13,8 @@ import java.util.Set;
 @NoArgsConstructor
 public class Categoria extends Base{
 
-//    @ManyToMany(mappedBy = "categorias")
-//    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
-//    @Builder.Default
-//    private Set<Sucursal> sucursales = new HashSet<>();
+   @ManyToMany
+   private Set<Sucursal> sucursales = new HashSet<>();
 
     private String denominacion;
     @OneToMany(mappedBy = "categoria")
