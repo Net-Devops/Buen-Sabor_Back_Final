@@ -1,8 +1,10 @@
 package NetDevops.BuenSabor.entities;
 
 import NetDevops.BuenSabor.enums.TipoPromocion;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,9 +21,13 @@ import java.util.Set;
 public class Promocion extends Base{
 
     private String denominacion;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaDesde;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaHasta;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime horaDesde;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime horaHasta;
     private String descripcionDescuento;
     private Double precioPromocional;
@@ -29,20 +35,9 @@ public class Promocion extends Base{
 
 
     @OneToMany(cascade = CascadeType.ALL)
-    //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
-    //DE ESTA MANERA PONE EL FOREIGN KEY 'pedido_id' EN LA TABLA DE LOS MANY
-    @JoinColumn(name = "promocion_id")
-    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
-    @Builder.Default
     private Set<PromocionDetalle> promocionDetalles = new HashSet<>();
 
-    @OneToMany
-    //SE AGREGA EL JOIN COLUMN PARA QUE JPA NO CREE LA TABLA INTERMEDIA EN UNA RELACION ONE TO MANY
-    //DE ESTA MANERA PONE EL FOREIGN KEY 'promocion_id' EN LA TABLA DE LOS MANY
-    @JoinColumn(name = "promocion_id")
-    //SE AGREGA EL BUILDER.DEFAULT PARA QUE BUILDER NO SOBREESCRIBA LA INICIALIZACION DE LA LISTA
-    @Builder.Default
-    //@NotAudited
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<ImagenPromocion> imagenes = new HashSet<>();
 
 

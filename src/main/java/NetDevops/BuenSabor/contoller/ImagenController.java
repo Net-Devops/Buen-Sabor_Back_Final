@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+
+// GET http://localhost:8080/api/imagenes/
+
 @RestController
 @RequestMapping("/api/imagenes")
 public class ImagenController {
