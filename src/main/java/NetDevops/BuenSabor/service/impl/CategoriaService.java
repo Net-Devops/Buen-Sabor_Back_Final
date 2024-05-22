@@ -1,6 +1,8 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.Categoria.CategoriaDto;
+import NetDevops.BuenSabor.dto.Categoria.SubCategoriaDto;
+import NetDevops.BuenSabor.dto.Categoria.SubCategoriaListaDto;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.repository.IArticuloRepository;
@@ -304,9 +306,27 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
     }
 
     @Override
-    public List<Categoria> traerTodo() throws Exception {
+    public Set<CategoriaDto> traerTodo() throws Exception {
         try {
-            return categoriaRepository.findAll();
+                Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
+                Set<CategoriaDto> listaDto = new HashSet<>();
+            for (Categoria lista: listaCategoriaOriginal){
+                Set<Categoria> ListaSubcategoria = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(lista.getId());
+                    CategoriaDto categoriadto = new CategoriaDto();
+                    categoriadto.setDenominacio(lista.getDenominacion());
+                    categoriadto.setId(lista.getId());
+
+                for (Categoria sub : ListaSubcategoria){
+                    SubCategoriaDto subCategoria = new SubCategoriaDto();
+                    subCategoria.setDenominacion(sub.getDenominacion());
+                    subCategoria.setId(sub.getId());
+                    subCategoria.setIdCategoriaPadre(lista.getId());
+                    categoriadto.getSubCategoriaDtos().add(subCategoria);
+                }
+                    listaDto.add(categoriadto);
+            }
+            return listaDto;
+
         } catch (Exception e) {
             throw new Exception(e);
         }

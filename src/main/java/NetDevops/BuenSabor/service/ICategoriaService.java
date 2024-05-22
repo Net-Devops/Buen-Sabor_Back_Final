@@ -1,9 +1,10 @@
 package NetDevops.BuenSabor.service;
 
-import NetDevops.BuenSabor.dto.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.Categoria.CategoriaDto;
+import NetDevops.BuenSabor.dto.Categoria.SubCategoriaListaDto;
 import NetDevops.BuenSabor.entities.Categoria;
 
-import java.util.List;
+
 import java.util.Set;
 
 public interface ICategoriaService {
@@ -23,6 +24,6 @@ public interface ICategoriaService {
     public Categoria actualizarSubCategoria(Long idSubCategoria, Categoria nuevaSubCategoria) throws Exception;
     public Categoria eliminarArticuloDeSubCategoria(Long idSubCategoria, Long idArticulo) throws Exception;
     public boolean reactivate(Long id) throws Exception;
-    public List<Categoria> traerTodo() throws Exception;
+    public Set<CategoriaDto> traerTodo() throws Exception;
     public Categoria Actualizar(long id, Categoria categoria) throws Exception;
 }
