@@ -10,4 +10,6 @@ public interface IArticuloInsumoService {
     public ArticuloInsumo cargar(ArticuloInsumo articuloInsumo) throws Exception;
     public ArticuloInsumo buscarPorId(Long id) throws Exception;
     public ArticuloInsumo actualizar(Long id,ArticuloInsumo articuloInsumo) throws Exception;
+    public boolean reactivate(Long id) throws Exception;
+    public List<ArticuloInsumo> traerTodo() throws Exception;
 }

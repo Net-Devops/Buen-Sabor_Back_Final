@@ -6,6 +6,7 @@ import NetDevops.BuenSabor.service.IUnidadMedidaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -83,5 +84,33 @@ public class UnidadMedidaService implements IUnidadMedidaService {
             throw new Exception(e.getMessage());
         }
 
+    }
+
+    @Override
+    public boolean reactivate(Long id) throws Exception {
+        try {
+            if (unidadMedidaRepository.existsById(id)) {
+                UnidadMedida unidadMedida = unidadMedidaRepository.findById(id).get();
+                if (unidadMedida.isEliminado()) {
+                    unidadMedida.setEliminado(false);
+                    unidadMedidaRepository.save(unidadMedida);
+                    return true;
+                } else {
+                    throw new Exception("La UnidadMedida con el id proporcionado no está eliminada");
+                }
+            } else {
+                throw new Exception("No existe la UnidadMedida con el id proporcionado");
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+    @Override
+    public List<UnidadMedida> traerTodo() throws Exception {
+        try {
+            return unidadMedidaRepository.findAll();
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 }

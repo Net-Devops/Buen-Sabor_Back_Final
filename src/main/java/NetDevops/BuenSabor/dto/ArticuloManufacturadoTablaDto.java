@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter@Setter
-public class ArticuloManufacturadoTablaDto extends Base{
+public class ArticuloManufacturadoTablaDto extends BaseDto{
     private String codigo;
     private String denominacion;
     private String imagen;

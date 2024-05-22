@@ -3,6 +3,7 @@ package NetDevops.BuenSabor.contoller;
 import NetDevops.BuenSabor.entities.ArticuloInsumo;
 import NetDevops.BuenSabor.service.IArticuloInsumoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,5 +65,24 @@ public class ArticuloInsumoController {
 
 //endregion
 
+
+    @PostMapping("/reactivate/{id}")
+    public ResponseEntity<?> reactivate(@PathVariable Long id) {
+        try {
+            articuloInsumoService.reactivate(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/taer-todo/")
+    public ResponseEntity<?> traerTodo() {
+        try {
+            return ResponseEntity.ok(articuloInsumoService.traerTodo());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

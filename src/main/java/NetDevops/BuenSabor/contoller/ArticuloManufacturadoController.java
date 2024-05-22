@@ -74,6 +74,24 @@ public class ArticuloManufacturadoController {
 
     //endregion
 
+    @PostMapping("/reactivate/{id}")
+    public ResponseEntity<?> reactivate(@PathVariable Long id) {
+        try {
+            articuloManufacturadoService.reactivate(id);
+            return ResponseEntity.ok().body("Articulo reactivado");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+@GetMapping("/traer-todos/")
+    public ResponseEntity<?> traerTodos() {
+        try {
+            return ResponseEntity.ok().body(articuloManufacturadoService.traerTodos());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 
 }

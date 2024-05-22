@@ -9,6 +9,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class Base implements Serializable {
+public abstract class BaseDto implements Serializable {
     private Long id;
 }
