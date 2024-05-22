@@ -88,10 +88,10 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
 
 
     //obtiene todas las subcategorias
-    @GetMapping("/subcategorias/")
-    public ResponseEntity<?> obtenerSubCategorias() {
+    @GetMapping("/subcategorias/{id}")
+    public ResponseEntity<?> obtenerSubCategorias(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok().body(categoriaService.obtenerSubCategorias());
+            return ResponseEntity.ok().body(categoriaService.obtenerSubCategorias(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

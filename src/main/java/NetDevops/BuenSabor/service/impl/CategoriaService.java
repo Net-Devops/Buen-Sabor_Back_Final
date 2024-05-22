@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.SubCategoriaListaDto;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.repository.IArticuloRepository;
@@ -233,12 +234,23 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
 
 
     // Obtengo las subcategorias
-    public Set<Categoria> obtenerSubCategorias() throws Exception {
+    public Set<SubCategoriaListaDto> obtenerSubCategorias(Long idCategoriaPadre) throws Exception {
         try {
-            if (categoriaRepository.findByCategoriaPadreIsNotNull().isEmpty()) {
-                throw new Exception("No hay subcategorias");
+            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(idCategoriaPadre);
+            if (subCategorias.isEmpty()) {
+                throw new Exception("No hay subcategorias para la categoria con id " + idCategoriaPadre);
             }
-            return categoriaRepository.findByCategoriaPadreIsNotNull();
+            Set<SubCategoriaListaDto> subcategoriaLista = new HashSet<>();
+            for (Categoria s : subCategorias){
+                SubCategoriaListaDto subcategoria = new SubCategoriaListaDto();
+                subcategoria.setDenominacion(s.getDenominacion());
+                subcategoria.setId(s.getId());
+                subcategoriaLista.add(subcategoria);
+            }
+
+
+
+            return subcategoriaLista;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
