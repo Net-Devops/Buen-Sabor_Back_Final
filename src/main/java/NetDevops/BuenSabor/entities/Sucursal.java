@@ -15,6 +15,7 @@ public class Sucursal extends Base{
     private LocalTime horaCierre;
 
     @ManyToOne
+    //@JsonIgnore
     private Empresa empresa;
 
     //private Domicilio domicilio;
