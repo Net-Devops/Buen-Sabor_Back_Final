@@ -24,4 +24,5 @@ public interface ICategoriaService {
     public Categoria eliminarArticuloDeSubCategoria(Long idSubCategoria, Long idArticulo) throws Exception;
     public boolean reactivate(Long id) throws Exception;
     public List<Categoria> traerTodo() throws Exception;
+    public Categoria Actualizar(long id, Categoria categoria) throws Exception;
 }

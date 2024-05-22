@@ -32,6 +32,8 @@ public class CategoriaService implements ICategoriaService {
         }
     }
 
+
+
 @Override
 public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) throws Exception {
     try {
@@ -295,6 +297,25 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
             return categoriaRepository.findAll();
         } catch (Exception e) {
             throw new Exception(e);
+        }
+    }
+
+    @Override
+    public Categoria Actualizar(long id, Categoria categoria) throws Exception {
+        try {
+            if (!categoriaRepository.existsByIdAndEliminadoFalse(id)) {
+                throw new Exception("No existe una categoria con ese id");
+            }
+            if (categoriaRepository.existsByDenominacionAndEliminadoFalse(categoria.getDenominacion())) {
+                throw new Exception("Ya existe una categoria con esa denominacion");
+            }
+            Categoria categoriaActualizada = categoriaRepository.findByIdAndEliminadoFalse(id);
+
+          categoriaActualizada.setDenominacion(categoria.getDenominacion());
+
+            return categoriaRepository.save(categoriaActualizada);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 

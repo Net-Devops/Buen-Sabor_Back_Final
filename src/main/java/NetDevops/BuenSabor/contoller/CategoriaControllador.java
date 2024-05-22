@@ -41,9 +41,9 @@ public class CategoriaControllador {
         }
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarCategoriaPadre(@PathVariable Long id, @RequestBody Categoria categoria) {
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Categoria categoria) {
         try {
-            return ResponseEntity.ok().body(categoriaService.actualizarCategoriaPadre(id, categoria));
+            return ResponseEntity.ok().body(categoriaService.Actualizar(id, categoria));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
