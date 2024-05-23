@@ -1,6 +1,6 @@
 package NetDevops.BuenSabor.service;
 
-import NetDevops.BuenSabor.dto.ArticuloManufacturadoTablaDto;
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 
 import java.util.List;

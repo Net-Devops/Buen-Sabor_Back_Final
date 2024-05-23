@@ -1,8 +1,8 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.Categoria.CategoriaDto;
-import NetDevops.BuenSabor.dto.Categoria.SubCategoriaDto;
-import NetDevops.BuenSabor.dto.Categoria.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
+import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
+import NetDevops.BuenSabor.dto.categoria.SubCategoriaListaDto;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.repository.IArticuloRepository;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
