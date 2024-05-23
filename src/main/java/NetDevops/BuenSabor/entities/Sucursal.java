@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -17,7 +18,7 @@ public class Sucursal extends Base{
     @ManyToOne
     //@JsonIgnore
     private Empresa empresa;
-
-    //private Domicilio domicilio;
+    @OneToOne
+    private Domicilio domicilio;
 
 }
