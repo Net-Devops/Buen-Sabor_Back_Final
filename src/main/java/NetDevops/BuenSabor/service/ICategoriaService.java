@@ -1,7 +1,7 @@
 package NetDevops.BuenSabor.service;
 
-import NetDevops.BuenSabor.dto.Categoria.CategoriaDto;
-import NetDevops.BuenSabor.dto.Categoria.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
+import NetDevops.BuenSabor.dto.categoria.SubCategoriaListaDto;
 import NetDevops.BuenSabor.entities.Categoria;
 
 

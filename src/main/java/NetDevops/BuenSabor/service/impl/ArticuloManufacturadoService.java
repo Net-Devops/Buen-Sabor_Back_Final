@@ -1,6 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.ArticuloManufacturadoTablaDto;
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.entities.ArticuloManufacturadoDetalle;
 import NetDevops.BuenSabor.entities.ImagenArticulo;
