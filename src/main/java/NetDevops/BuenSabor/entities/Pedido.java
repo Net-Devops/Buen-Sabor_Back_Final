@@ -20,6 +20,7 @@ public class Pedido extends Base{
     private FormaPago formaPago;
     private FormaPago TipoEnvio;
     private LocalDate fechaPedido;
+    private String preferenceMPId;
 
     @ManyToOne
     private Sucursal sucursal;
