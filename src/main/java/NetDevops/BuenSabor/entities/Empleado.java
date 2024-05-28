@@ -1,6 +1,7 @@
 package NetDevops.BuenSabor.entities;
 
-import NetDevops.BuenSabor.enums.Rol;
+import NetDevops.BuenSabor.security.entity.UsuarioEmpleado;
+import NetDevops.BuenSabor.security.enums.Rol;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;

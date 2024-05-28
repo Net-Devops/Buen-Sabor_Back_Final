@@ -1,8 +1,8 @@
 package NetDevops.BuenSabor.service.impl;
 
 import NetDevops.BuenSabor.entities.Pedido;
-import NetDevops.BuenSabor.entities.UsuarioEmpleado;
-import NetDevops.BuenSabor.enums.Rol;
+import NetDevops.BuenSabor.security.entity.UsuarioEmpleado;
+import NetDevops.BuenSabor.security.enums.Rol;
 import NetDevops.BuenSabor.repository.IPedidoRepository;
 import NetDevops.BuenSabor.service.IPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;

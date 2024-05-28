@@ -1,9 +1,9 @@
 package NetDevops.BuenSabor.entities;
 
-import NetDevops.BuenSabor.enums.Rol;
+import NetDevops.BuenSabor.security.enums.Rol;
+import NetDevops.BuenSabor.security.entity.UsuarioCliente;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 

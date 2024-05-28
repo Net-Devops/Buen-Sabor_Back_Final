@@ -1,7 +1,7 @@
 package NetDevops.BuenSabor.service;
 
 import NetDevops.BuenSabor.entities.Pedido;
-import NetDevops.BuenSabor.entities.UsuarioEmpleado;
+import NetDevops.BuenSabor.security.entity.UsuarioEmpleado;
 
 import java.util.List;
 

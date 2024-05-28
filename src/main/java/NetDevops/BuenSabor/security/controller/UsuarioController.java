@@ -1,10 +1,8 @@
-package NetDevops.BuenSabor.contoller;
+package NetDevops.BuenSabor.security.controller;
 
-import NetDevops.BuenSabor.entities.Cliente;
-import NetDevops.BuenSabor.entities.Empleado;
-import NetDevops.BuenSabor.entities.UsuarioCliente;
-import NetDevops.BuenSabor.entities.UsuarioEmpleado;
-import NetDevops.BuenSabor.service.impl.UsuarioService;
+import NetDevops.BuenSabor.security.service.UsuarioService;
+import NetDevops.BuenSabor.security.entity.UsuarioCliente;
+import NetDevops.BuenSabor.security.entity.UsuarioEmpleado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,24 +1,23 @@
-package NetDevops.BuenSabor.service.impl;
+package NetDevops.BuenSabor.security.service;
 
-import NetDevops.BuenSabor.entities.UsuarioCliente;
-import NetDevops.BuenSabor.entities.UsuarioEmpleado;
-import NetDevops.BuenSabor.repository.IUsuarioClienteRepository;
-import NetDevops.BuenSabor.repository.IUsuarioEmpleadoRepository;
-import NetDevops.BuenSabor.service.IUsuarioService;
+import NetDevops.BuenSabor.security.repository.IUsuarioClienteRepository;
+import NetDevops.BuenSabor.security.repository.IUsuarioEmpleadoRepository;
+import NetDevops.BuenSabor.security.entity.UsuarioCliente;
+import NetDevops.BuenSabor.security.entity.UsuarioEmpleado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UsuarioService implements IUsuarioService {
+public class UsuarioService  {
 
     @Autowired
     private IUsuarioClienteRepository usuarioClienteRepository;
     @Autowired
     private IUsuarioEmpleadoRepository usuarioEmpleadoRepository;
 
-    @Override
+
     public UsuarioCliente crearUsuarioCliente(UsuarioCliente usuario) throws Exception {
         try {
             return usuarioClienteRepository.save(usuario);
@@ -27,7 +26,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public UsuarioCliente buscarPorIdCliente(Long idUsuarioCliente) throws Exception {
         try {
             return usuarioClienteRepository.findById(idUsuarioCliente).orElse(null);
@@ -36,7 +35,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public UsuarioCliente actualizarUsuarioCliente(Long idUsuarioCliente, UsuarioCliente usuario) throws Exception {
         try {
             UsuarioCliente usuarioActual = usuarioClienteRepository.findById(idUsuarioCliente).orElse(null);
@@ -50,7 +49,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public boolean eliminarUsuarioCliente(Long idUsuarioCliente) throws Exception {
         try {
             usuarioClienteRepository.deleteById(idUsuarioCliente);
@@ -60,7 +59,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public List<UsuarioCliente> TraerUsuariosClientes() throws Exception {
         try {
             return usuarioClienteRepository.findAll();
@@ -69,7 +68,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public UsuarioEmpleado crearUsuarioEmpleado(UsuarioEmpleado usuario) throws Exception {
         try {
             return usuarioEmpleadoRepository.save(usuario);
@@ -78,7 +77,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public UsuarioEmpleado buscarPorIdEmpleado(Long idUsuarioEmpleado) throws Exception {
         try {
             return usuarioEmpleadoRepository.findById(idUsuarioEmpleado).orElse(null);
@@ -87,7 +86,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public UsuarioEmpleado actualizarUsuarioEmpleado(Long idUsuarioEmpleado, UsuarioEmpleado usuario) throws Exception {
         try {
             UsuarioEmpleado usuarioActual = usuarioEmpleadoRepository.findById(idUsuarioEmpleado).orElse(null);
@@ -101,7 +100,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public boolean eliminarUsuarioEmpleado(Long idUsuarioEmpleado) throws Exception {
         try {
             usuarioEmpleadoRepository.deleteById(idUsuarioEmpleado);
@@ -111,7 +110,7 @@ public class UsuarioService implements IUsuarioService {
         }
     }
 
-    @Override
+
     public List<UsuarioEmpleado> TraerUsuariosEmpleados() throws Exception {
         try {
             return usuarioEmpleadoRepository.findAll();

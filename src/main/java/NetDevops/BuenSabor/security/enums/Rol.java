@@ -1,4 +1,4 @@
-package NetDevops.BuenSabor.enums;
+package NetDevops.BuenSabor.security.enums;
 
 public enum Rol {
     ADMINISTRADOR,
