@@ -8,4 +8,6 @@ import lombok.Data;
 public class UsuarioEmpleado extends Base{
     private String username;
     private String password;
+
+    private Empleado empleado;
 }

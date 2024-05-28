@@ -1,10 +1,14 @@
 package NetDevops.BuenSabor.contoller;
 
 import NetDevops.BuenSabor.entities.Pedido;
+import NetDevops.BuenSabor.entities.UsuarioEmpleado;
 import NetDevops.BuenSabor.service.impl.PedidoService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // GET http://localhost:8080/api/pedidos/
 
@@ -54,6 +58,17 @@ public class PedidoController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> traerPedidos2(HttpSession session) throws Exception {
+        try {
+            UsuarioEmpleado usuario = (UsuarioEmpleado) session.getAttribute("usuario");
+            return ResponseEntity.ok().body(pedidoService.traerPedidos2(usuario));
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+
     }
 
 }
