@@ -1,13 +1,11 @@
 package NetDevops.BuenSabor.entities;
 
 import NetDevops.BuenSabor.enums.Rol;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -21,8 +19,12 @@ public class Cliente extends Base{
     private Rol rol = Rol.CLIENTE;
 
 
-    @ManyToMany
-    private Domicilio domicilio;
+   @ManyToMany
+@JoinTable(
+  name = "cliente_domicilio",
+  joinColumns = @JoinColumn(name = "cliente_id"),
+  inverseJoinColumns = @JoinColumn(name = "domicilio_id"))
+private List<Domicilio> domicilios;
 
     @OneToOne
     private ImagenCliente imagenCliente;
