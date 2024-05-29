@@ -23,6 +23,9 @@ public class EmpresaService implements IEmpresaService {
             if (empresaRepository.existsByCuil(empresa.getCuil())) {
                 throw new Exception("Ya existe una empresa con el CUIL proporcionado");
             }
+            if (empresaRepository.existsByNombre(empresa.getNombre())) {
+                throw new Exception("Ya existe una empresa con el nombre proporcionado");
+            }
 
             return empresaRepository.save(empresa);
         } catch (Exception e) {
@@ -33,6 +36,9 @@ public class EmpresaService implements IEmpresaService {
     @Override
     public Empresa update(Long id, Empresa empresa) throws Exception {
         try {
+            if (empresaRepository.existsByNombreAndNotId(empresa.getNombre(), id)) {
+                throw new Exception("Ya existe una empresa con el CUIL proporcionado");
+            }
             empresa.setId(id);
             return empresaRepository.save(empresa);
         } catch (Exception e) {
