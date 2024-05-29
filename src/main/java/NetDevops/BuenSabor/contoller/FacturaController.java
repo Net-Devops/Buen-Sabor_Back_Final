@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// GET http://localhost:8080/api/factura/
+
 @RestController
 @RequestMapping("/api/factura")
 public class FacturaController {

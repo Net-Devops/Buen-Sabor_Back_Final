@@ -9,13 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// GET http://localhost:8080/api/usuario/
+
 @RestController
 @RequestMapping("/api/usuario")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/clientes")
+    @GetMapping("/cliente")
     public ResponseEntity<?> listarClientes() {
         try {
             return ResponseEntity.ok().body(usuarioService.TraerUsuariosClientes());
@@ -23,7 +25,7 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/empleados")
+    @GetMapping("/empleado")
     public ResponseEntity<?> listarEmpleados() {
         try {
             return ResponseEntity.ok().body(usuarioService.TraerUsuariosEmpleados());
