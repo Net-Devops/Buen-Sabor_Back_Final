@@ -6,14 +6,12 @@ import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoDetalleRepository;
 import NetDevops.BuenSabor.repository.ImagenArticuloRepository;
 import NetDevops.BuenSabor.service.IArticuloInsumoService;
-import org.apache.tomcat.util.codec.binary.Base64;
+import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -208,4 +206,45 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
     }
 }
     //endregion
+
+
+
+    @Override
+    public boolean reactivate(Long id) throws Exception {
+        try {
+            if (articuloInsumoRepository.existsById(id)) {
+                ArticuloInsumo articuloInsumo = articuloInsumoRepository.findById(id).get();
+                if (articuloInsumo.isEliminado()) {
+                    articuloInsumo.setEliminado(false);
+
+                    // Reactivar las ImagenArticulo asociadas
+                    for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
+                        if (imagen.isEliminado()) {
+                            imagen.setEliminado(false);
+                        }
+                    }
+
+                    articuloInsumoRepository.save(articuloInsumo);
+                    return true;
+                } else {
+                    throw new Exception("El ArticuloInsumo con el id proporcionado no está eliminado");
+                }
+            } else {
+                throw new Exception("No existe el ArticuloInsumo con el id proporcionado");
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<ArticuloInsumo> traerTodo() throws Exception {
+        try {
+            return articuloInsumoRepository.findAll();
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
+
 }

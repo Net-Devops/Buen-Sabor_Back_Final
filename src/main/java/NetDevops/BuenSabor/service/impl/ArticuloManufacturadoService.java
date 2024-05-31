@@ -1,6 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.ArticuloManufacturadoTablaDto;
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.entities.ArticuloManufacturadoDetalle;
 import NetDevops.BuenSabor.entities.ImagenArticulo;
@@ -8,6 +8,7 @@ import NetDevops.BuenSabor.repository.IArticuloManufacturadoDetalleRepository;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.ImagenArticuloRepository;
 import NetDevops.BuenSabor.service.IArticuloManufacturadoService;
+import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -247,6 +248,42 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
         throw new Exception(e);
     }
 }
+
+
+    @Override
+    public boolean reactivate(Long id) throws Exception {
+        try {
+            ArticuloManufacturado articuloManufacturado = articuloManufacturadoRepository.findById(id).orElse(null);
+            if (articuloManufacturado == null) {
+                throw new Exception("No se encontro el articulo");
+            }
+            articuloManufacturado.setEliminado(false);
+            // Reactivar de manera lógica ArticuloManufacturadoDetalle
+            for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+                detalle.setEliminado(false);
+                detalleRepository.save(detalle); // Asegúrate de tener un repositorio para ArticuloManufacturadoDetalle
+            }
+            // Reactivar de manera lógica las imágenes
+            for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
+                imagen.setEliminado(false);
+                imagenRepository.save(imagen); // Asegúrate de tener un repositorio para ImagenArticulo
+            }
+
+            articuloManufacturadoRepository.save(articuloManufacturado);
+            return true;
+        }catch (Exception e){
+            throw new Exception(e);
+        }
+    }
+
+    @Override
+    public List<ArticuloManufacturado> traerTodos() throws Exception {
+        try {
+            return articuloManufacturadoRepository.findAll();
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
 
 
     //endregion

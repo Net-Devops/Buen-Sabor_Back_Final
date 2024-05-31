@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,5 +29,12 @@ public abstract class Articulo extends Base{
     protected Set<ImagenArticulo> imagenes = new HashSet<>();
     @ManyToOne
     protected UnidadMedida unidadMedida;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    protected Categoria categoria;
+
+    @ManyToOne
+    private Sucursal sucursal;
 
 }
