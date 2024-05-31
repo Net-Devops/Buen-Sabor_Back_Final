@@ -20,5 +20,6 @@ public class Sucursal extends Base{
     private Empresa empresa;
     @OneToOne
     private Domicilio domicilio;
+    private String imagen;
 
 }

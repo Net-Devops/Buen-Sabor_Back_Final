@@ -9,6 +9,7 @@ public class Empresa extends Base{
 private String nombre;
 private String razonSocial;
 private Long cuil;
+private String imagen;
 
 
 }
