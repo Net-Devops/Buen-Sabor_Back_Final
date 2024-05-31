@@ -31,6 +31,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation group: 'com.mercadopago', name: 'sdk-java', version: '2.1.24'
+	//runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.postgresql:postgresql:42.2.23'
 
 }
 
