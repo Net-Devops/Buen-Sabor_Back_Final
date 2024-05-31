@@ -14,14 +14,18 @@ public class SucursalService implements ISucursalService {
     @Autowired
     private ISucursalRepository sucursalRepository;
 
-    @Override
-    public Sucursal save(Sucursal sucursal) throws Exception {
-        try {
-            return sucursalRepository.save(sucursal);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+  @Override
+public Sucursal save(Sucursal sucursal) throws Exception {
+    try {
+
+        if (sucursalRepository.findByNombre(sucursal.getNombre())){
+            throw new Exception("Ya existe una sucursal con el nombre proporcionado");
         }
+        return sucursalRepository.save(sucursal);
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
     }
+}
 
     @Override
     public boolean delete(Long id) throws Exception {
@@ -38,6 +42,9 @@ public class SucursalService implements ISucursalService {
     @Override
     public Sucursal update(Long id, Sucursal sucursal) throws Exception {
         try {
+            if(sucursalRepository.existsByNombreAndNotId(sucursal.getNombre(), id)){
+                throw new Exception("Ya existe una sucursal con el nombre proporcionado");
+            }
             sucursal.setId(id);
             return sucursalRepository.save(sucursal);
         } catch (Exception e) {
