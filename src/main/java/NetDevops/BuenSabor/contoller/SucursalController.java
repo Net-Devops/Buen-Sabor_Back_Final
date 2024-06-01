@@ -52,14 +52,14 @@ public class SucursalController {
         }
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> cargar(@RequestBody Sucursal sucursal){
-        try {
-            return ResponseEntity.ok(sucursalService.save(sucursal));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    @PostMapping("/")
+//    public ResponseEntity<?> cargar(@RequestBody Sucursal sucursal){
+//        try {
+//            return ResponseEntity.ok(sucursalService.save(sucursal));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id,@RequestBody Sucursal sucursal){
@@ -77,7 +77,7 @@ public class SucursalController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/guardar-sucursal-dto/")
+    @PostMapping("/")
     public ResponseEntity<?> guardarSucursalDto(@RequestBody SucursalDto sucursalDto){
         try {
             return ResponseEntity.ok(sucursalService.guardarSucursalDto(sucursalDto));
