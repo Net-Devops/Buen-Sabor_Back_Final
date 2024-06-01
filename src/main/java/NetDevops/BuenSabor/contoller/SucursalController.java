@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.contoller;
 
+import NetDevops.BuenSabor.dto.sucursal.SucursalDto;
 import NetDevops.BuenSabor.entities.Sucursal;
 import NetDevops.BuenSabor.service.ISucursalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,14 @@ public class SucursalController {
     public ResponseEntity<?> traerPorEmpresaId(@PathVariable Long empresaId){
         try {
             return ResponseEntity.ok(sucursalService.traerPorEmpresaId(empresaId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/guardar-sucursal-dto/")
+    public ResponseEntity<?> guardarSucursalDto(@RequestBody SucursalDto sucursalDto){
+        try {
+            return ResponseEntity.ok(sucursalService.guardarSucursalDto(sucursalDto));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

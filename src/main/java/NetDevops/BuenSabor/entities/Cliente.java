@@ -20,7 +20,7 @@ public class Cliente extends Base{
 
 
    @ManyToMany
-@JoinTable(
+    @JoinTable(
   name = "cliente_domicilio",
   joinColumns = @JoinColumn(name = "cliente_id"),
   inverseJoinColumns = @JoinColumn(name = "domicilio_id"))

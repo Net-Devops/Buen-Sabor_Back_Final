@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -18,7 +19,7 @@ public class Sucursal extends Base{
     @ManyToOne
     //@JsonIgnore
     private Empresa empresa;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Domicilio domicilio;
     private String imagen;
 

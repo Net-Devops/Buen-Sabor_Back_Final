@@ -15,9 +15,9 @@ public class Domicilio extends Base{
     private Integer numero;
     private Integer cp;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne()
     private Localidad localidad;
 
     @ManyToMany(mappedBy = "domicilios")
-private List<Cliente> clientes;
+    private List<Cliente> clientes;
 }
