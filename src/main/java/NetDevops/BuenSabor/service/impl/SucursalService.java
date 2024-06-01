@@ -105,7 +105,7 @@ public Sucursal save(Sucursal sucursal) throws Exception {
     public Sucursal guardarSucursalDto(SucursalDto sucursalDto) throws Exception {
         try {
 
-            Empresa empresa = empresaRepository.findById(Long.valueOf(String.valueOf(sucursalDto.getEmpresa()))).orElseThrow(() -> new Exception("No se encontró la empresa con el id proporcionado"));
+            Empresa empresa = empresaRepository.findById(Long.valueOf(String.valueOf(sucursalDto.getIdEmpresa()))).orElseThrow(() -> new Exception("No se encontró la empresa con el id proporcionado"));
             Localidad localidad = localidadRepository.findById(Long.valueOf(sucursalDto.getLocalidad())).orElseThrow(() -> new Exception("No se encontró la localidad con el id proporcionado"));
             Provincia provincia = provinciaRepository.findById(Long.valueOf(sucursalDto.getProvincia())).orElseThrow(() -> new Exception("No se encontró la provincia con el id proporcionado"));
             Pais pais = paisRepository.findById(Long.valueOf(sucursalDto.getPais())).orElseThrow(() -> new Exception("No se encontró el país con el id proporcionado"));
@@ -121,12 +121,13 @@ public Sucursal save(Sucursal sucursal) throws Exception {
             domicilio.setCalle(sucursalDto.getCalle());
             domicilio.setNumero(Integer.valueOf(sucursalDto.getNumero()));
             domicilio.setCp(Integer.valueOf(sucursalDto.getCp()));
+            domicilioRepository.save(domicilio);
 
             sucursal.setNombre(sucursalDto.getNombre());
             sucursal.setHoraApertura(sucursalDto.getHoraApertura());
             sucursal.setHoraCierre(sucursalDto.getHoraCierre());
             sucursal.setDomicilio(domicilio);
-            sucursal.setImagen(sucursalDto.getImagen());
+//            sucursal.setImagen(sucursalDto.getImagen());
 
             return sucursalRepository.save(sucursal);
         } catch (Exception e) {

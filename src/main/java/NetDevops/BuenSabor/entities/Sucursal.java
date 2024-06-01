@@ -13,8 +13,8 @@ import java.time.LocalTime;
 public class Sucursal extends Base{
 
     private String nombre;
-    private LocalTime horaApertura;
-    private LocalTime horaCierre;
+    private String horaApertura;
+    private String horaCierre;
 
     @ManyToOne
     //@JsonIgnore

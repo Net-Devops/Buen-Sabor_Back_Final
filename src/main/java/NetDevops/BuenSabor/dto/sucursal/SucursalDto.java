@@ -10,8 +10,8 @@ import java.time.LocalTime;
 public class SucursalDto extends BaseDto {
 
     private String nombre;
-    private LocalTime horaApertura;
-    private LocalTime horaCierre;
+    private String horaApertura;
+    private String horaCierre;
     private String calle;
     private String numero;
     private String cp;
@@ -20,7 +20,7 @@ public class SucursalDto extends BaseDto {
     private String localidad;
     private String provincia;
     private String Pais;
-    private Empresa empresa;
-    private String imagen;
+    private String idEmpresa;
+//    private String imagen;
 
 }
