@@ -42,7 +42,12 @@ public Sucursal save(Sucursal sucursal) throws Exception {
     public boolean delete(Long id) throws Exception {
         try {
                 Sucursal sucursal = sucursalRepository.findById(id).orElseThrow(() -> new Exception("No se encontró la sucursal con el id proporcionado"));
-                sucursal.setEliminado(true);
+                if(sucursalRepository.existsByIdAndEliminadoFalse(id)){
+                    sucursal.setEliminado(true);
+                }else{
+                    sucursal.setEliminado(false);
+                }
+
                 sucursalRepository.save(sucursal);
                 return true;
         } catch (Exception e) {
