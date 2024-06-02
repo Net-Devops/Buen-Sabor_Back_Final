@@ -15,6 +15,8 @@ public interface IArticuloManufacturadoRepository extends JpaRepository<Articulo
     boolean existsByDenominacionAndEliminadoFalse(String denominacion);
     boolean existsByCodigoAndEliminadoFalse(String codigo);
 
+List<ArticuloManufacturado> findByCategoriaId(Long categoriaId);
+
     //region Validaciones para actualizar un Manufacturado
     boolean existsByCodigoAndEliminadoFalseAndIdNot(String codigo, Long id);
     boolean existsByDenominacionAndEliminadoFalseAndIdNot(String denominacion, Long id);
