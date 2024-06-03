@@ -18,7 +18,10 @@ import java.util.Set;
 @Setter
 @SuperBuilder
 //@Audited
+
+
 public abstract class Articulo extends Base{
+
 
     protected String denominacion;
     protected String descripcion;
@@ -36,5 +39,7 @@ public abstract class Articulo extends Base{
 
     @ManyToOne
     private Sucursal sucursal;
+
+
 
 }

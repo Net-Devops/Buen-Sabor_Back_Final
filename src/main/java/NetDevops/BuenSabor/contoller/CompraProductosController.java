@@ -1,5 +1,7 @@
 package NetDevops.BuenSabor.contoller;
 
+import NetDevops.BuenSabor.dto.compraProducto.CompraPedidoDto;
+import NetDevops.BuenSabor.entities.Pedido;
 import NetDevops.BuenSabor.service.impl.CompraProductosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import java.util.Map;
 public class CompraProductosController {
     @Autowired
     private CompraProductosService compraProductosService;
+
+
 
     //region CRUD Basico
 
@@ -32,6 +36,16 @@ public class CompraProductosController {
         try {
             Long id = body.get("id");
             return ResponseEntity.ok().body(compraProductosService.buscarArticuloPorId(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/crear-pedido")
+    public ResponseEntity<?> crearPedido(@RequestBody CompraPedidoDto compraPedidoDto) {
+        try {
+            CompraPedidoDto pedido = compraProductosService.crearPedido(compraPedidoDto);
+            return ResponseEntity.ok().body(pedido);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
