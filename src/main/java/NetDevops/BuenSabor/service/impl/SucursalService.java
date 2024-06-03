@@ -55,20 +55,22 @@ public Sucursal save(Sucursal sucursal) throws Exception {
         }
     }
 
-    @Override
-    public Sucursal update(Long id, Sucursal sucursal) throws Exception {
-        try {
-            if(sucursalRepository.existsByNombreAndNotId(sucursal.getNombre(), id)){
-                throw new Exception("Ya existe una sucursal con el nombre proporcionado");
-            }
-            Sucursal sucursalVieja = sucursalRepository.findById(id).orElse(null);
-            sucursal.setId(id);
-            sucursal.setEmpresa(sucursalVieja.getEmpresa());
-            return sucursalRepository.save(sucursal);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+   @Override
+public Sucursal update(Long id, Sucursal sucursal) throws Exception {
+    try {
+        if(sucursalRepository.existsByNombreAndNotId(sucursal.getNombre(), id)){
+            throw new Exception("Ya existe una sucursal con el nombre proporcionado");
         }
+        Sucursal sucursalVieja = sucursalRepository.findById(id).orElse(null);
+        sucursal.setId(id);
+        if (sucursal.getEmpresa() == null) {
+            sucursal.setEmpresa(sucursalVieja.getEmpresa());
+        }
+        return sucursalRepository.save(sucursal);
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
     }
+}
 
     @Override
     public List<Sucursal> traerTodo() throws Exception {
