@@ -61,7 +61,9 @@ public Sucursal save(Sucursal sucursal) throws Exception {
             if(sucursalRepository.existsByNombreAndNotId(sucursal.getNombre(), id)){
                 throw new Exception("Ya existe una sucursal con el nombre proporcionado");
             }
+            Sucursal sucursalVieja = sucursalRepository.findById(id).orElse(null);
             sucursal.setId(id);
+            sucursal.setEmpresa(sucursalVieja.getEmpresa());
             return sucursalRepository.save(sucursal);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
