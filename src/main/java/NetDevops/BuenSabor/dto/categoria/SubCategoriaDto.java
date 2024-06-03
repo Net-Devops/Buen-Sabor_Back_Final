@@ -7,6 +7,7 @@ import lombok.Data;
 public class SubCategoriaDto extends BaseDto {
 
     private String denominacion;
+    private String urlIcono;
     private Long idCategoriaPadre;
     private boolean eliminado;
 

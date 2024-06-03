@@ -86,16 +86,6 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
     }
 }
 
-
-    //obtiene todas las subcategorias
-    @GetMapping("/subcategorias/{id}")
-    public ResponseEntity<?> obtenerSubCategorias(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok().body(categoriaService.obtenerSubCategorias(id));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
     //obtiene todas las categorias con subcategorias
     @GetMapping("/categoriasConSubcategorias/")
     public ResponseEntity<?> obtenerCategoriasConSubCategorias() {
@@ -145,6 +135,33 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
     public ResponseEntity<?> traerTodo() {
         try {
             return ResponseEntity.ok(categoriaService.traerTodo());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    //obtiene todas las subcategorias
+    @GetMapping("/subcategorias/{id}")
+    public ResponseEntity<?> obtenerSubCategorias(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok().body(categoriaService.obtenerSubCategorias(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/categoriasPadre/")
+    public ResponseEntity<?> obtenerCategoriasPadre() {
+        try {
+            return ResponseEntity.ok().body(categoriaService.traerCategoriaPadre());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/tieneSubCategorias")
+    public ResponseEntity<?> tieneSubCategorias(@PathVariable Long id) {
+        try {
+            boolean tieneSubCategorias = categoriaService.tieneSubCategorias(id);
+            return ResponseEntity.ok().body(tieneSubCategorias);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

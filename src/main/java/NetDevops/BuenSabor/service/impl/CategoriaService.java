@@ -34,8 +34,6 @@ public class CategoriaService implements ICategoriaService {
         }
     }
 
-
-
 @Override
 public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) throws Exception {
     try {
@@ -233,30 +231,6 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
         }
     }
 
-
-    // Obtengo las subcategorias
-    public Set<SubCategoriaListaDto> obtenerSubCategorias(Long idCategoriaPadre) throws Exception {
-        try {
-            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(idCategoriaPadre);
-            if (subCategorias.isEmpty()) {
-                throw new Exception("No hay subcategorias para la categoria con id " + idCategoriaPadre);
-            }
-            Set<SubCategoriaListaDto> subcategoriaLista = new HashSet<>();
-            for (Categoria s : subCategorias){
-                SubCategoriaListaDto subcategoria = new SubCategoriaListaDto();
-                subcategoria.setDenominacion(s.getDenominacion());
-                subcategoria.setId(s.getId());
-                subcategoriaLista.add(subcategoria);
-            }
-
-
-
-            return subcategoriaLista;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
     // Obtengo las categorias con subcategorias
     public Set<Categoria> obtenerCategoriasConSubCategorias() throws Exception {
         try {
@@ -313,12 +287,14 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
                 Set<Categoria> ListaSubcategoria = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
                     CategoriaDto categoriadto = new CategoriaDto();
                     categoriadto.setDenominacion(lista.getDenominacion());
+                    categoriadto.setUrlIcono(lista.getUrlIcono());
                     categoriadto.setId(lista.getId());
                     categoriadto.setEliminado(lista.isEliminado());
 
                 for (Categoria sub : ListaSubcategoria){
                     SubCategoriaDto subCategoria = new SubCategoriaDto();
                     subCategoria.setDenominacion(sub.getDenominacion());
+                    subCategoria.setUrlIcono(sub.getUrlIcono());
                     subCategoria.setId(sub.getId());
                     subCategoria.setIdCategoriaPadre(lista.getId());
                     subCategoria.setEliminado(sub.isEliminado());
@@ -352,5 +328,54 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
         }
     }
 
+    @Override
+    public Set<CategoriaDto> traerCategoriaPadre() throws Exception {
+        try {
+            Set<Categoria> listaCategoriaOriginal = categoriaRepository.findByCategoriaPadreIsNull();
+            Set<CategoriaDto> listaDto = new HashSet<>();
+            for (Categoria lista: listaCategoriaOriginal){
+                CategoriaDto categoriadto = new CategoriaDto();
+                categoriadto.setDenominacion(lista.getDenominacion());
+                categoriadto.setUrlIcono(lista.getUrlIcono());
+                categoriadto.setId(lista.getId());
+                categoriadto.setEliminado(lista.isEliminado());
+
+                listaDto.add(categoriadto);
+            }
+            return listaDto;
+
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
+    // Obtengo las subcategorias
+    public Set<SubCategoriaListaDto> obtenerSubCategorias(Long idCategoriaPadre) throws Exception {
+        try {
+            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(idCategoriaPadre);
+            if (subCategorias.isEmpty()) {
+                throw new Exception("No hay subcategorias para la categoria con id " + idCategoriaPadre);
+            }
+            Set<SubCategoriaListaDto> subcategoriaLista = new HashSet<>();
+            for (Categoria s : subCategorias){
+                SubCategoriaListaDto subcategoria = new SubCategoriaListaDto();
+                subcategoria.setDenominacion(s.getDenominacion());
+                subcategoria.setUrlIcono(s.getUrlIcono());
+                subcategoria.setId(s.getId());
+                subcategoriaLista.add(subcategoria);
+            }
+            return subcategoriaLista;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public boolean tieneSubCategorias(Long categoriaId) throws Exception {
+        try {
+            return categoriaRepository.existsByCategoriaPadre_IdAndEliminadoFalse(categoriaId);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 
 }

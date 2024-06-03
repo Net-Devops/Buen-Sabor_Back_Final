@@ -11,6 +11,7 @@ import java.util.Set;
 public class CategoriaDto extends BaseDto {
 
     private String denominacion;
+    private String urlIcono;
     private Boolean eliminado;
     private Set<SubCategoriaDto> subCategoriaDtos = new HashSet<>();
 }

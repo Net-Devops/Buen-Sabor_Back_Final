@@ -24,5 +24,7 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     @Query("SELECT c FROM Categoria c WHERE c.categoriaPadre IS NULL OR c.categoriaPadre.id = 0")
     Set<Categoria> ListaCategorias();
 
+    Set<Categoria> findByCategoriaPadreIsNull();
+    boolean existsByCategoriaPadre_IdAndEliminadoFalse(Long categoriaPadreId);
 
 }

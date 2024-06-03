@@ -16,6 +16,7 @@ public class Categoria extends Base{
    private Set<Sucursal> sucursales = new HashSet<>();
 
     private String denominacion;
+    private String urlIcono;
     @OneToMany(mappedBy = "categoria")
     private Set<Articulo> articulos = new HashSet<>();
 
