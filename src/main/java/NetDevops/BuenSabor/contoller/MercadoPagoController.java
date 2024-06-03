@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.contoller;
 
+import NetDevops.BuenSabor.dto.compraProducto.CompraPedidoDto;
 import NetDevops.BuenSabor.entities.Pedido;
 import NetDevops.BuenSabor.entities.mercadoPago.PreferenceMP;
 import NetDevops.BuenSabor.service.impl.PedidoService;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/MercadoPago")
+@RequestMapping("api/MercadoPago")
 public class MercadoPagoController {
     @Autowired
     private MercadoPagoService mercadoPagoService;
@@ -20,10 +21,10 @@ public class MercadoPagoController {
 
 
     @PostMapping("/crear_preference_mp")
-    public PreferenceMP crearPreferenceMP(@RequestBody Pedido pedido) {
+    public PreferenceMP crearPreferenceMP(@RequestBody CompraPedidoDto pedido) {
         try {
             Pedido pedidoActualizado = pedidoService.buscarPorId(pedido.getId());
-            PreferenceMP preferenceMP = mercadoPagoService.getPreferenciaIdMercadoPago(pedido);
+            PreferenceMP preferenceMP = mercadoPagoService.getPreferenciaIdMercadoPago(pedidoActualizado);
             pedidoActualizado.setPreferenceMPId(preferenceMP.getId());
             pedidoService.actualizarPedido(pedido.getId(), pedidoActualizado);
             return preferenceMP;
