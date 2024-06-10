@@ -4,10 +4,7 @@ import NetDevops.BuenSabor.dto.compraProducto.CompraPedidoDto;
 import NetDevops.BuenSabor.dto.compraProducto.CompraProductoDto;
 import NetDevops.BuenSabor.dto.compraProducto.PedidoDetalleDto;
 import NetDevops.BuenSabor.entities.*;
-import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
-import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
-import NetDevops.BuenSabor.repository.IArticuloRepository;
-import NetDevops.BuenSabor.repository.IPedidoRepository;
+import NetDevops.BuenSabor.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +14,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 public class CompraProductosService {
@@ -32,44 +30,45 @@ public class CompraProductosService {
     private IArticuloRepository articuloRepository;
     @Autowired
     private IPedidoRepository pedidoRepository;
+    @Autowired
+    private ICategoriaRepository categoriaRepository;
 
-    public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
-        List<ArticuloManufacturado> articulosManufacturados = articuloManufacturadoRepository.findByCategoriaId(categoriaId);
-        List<ArticuloInsumo> articulosInsumos = articuloInsumoRepository.findByCategoriaId(categoriaId);
+   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
+    Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_Id(categoriaId);
 
-        List<CompraProductoDto> articulos = new ArrayList<>();
+    List<CompraProductoDto> articulos = new ArrayList<>();
+    for (Categoria subcategoria : subcategorias) {
+        List<ArticuloManufacturado> articulosManufacturados = articuloManufacturadoRepository.findByCategoriaId(subcategoria.getId());
+        List<ArticuloInsumo> articulosInsumos = articuloInsumoRepository.findByCategoriaId(subcategoria.getId());
+
         for (ArticuloManufacturado articulo : articulosManufacturados) {
-            CompraProductoDto dto = new CompraProductoDto();
-            dto.setId(articulo.getId());
-            dto.setDenominacion(articulo.getDenominacion());
-            dto.setDescripcion(articulo.getDescripcion());
-            dto.setCodigo(articulo.getCodigo());
-            dto.setPrecioVenta(articulo.getPrecioVenta());
-            dto.setImagenes(new ArrayList<>(articulo.getImagenes())); // Convert Set to List
-            dto.setCategoriaId(articulo.getCategoria().getId());
-            if (articulo.getSucursal() != null) {
-                dto.setSucursalId(articulo.getSucursal().getId());
-            }
+            CompraProductoDto dto = convertToDto(articulo);
             articulos.add(dto);
         }
 
         for (ArticuloInsumo articulo : articulosInsumos) {
-            CompraProductoDto dto = new CompraProductoDto();
-            dto.setId(articulo.getId());
-            dto.setDenominacion(articulo.getDenominacion());
-            dto.setDescripcion(articulo.getDescripcion());
-            dto.setCodigo(articulo.getCodigo());
-            dto.setPrecioVenta(articulo.getPrecioVenta());
-            dto.setImagenes(new ArrayList<>(articulo.getImagenes())); // Convert Set to List
-            dto.setCategoriaId(articulo.getCategoria().getId());
-            if (articulo.getSucursal() != null) {
-                dto.setSucursalId(articulo.getSucursal().getId());
-            }
+            CompraProductoDto dto = convertToDto(articulo);
             articulos.add(dto);
         }
-
-        return articulos;
     }
+
+    return articulos;
+}
+
+private CompraProductoDto convertToDto(Articulo articulo) {
+    CompraProductoDto dto = new CompraProductoDto();
+    dto.setId(articulo.getId());
+    dto.setDenominacion(articulo.getDenominacion());
+    dto.setDescripcion(articulo.getDescripcion());
+    dto.setCodigo(articulo.getCodigo());
+    dto.setPrecioVenta(articulo.getPrecioVenta());
+    dto.setImagenes(new ArrayList<>(articulo.getImagenes())); // Convert Set to List
+    dto.setCategoriaId(articulo.getCategoria().getId());
+    if (articulo.getSucursal() != null) {
+        dto.setSucursalId(articulo.getSucursal().getId());
+    }
+    return dto;
+}
 
     public CompraProductoDto buscarArticuloPorId(Long id) {
         Articulo articulo = articuloRepository.findById(id)

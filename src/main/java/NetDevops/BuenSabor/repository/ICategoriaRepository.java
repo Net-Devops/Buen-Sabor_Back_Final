@@ -27,4 +27,5 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Set<Categoria> findByCategoriaPadreIsNull();
     boolean existsByCategoriaPadre_IdAndEliminadoFalse(Long categoriaPadreId);
 
+
 }
