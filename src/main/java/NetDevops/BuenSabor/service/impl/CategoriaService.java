@@ -289,9 +289,13 @@ public Set<CategoriaDto> traerTodo() throws Exception {
             categoriadto.setId(lista.getId());
             categoriadto.setEliminado(lista.isEliminado());
 
-            SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(lista);
-            categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
 
+            for (Categoria subCategoria : subCategorias) {
+                SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria);
+                categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+
+            }
             listaDto.add(categoriadto);
         }
         return listaDto;
