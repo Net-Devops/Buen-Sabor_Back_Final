@@ -278,36 +278,22 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
         }
     }
 
-    @Override
-    public Set<CategoriaDto> traerTodo() throws Exception {
-        try {
-                Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
-                Set<CategoriaDto> listaDto = new HashSet<>();
-            for (Categoria lista: listaCategoriaOriginal){
-                Set<Categoria> ListaSubcategoria = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
-                    CategoriaDto categoriadto = new CategoriaDto();
-                    categoriadto.setDenominacion(lista.getDenominacion());
-                    categoriadto.setUrlIcono(lista.getUrlIcono());
-                    categoriadto.setId(lista.getId());
-                    categoriadto.setEliminado(lista.isEliminado());
+   @Override
+public Set<CategoriaDto> traerTodo() throws Exception {
+    try {
+        Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
+        Set<CategoriaDto> listaDto = new HashSet<>();
 
-                for (Categoria sub : ListaSubcategoria){
-                    SubCategoriaDto subCategoria = new SubCategoriaDto();
-                    subCategoria.setDenominacion(sub.getDenominacion());
-                    subCategoria.setUrlIcono(sub.getUrlIcono());
-                    subCategoria.setId(sub.getId());
-                    subCategoria.setIdCategoriaPadre(lista.getId());
-                    subCategoria.setEliminado(sub.isEliminado());
-                    categoriadto.getSubCategoriaDtos().add(subCategoria);
-                }
-                    listaDto.add(categoriadto);
-            }
-            return listaDto;
-
-        } catch (Exception e) {
-            throw new Exception(e);
+        for (Categoria lista: listaCategoriaOriginal){
+            CategoriaDto categoriaDto = obtenerCategoriasRecursivamente(lista);
+            listaDto.add(categoriaDto);
         }
+
+        return listaDto;
+    } catch (Exception e) {
+        throw new Exception(e);
     }
+}
 
     @Override
     public Categoria Actualizar(long id, Categoria categoria) throws Exception {
@@ -377,5 +363,21 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
             throw new Exception(e.getMessage());
         }
     }
+
+
+   private CategoriaDto obtenerCategoriasRecursivamente(Categoria categoria) {
+    CategoriaDto categoriaDto = new CategoriaDto();
+    categoriaDto.setDenominacion(categoria.getDenominacion());
+    categoriaDto.setUrlIcono(categoria.getUrlIcono());
+    categoriaDto.setId(categoria.getId());
+    categoriaDto.setEliminado(categoria.isEliminado());
+
+    for (Categoria subCategoria : categoria.getSubCategorias()) {
+        CategoriaDto subCategoriaDto = obtenerCategoriasRecursivamente(subCategoria);
+        categoriaDto.getSubCategorias().add(subCategoriaDto);
+    }
+
+    return categoriaDto;
+}
 
 }
