@@ -281,7 +281,7 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
 @Override
 public Set<CategoriaDto> traerTodo() throws Exception {
     try {
-        Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
+        Set<Categoria> listaCategoriaOriginal = new HashSet<>(categoriaRepository.findAll());
         Set<CategoriaDto> listaDto = new HashSet<>();
 
         for (Categoria lista: listaCategoriaOriginal){
