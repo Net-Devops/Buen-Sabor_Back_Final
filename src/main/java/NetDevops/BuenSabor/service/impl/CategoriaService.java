@@ -294,7 +294,6 @@ public Set<CategoriaDto> traerTodo() throws Exception {
             for (Categoria subCategoria : subCategorias) {
                 SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria);
                 categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
-
             }
             listaDto.add(categoriadto);
         }
