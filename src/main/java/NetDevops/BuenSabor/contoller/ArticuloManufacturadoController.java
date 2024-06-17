@@ -4,11 +4,13 @@ import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.service.IArticuloManufacturadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/articulos/manufacturados/
 
 @RestController
+@PreAuthorize("denyAll()")
 @RequestMapping("/api/articulos/manufacturados")
 public class ArticuloManufacturadoController {
     @Autowired
@@ -18,6 +20,7 @@ public class ArticuloManufacturadoController {
     //region CRUD Basico
 
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('READ')")
     public ResponseEntity<?> Lista() {
         try {
             return ResponseEntity.status(200).body(articuloManufacturadoService.listaArticuloManufacturado());

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 
-// GET http://localhost:8080/api/compra/productos/
+// GET http://localhost:8080/api/compra/productos/buscar-articulo
 
 @RestController
 @RequestMapping("/api/compra/productos")

@@ -37,6 +37,8 @@ dependencies {
 	//runtimeOnly 'org.postgresql:postgresql'
 	implementation 'org.postgresql:postgresql:42.2.23'
 	implementation 'org.modelmapper:modelmapper:2.4.4'
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation 'com.auth0:java-jwt:4.4.0'
 
 }
 
