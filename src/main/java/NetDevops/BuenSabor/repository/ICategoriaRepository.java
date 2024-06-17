@@ -28,4 +28,5 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     boolean existsByCategoriaPadre_IdAndEliminadoFalse(Long categoriaPadreId);
 
 
+
 }

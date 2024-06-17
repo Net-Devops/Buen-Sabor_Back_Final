@@ -277,30 +277,21 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
             throw new Exception(e.getMessage());
         }
     }
-
-    @Override
+@Override
 public Set<CategoriaDto> traerTodo() throws Exception {
     try {
         Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria lista: listaCategoriaOriginal){
-            Set<Categoria> ListaSubcategoria = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
             CategoriaDto categoriadto = new CategoriaDto();
             categoriadto.setDenominacion(lista.getDenominacion());
             categoriadto.setUrlIcono(lista.getUrlIcono());
             categoriadto.setId(lista.getId());
             categoriadto.setEliminado(lista.isEliminado());
 
-            for (Categoria sub : ListaSubcategoria){
-                SubCategoriaDto subCategoria = new SubCategoriaDto();
-                subCategoria.setDenominacion(sub.getDenominacion());
-                subCategoria.setUrlIcono(sub.getUrlIcono());
-                subCategoria.setId(sub.getId());
-                subCategoria.setIdCategoriaPadre(lista.getId());
-                subCategoria.setEliminado(sub.isEliminado());
-                agregarSubCategoriasRecursivamente(sub, subCategoria);
-                categoriadto.getSubCategoriaDtos().add(subCategoria);
-            }
+            SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(lista);
+            categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+
             listaDto.add(categoriadto);
         }
         return listaDto;
@@ -378,18 +369,21 @@ public Set<CategoriaDto> traerTodo() throws Exception {
         }
     }
 
-    private void agregarSubCategoriasRecursivamente(Categoria categoria, SubCategoriaDto subCategoriaDto) {
-    for (Categoria subCategoria : categoria.getSubCategorias()) {
-        SubCategoriaDto subSubCategoriaDto = new SubCategoriaDto();
-        subSubCategoriaDto.setDenominacion(subCategoria.getDenominacion());
-        subSubCategoriaDto.setUrlIcono(subCategoria.getUrlIcono());
-        subSubCategoriaDto.setId(subCategoria.getId());
-        subSubCategoriaDto.setIdCategoriaPadre(categoria.getId());
-        subSubCategoriaDto.setEliminado(subCategoria.isEliminado());
+ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria) {
+    SubCategoriaDto subCategoriaDto = new SubCategoriaDto();
+    subCategoriaDto.setDenominacion(categoria.getDenominacion());
+    subCategoriaDto.setUrlIcono(categoria.getUrlIcono());
+    subCategoriaDto.setId(categoria.getId());
+    subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
+    subCategoriaDto.setEliminado(categoria.isEliminado());
+
+    Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(categoria.getId());
+    for (Categoria subCategoria : subCategorias) {
+        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria);
         subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
-        // Llamada recursiva para las subcategorías de la subcategoría
-        agregarSubCategoriasRecursivamente(subCategoria, subSubCategoriaDto);
     }
+
+    return subCategoriaDto;
 }
 
 }
