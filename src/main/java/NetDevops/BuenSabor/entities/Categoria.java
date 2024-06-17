@@ -20,7 +20,7 @@ public class Categoria extends Base{
     @OneToMany(mappedBy = "categoria")
     private Set<Articulo> articulos = new HashSet<>();
 
-    @OneToMany(mappedBy = "categoriaPadre")
+    @OneToMany(mappedBy = "categoriaPadre", fetch = FetchType.EAGER)
     private Set<Categoria> subCategorias = new HashSet<>();
 
     @ManyToOne
