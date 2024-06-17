@@ -19,7 +19,6 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Set<Categoria> findByCategoriaPadre_Id(Long categoriaPadreId);
     //para traer las subcategoria
     Set<Categoria> findByCategoriaPadreIsNotNullAndEliminadoFalse();
-    Set
 
 
     @Query("SELECT c FROM Categoria c WHERE c.categoriaPadre IS NULL OR c.categoriaPadre.id = 0")

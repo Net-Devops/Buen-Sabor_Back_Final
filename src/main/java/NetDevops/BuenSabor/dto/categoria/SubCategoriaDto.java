@@ -8,9 +8,12 @@ import java.util.Set;
 
 @Data
 public class SubCategoriaDto extends BaseDto {
+
     private String denominacion;
     private String urlIcono;
     private Long idCategoriaPadre;
-    private Set<SubCategoriaDto> subCategorias = new HashSet<>();
+    private Set<SubCategoriaDto> subSubCategoriaDtos = new HashSet<>();
     private boolean eliminado;
+
+
 }
