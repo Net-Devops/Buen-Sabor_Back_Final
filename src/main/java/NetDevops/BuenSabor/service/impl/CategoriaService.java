@@ -387,6 +387,7 @@ public Set<CategoriaDto> traerTodo() throws Exception {
         subSubCategoriaDto.setIdCategoriaPadre(categoria.getId());
         subSubCategoriaDto.setEliminado(subCategoria.isEliminado());
         subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        // Llamada recursiva para las subcategorías de la subcategoría
         agregarSubCategoriasRecursivamente(subCategoria, subSubCategoriaDto);
     }
 }
