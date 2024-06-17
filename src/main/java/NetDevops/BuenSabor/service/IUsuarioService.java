@@ -1,11 +1,9 @@
 package NetDevops.BuenSabor.service;
 
-import NetDevops.BuenSabor.dto.UserResponseDto;
+import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
 import org.apache.http.auth.InvalidCredentialsException;
-
-import java.util.List;
 
 public interface IUsuarioService {
     public UsuarioCliente crearUsuarioCliente(UsuarioCliente usuario) throws Exception;

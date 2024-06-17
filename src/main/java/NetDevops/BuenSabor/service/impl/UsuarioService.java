@@ -1,6 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.UserResponseDto;
+import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
 import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.Empleado;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
@@ -14,8 +14,6 @@ import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UsuarioService implements IUsuarioService {

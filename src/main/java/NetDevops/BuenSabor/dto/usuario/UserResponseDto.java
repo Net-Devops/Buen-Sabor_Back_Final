@@ -1,9 +1,7 @@
-package NetDevops.BuenSabor.dto;
+package NetDevops.BuenSabor.dto.usuario;
 
 import NetDevops.BuenSabor.enums.Rol;
 import lombok.Data;
-
-import javax.management.relation.Role;
 
 
 @Data
