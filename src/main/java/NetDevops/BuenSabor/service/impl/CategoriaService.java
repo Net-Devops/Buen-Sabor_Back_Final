@@ -278,7 +278,7 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
         }
     }
 
-   @Override
+@Override
 public Set<CategoriaDto> traerTodo() throws Exception {
     try {
         Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
@@ -365,7 +365,7 @@ public Set<CategoriaDto> traerTodo() throws Exception {
     }
 
 
-   private CategoriaDto obtenerCategoriasRecursivamente(Categoria categoria) {
+ private CategoriaDto obtenerCategoriasRecursivamente(Categoria categoria) {
     CategoriaDto categoriaDto = new CategoriaDto();
     categoriaDto.setDenominacion(categoria.getDenominacion());
     categoriaDto.setUrlIcono(categoria.getUrlIcono());
