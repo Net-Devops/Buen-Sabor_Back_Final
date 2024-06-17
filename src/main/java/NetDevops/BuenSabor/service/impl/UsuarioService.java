@@ -1,11 +1,18 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.UserResponseDto;
+import NetDevops.BuenSabor.entities.Cliente;
+import NetDevops.BuenSabor.entities.Empleado;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
+import NetDevops.BuenSabor.repository.IClienteRepository;
+import NetDevops.BuenSabor.repository.IEmpleadoRepository;
 import NetDevops.BuenSabor.repository.IUsuarioClienteRepository;
 import NetDevops.BuenSabor.repository.IUsuarioEmpleadoRepository;
 import NetDevops.BuenSabor.service.IUsuarioService;
+import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,106 +24,63 @@ public class UsuarioService implements IUsuarioService {
     private IUsuarioClienteRepository usuarioClienteRepository;
     @Autowired
     private IUsuarioEmpleadoRepository usuarioEmpleadoRepository;
+    @Autowired
+    private IClienteRepository clienteRepository;
+    @Autowired
+    private IEmpleadoRepository empleadoRepository;
 
     @Override
     public UsuarioCliente crearUsuarioCliente(UsuarioCliente usuario) throws Exception {
         try {
+
+            String plainPassword = usuario.getPassword();
+            String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+            usuario.setPassword(hashedPassword);
             return usuarioClienteRepository.save(usuario);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
+   public UserResponseDto loginCliente(String username, String password) throws InvalidCredentialsException {
+    UsuarioCliente usuario = usuarioClienteRepository.findByUsername(username);
+    if (usuario != null && BCrypt.checkpw(password, usuario.getPassword())) {
+        Cliente cliente = clienteRepository.findByUsuarioCliente_Id(usuario.getId());
+        UserResponseDto userResponse = new UserResponseDto();
+        userResponse.setUsername(usuario.getUsername());
+        userResponse.setRole(cliente.getRol());
+        userResponse.setIdUsuario(cliente.getId());
 
-    @Override
-    public UsuarioCliente buscarPorIdCliente(Long idUsuarioCliente) throws Exception {
-        try {
-            return usuarioClienteRepository.findById(idUsuarioCliente).orElse(null);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+        return userResponse;
+    } else {
+        throw new InvalidCredentialsException("Invalid username or password");
     }
-
-    @Override
-    public UsuarioCliente actualizarUsuarioCliente(Long idUsuarioCliente, UsuarioCliente usuario) throws Exception {
-        try {
-            UsuarioCliente usuarioActual = usuarioClienteRepository.findById(idUsuarioCliente).orElse(null);
-            if (usuarioActual == null) {
-                return null;
-            }
-            usuario.setId(idUsuarioCliente);
-            return usuarioClienteRepository.save(usuario);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    public boolean eliminarUsuarioCliente(Long idUsuarioCliente) throws Exception {
-        try {
-            usuarioClienteRepository.deleteById(idUsuarioCliente);
-            return true;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<UsuarioCliente> TraerUsuariosClientes() throws Exception {
-        try {
-            return usuarioClienteRepository.findAll();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
+}
 
     @Override
     public UsuarioEmpleado crearUsuarioEmpleado(UsuarioEmpleado usuario) throws Exception {
         try {
+            String plainPassword = usuario.getPassword();
+            String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+            usuario.setPassword(hashedPassword);
             return usuarioEmpleadoRepository.save(usuario);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
-    @Override
-    public UsuarioEmpleado buscarPorIdEmpleado(Long idUsuarioEmpleado) throws Exception {
-        try {
-            return usuarioEmpleadoRepository.findById(idUsuarioEmpleado).orElse(null);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+    public UserResponseDto loginEmpleado(String username, String password) throws InvalidCredentialsException {
+        UsuarioCliente usuario = usuarioClienteRepository.findByUsername(username);
+        if (usuario != null && BCrypt.checkpw(password, usuario.getPassword())) {
+            Empleado empleado = empleadoRepository.findByUsuarioEmpleado_Id(usuario.getId());
+            UserResponseDto userResponse = new UserResponseDto();
+            userResponse.setUsername(usuario.getUsername());
+            userResponse.setRole(empleado.getRol());
+            userResponse.setIdUsuario(empleado.getId());
+
+            return userResponse;
+        } else {
+            throw new InvalidCredentialsException("Invalid username or password");
         }
     }
 
-    @Override
-    public UsuarioEmpleado actualizarUsuarioEmpleado(Long idUsuarioEmpleado, UsuarioEmpleado usuario) throws Exception {
-        try {
-            UsuarioEmpleado usuarioActual = usuarioEmpleadoRepository.findById(idUsuarioEmpleado).orElse(null);
-            if (usuarioActual == null) {
-                return null;
-            }
-            usuario.setId(idUsuarioEmpleado);
-            return usuarioEmpleadoRepository.save(usuario);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    public boolean eliminarUsuarioEmpleado(Long idUsuarioEmpleado) throws Exception {
-        try {
-            usuarioEmpleadoRepository.deleteById(idUsuarioEmpleado);
-            return true;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<UsuarioEmpleado> TraerUsuariosEmpleados() throws Exception {
-        try {
-            return usuarioEmpleadoRepository.findAll();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
 }
