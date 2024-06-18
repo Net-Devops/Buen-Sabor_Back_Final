@@ -23,10 +23,6 @@ public class LocalService {
     @Autowired
     private IAriticuloInsumoRepository articuloInsumoRepository;
 
-
-
-
-
 //region  Categoria
     public Set<CategoriaDto> traerTodo(Long sucursalId) throws Exception {
     try {
@@ -146,7 +142,11 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 
 //endregion
 
-    //region Articulos Insumos
+//region Promociones
+
+//endregion
+
+//region Articulos Insumos
     public Set<ArticuloInsumo> traerArticulosInsumoPorSucursal(Long sucursalId) throws Exception {
        try {
            return articuloInsumoRepository.findBySucursal_Id(sucursalId);
@@ -157,6 +157,8 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 
 
     //endregion
+
+
 
 }
 

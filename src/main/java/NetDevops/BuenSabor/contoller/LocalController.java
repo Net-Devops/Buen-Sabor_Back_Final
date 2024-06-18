@@ -11,8 +11,6 @@ public class LocalController {
     @Autowired
     private LocalService localService;
 
-
-
     //region Categoria
 
     @PostMapping("/agregarSucursalACategoria/{categoriaId}/{sucursalId}")
