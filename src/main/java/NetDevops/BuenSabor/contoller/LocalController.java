@@ -11,6 +11,10 @@ public class LocalController {
     @Autowired
     private LocalService localService;
 
+
+
+    //region Categoria
+
     @PostMapping("/agregarSucursalACategoria/{categoriaId}/{sucursalId}")
     public ResponseEntity<?> agregarSucursalACategoria(@PathVariable Long categoriaId, @PathVariable Long sucursalId){
         try {
@@ -46,4 +50,18 @@ public class LocalController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    //endregion
+
+
+    //region ArticuloInsumo
+    @GetMapping("/articulo/insumo/sucursal/{sucursalId}")
+public ResponseEntity<?> traerArticulosInsumoPorSucursal(@PathVariable Long sucursalId){
+    try {
+        return ResponseEntity.ok(localService.traerArticulosInsumoPorSucursal(sucursalId));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
+
+    //endregion
 }

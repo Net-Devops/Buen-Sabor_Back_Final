@@ -2,8 +2,10 @@ package NetDevops.BuenSabor.service.impl;
 
 import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
+import NetDevops.BuenSabor.entities.ArticuloInsumo;
 import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.entities.Sucursal;
+import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
 import NetDevops.BuenSabor.repository.ICategoriaRepository;
 import NetDevops.BuenSabor.repository.ISucursalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class LocalService {
     private ICategoriaRepository categoriaRepository;
     @Autowired
     private ISucursalRepository sucursalRepository;
+    @Autowired
+    private IAriticuloInsumoRepository articuloInsumoRepository;
+
 
 
 
@@ -141,6 +146,17 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 
 //endregion
 
+    //region Articulos Insumos
+    public Set<ArticuloInsumo> traerArticulosInsumoPorSucursal(Long sucursalId) throws Exception {
+       try {
+           return articuloInsumoRepository.findBySucursal_Id(sucursalId);
+       }catch (Exception e){
+           throw new Exception(e.getMessage());
+       }
+    }
+
+
+    //endregion
 
 }
 
