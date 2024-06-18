@@ -19,6 +19,7 @@ public interface IAriticuloInsumoRepository extends JpaRepository<ArticuloInsumo
     ArticuloInsumo findByDenominacionAndEliminadoTrue(String denominacion);
     ArticuloInsumo findByIdAndEliminadoFalse(Long id);
 
+    List<ArticuloInsumo> findByCategoriaId(Long categoriaId);
 
     //region Validaciones para actualizar un insumo
     boolean existsByCodigoAndEliminadoFalseAndIdNot(String codigo, Long id);

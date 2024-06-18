@@ -7,4 +7,5 @@ import lombok.Data;
 public class SubCategoriaListaDto extends BaseDto {
 
     private String denominacion;
+    private String urlIcono;
 }

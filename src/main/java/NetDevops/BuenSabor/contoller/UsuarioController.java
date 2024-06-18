@@ -1,0 +1,56 @@
+package NetDevops.BuenSabor.contoller;
+
+import NetDevops.BuenSabor.entities.Cliente;
+import NetDevops.BuenSabor.entities.Empleado;
+import NetDevops.BuenSabor.entities.UsuarioCliente;
+import NetDevops.BuenSabor.entities.UsuarioEmpleado;
+import NetDevops.BuenSabor.service.impl.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+// GET http://localhost:8080/api/usuario/
+
+@RestController
+@RequestMapping("/api/usuario")
+public class UsuarioController {
+    @Autowired
+    private UsuarioService usuarioService;
+
+
+    @PostMapping("/cliente")
+    public ResponseEntity<?> crearCliente(@RequestBody UsuarioCliente usuarioCliente) {
+        try {
+            return ResponseEntity.ok().body(usuarioService.crearUsuarioCliente(usuarioCliente));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/cliente/login")
+    public ResponseEntity<?> loginCliente(@RequestParam String username, @RequestParam String password) {
+        try {
+            return ResponseEntity.ok().body(usuarioService.loginCliente(username, password));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/empleado")
+    public ResponseEntity<?> crearEmpleado(@RequestBody UsuarioEmpleado usuarioEmpleado) {
+        try {
+            return ResponseEntity.ok().body(usuarioService.crearUsuarioEmpleado(usuarioEmpleado));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/empleado/login")
+    public ResponseEntity<?> loginEmpleado(@RequestParam String username, @RequestParam String password) {
+        try {
+            return ResponseEntity.ok().body(usuarioService.loginEmpleado(username, password));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+}

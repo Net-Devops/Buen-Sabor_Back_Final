@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,9 +14,10 @@ import java.util.Set;
 public class Categoria extends Base{
 
    @ManyToMany
-   private Set<Sucursal> sucursales = new HashSet<>();
+   private List<Sucursal> sucursales;
 
     private String denominacion;
+    private String urlIcono;
     @OneToMany(mappedBy = "categoria")
     private Set<Articulo> articulos = new HashSet<>();
 

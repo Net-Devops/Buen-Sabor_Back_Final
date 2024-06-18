@@ -3,15 +3,21 @@ package NetDevops.BuenSabor.service.impl;
 import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.sucursal.SucursalSimpleDto;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
+import NetDevops.BuenSabor.entities.Sucursal;
 import NetDevops.BuenSabor.repository.IArticuloRepository;
 import NetDevops.BuenSabor.repository.ICategoriaRepository;
+import NetDevops.BuenSabor.repository.ISucursalRepository;
 import NetDevops.BuenSabor.service.ICategoriaService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -20,21 +26,23 @@ public class CategoriaService implements ICategoriaService {
     private ICategoriaRepository categoriaRepository;
     @Autowired
     private IArticuloRepository articuloRepository;
+    @Autowired
+    private ISucursalRepository sucursalRepository;
 
-    @Override
-    public Categoria cargar(Categoria categoria) throws Exception {
-        try {
-            if (categoriaRepository.existsByDenominacionAndEliminadoFalse(categoria.getDenominacion())) {
-                throw new Exception("Ya existe una categoria con esa denominacion");
-            }
-
-            return categoriaRepository.save(categoria);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+@Override
+public Categoria cargar(Categoria categoria) throws Exception {
+    if (categoriaRepository.existsByDenominacionAndEliminadoFalse(categoria.getDenominacion())) {
+        throw new Exception("Ya existe una categoria con esa denominacion");
     }
-
-
+    List<Sucursal> sucursales = new ArrayList<>();
+    for (Sucursal sucursal: categoria.getSucursales()) {
+        sucursales.add(sucursalRepository.findById(sucursal.getId())
+                .orElseThrow(() -> new Exception("No existe una sucursal con el id " + sucursal.getId())));
+        System.out.println(sucursal.getId());
+    }
+    categoria.setSucursales(sucursales);
+    return categoriaRepository.save(categoria);
+}
 
 @Override
 public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) throws Exception {
@@ -233,30 +241,6 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
         }
     }
 
-
-    // Obtengo las subcategorias
-    public Set<SubCategoriaListaDto> obtenerSubCategorias(Long idCategoriaPadre) throws Exception {
-        try {
-            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(idCategoriaPadre);
-            if (subCategorias.isEmpty()) {
-                throw new Exception("No hay subcategorias para la categoria con id " + idCategoriaPadre);
-            }
-            Set<SubCategoriaListaDto> subcategoriaLista = new HashSet<>();
-            for (Categoria s : subCategorias){
-                SubCategoriaListaDto subcategoria = new SubCategoriaListaDto();
-                subcategoria.setDenominacion(s.getDenominacion());
-                subcategoria.setId(s.getId());
-                subcategoriaLista.add(subcategoria);
-            }
-
-
-
-            return subcategoriaLista;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
     // Obtengo las categorias con subcategorias
     public Set<Categoria> obtenerCategoriasConSubCategorias() throws Exception {
         try {
@@ -303,35 +287,40 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
             throw new Exception(e.getMessage());
         }
     }
+@Override
+public Set<CategoriaDto> traerTodo() throws Exception {
+    try {
+        Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
+        Set<CategoriaDto> listaDto = new HashSet<>();
+        for (Categoria lista: listaCategoriaOriginal){
+            CategoriaDto categoriadto = new CategoriaDto();
+            categoriadto.setDenominacion(lista.getDenominacion());
+            categoriadto.setUrlIcono(lista.getUrlIcono());
+            categoriadto.setId(lista.getId());
+            categoriadto.setEliminado(lista.isEliminado());
 
-    @Override
-    public Set<CategoriaDto> traerTodo() throws Exception {
-        try {
-                Set<Categoria> listaCategoriaOriginal = categoriaRepository.ListaCategorias();
-                Set<CategoriaDto> listaDto = new HashSet<>();
-            for (Categoria lista: listaCategoriaOriginal){
-                Set<Categoria> ListaSubcategoria = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
-                    CategoriaDto categoriadto = new CategoriaDto();
-                    categoriadto.setDenominacion(lista.getDenominacion());
-                    categoriadto.setId(lista.getId());
-                    categoriadto.setEliminado(lista.isEliminado());
-
-                for (Categoria sub : ListaSubcategoria){
-                    SubCategoriaDto subCategoria = new SubCategoriaDto();
-                    subCategoria.setDenominacion(sub.getDenominacion());
-                    subCategoria.setId(sub.getId());
-                    subCategoria.setIdCategoriaPadre(lista.getId());
-                    subCategoria.setEliminado(sub.isEliminado());
-                    categoriadto.getSubCategoriaDtos().add(subCategoria);
-                }
-                    listaDto.add(categoriadto);
+            // Agregar las sucursales a la categoría DTO
+            for (Sucursal sucursal : lista.getSucursales()) {
+                SucursalSimpleDto sucursalDto = new SucursalSimpleDto();
+                sucursalDto.setId(sucursal.getId());
+                sucursalDto.setNombre(sucursal.getNombre());
+                // Aquí puedes agregar otros campos de la entidad Sucursal al DTO si es necesario
+                categoriadto.getSucursales().add(sucursalDto);
             }
-            return listaDto;
 
-        } catch (Exception e) {
-            throw new Exception(e);
+            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
+
+            for (Categoria subCategoria : subCategorias) {
+                SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria);
+                categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+            }
+            listaDto.add(categoriadto);
         }
+        return listaDto;
+    } catch (Exception e) {
+        throw new Exception(e);
     }
+}
 
     @Override
     public Categoria Actualizar(long id, Categoria categoria) throws Exception {
@@ -346,11 +335,94 @@ public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) thr
 
           categoriaActualizada.setDenominacion(categoria.getDenominacion());
 
+            // Actualizar las sucursales
+            List<Sucursal> sucursales = new ArrayList<>();
+            for (Sucursal sucursaldto : categoria.getSucursales()) {
+                Sucursal sucursal = sucursalRepository.findById(sucursaldto.getId())
+                        .orElseThrow(() -> new Exception("No existe una sucursal con el id " + sucursaldto.getId()));
+                sucursales.add(sucursal);
+            }
+            categoriaActualizada.setSucursales(sucursales);
+
             return categoriaRepository.save(categoriaActualizada);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
+    @Override
+    public Set<CategoriaDto> traerCategoriaPadre() throws Exception {
+        try {
+            Set<Categoria> listaCategoriaOriginal = categoriaRepository.findByCategoriaPadreIsNull();
+            Set<CategoriaDto> listaDto = new HashSet<>();
+            for (Categoria lista: listaCategoriaOriginal){
+                CategoriaDto categoriadto = new CategoriaDto();
+                categoriadto.setDenominacion(lista.getDenominacion());
+                categoriadto.setUrlIcono(lista.getUrlIcono());
+                categoriadto.setId(lista.getId());
+                categoriadto.setEliminado(lista.isEliminado());
+
+                listaDto.add(categoriadto);
+            }
+            return listaDto;
+
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
+    // Obtengo las subcategorias
+    public Set<SubCategoriaListaDto> obtenerSubCategorias(Long idCategoriaPadre) throws Exception {
+        try {
+            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(idCategoriaPadre);
+            if (subCategorias.isEmpty()) {
+                throw new Exception("No hay subcategorias para la categoria con id " + idCategoriaPadre);
+            }
+            Set<SubCategoriaListaDto> subcategoriaLista = new HashSet<>();
+            for (Categoria s : subCategorias){
+                SubCategoriaListaDto subcategoria = new SubCategoriaListaDto();
+                subcategoria.setDenominacion(s.getDenominacion());
+                subcategoria.setUrlIcono(s.getUrlIcono());
+                subcategoria.setId(s.getId());
+                subcategoriaLista.add(subcategoria);
+            }
+            return subcategoriaLista;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public boolean tieneSubCategorias(Long categoriaId) throws Exception {
+        try {
+            return categoriaRepository.existsByCategoriaPadre_IdAndEliminadoFalse(categoriaId);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria) {
+    SubCategoriaDto subCategoriaDto = new SubCategoriaDto();
+    subCategoriaDto.setDenominacion(categoria.getDenominacion());
+    subCategoriaDto.setUrlIcono(categoria.getUrlIcono());
+    subCategoriaDto.setId(categoria.getId());
+    subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
+    subCategoriaDto.setEliminado(categoria.isEliminado());
+
+     for (Sucursal sucursal : categoria.getSucursales()) {
+         SucursalSimpleDto sucursalDto = new SucursalSimpleDto();
+         sucursalDto.setId(sucursal.getId());
+         sucursalDto.setNombre(sucursal.getNombre());
+         // Establece aquí otros campos que necesites de la Sucursal
+         subCategoriaDto.getSucursales().add(sucursalDto);
+     }
+
+    Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(categoria.getId());
+    for (Categoria subCategoria : subCategorias) {
+        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria);
+        subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+    }
+
+    return subCategoriaDto;
+}
 
 }
