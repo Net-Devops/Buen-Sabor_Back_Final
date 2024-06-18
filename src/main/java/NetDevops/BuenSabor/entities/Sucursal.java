@@ -1,12 +1,11 @@
 package NetDevops.BuenSabor.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -22,5 +21,6 @@ public class Sucursal extends Base{
     @OneToOne(cascade = CascadeType.PERSIST)
     private Domicilio domicilio;
     private String imagen;
+
 
 }

@@ -1,6 +1,6 @@
 package NetDevops.BuenSabor.contoller;
 
-import NetDevops.BuenSabor.entities.Articulo;
+
 import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.service.ICategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;

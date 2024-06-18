@@ -3,15 +3,21 @@ package NetDevops.BuenSabor.service.impl;
 import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.sucursal.SucursalSimpleDto;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
+import NetDevops.BuenSabor.entities.Sucursal;
 import NetDevops.BuenSabor.repository.IArticuloRepository;
 import NetDevops.BuenSabor.repository.ICategoriaRepository;
+import NetDevops.BuenSabor.repository.ISucursalRepository;
 import NetDevops.BuenSabor.service.ICategoriaService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -20,19 +26,23 @@ public class CategoriaService implements ICategoriaService {
     private ICategoriaRepository categoriaRepository;
     @Autowired
     private IArticuloRepository articuloRepository;
+    @Autowired
+    private ISucursalRepository sucursalRepository;
 
-    @Override
-    public Categoria cargar(Categoria categoria) throws Exception {
-        try {
-            if (categoriaRepository.existsByDenominacionAndEliminadoFalse(categoria.getDenominacion())) {
-                throw new Exception("Ya existe una categoria con esa denominacion");
-            }
-
-            return categoriaRepository.save(categoria);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+@Override
+public Categoria cargar(Categoria categoria) throws Exception {
+    if (categoriaRepository.existsByDenominacionAndEliminadoFalse(categoria.getDenominacion())) {
+        throw new Exception("Ya existe una categoria con esa denominacion");
     }
+    List<Sucursal> sucursales = new ArrayList<>();
+    for (Sucursal sucursal: categoria.getSucursales()) {
+        sucursales.add(sucursalRepository.findById(sucursal.getId())
+                .orElseThrow(() -> new Exception("No existe una sucursal con el id " + sucursal.getId())));
+        System.out.println(sucursal.getId());
+    }
+    categoria.setSucursales(sucursales);
+    return categoriaRepository.save(categoria);
+}
 
 @Override
 public Categoria actualizarCategoriaPadre(Long id, Categoria nuevaCategoria) throws Exception {
@@ -289,6 +299,15 @@ public Set<CategoriaDto> traerTodo() throws Exception {
             categoriadto.setId(lista.getId());
             categoriadto.setEliminado(lista.isEliminado());
 
+            // Agregar las sucursales a la categoría DTO
+            for (Sucursal sucursal : lista.getSucursales()) {
+                SucursalSimpleDto sucursalDto = new SucursalSimpleDto();
+                sucursalDto.setId(sucursal.getId());
+                sucursalDto.setNombre(sucursal.getNombre());
+                // Aquí puedes agregar otros campos de la entidad Sucursal al DTO si es necesario
+                categoriadto.getSucursales().add(sucursalDto);
+            }
+
             Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
 
             for (Categoria subCategoria : subCategorias) {
@@ -315,6 +334,15 @@ public Set<CategoriaDto> traerTodo() throws Exception {
             Categoria categoriaActualizada = categoriaRepository.findByIdAndEliminadoFalse(id);
 
           categoriaActualizada.setDenominacion(categoria.getDenominacion());
+
+            // Actualizar las sucursales
+            List<Sucursal> sucursales = new ArrayList<>();
+            for (Sucursal sucursaldto : categoria.getSucursales()) {
+                Sucursal sucursal = sucursalRepository.findById(sucursaldto.getId())
+                        .orElseThrow(() -> new Exception("No existe una sucursal con el id " + sucursaldto.getId()));
+                sucursales.add(sucursal);
+            }
+            categoriaActualizada.setSucursales(sucursales);
 
             return categoriaRepository.save(categoriaActualizada);
         } catch (Exception e) {
@@ -379,6 +407,14 @@ public Set<CategoriaDto> traerTodo() throws Exception {
     subCategoriaDto.setId(categoria.getId());
     subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
     subCategoriaDto.setEliminado(categoria.isEliminado());
+
+     for (Sucursal sucursal : categoria.getSucursales()) {
+         SucursalSimpleDto sucursalDto = new SucursalSimpleDto();
+         sucursalDto.setId(sucursal.getId());
+         sucursalDto.setNombre(sucursal.getNombre());
+         // Establece aquí otros campos que necesites de la Sucursal
+         subCategoriaDto.getSucursales().add(sucursalDto);
+     }
 
     Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(categoria.getId());
     for (Categoria subCategoria : subCategorias) {
