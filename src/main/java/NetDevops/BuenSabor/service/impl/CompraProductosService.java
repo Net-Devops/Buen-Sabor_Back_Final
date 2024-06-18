@@ -33,7 +33,7 @@ public class CompraProductosService {
     @Autowired
     private ICategoriaRepository categoriaRepository;
 
-   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
+  public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
     Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_Id(categoriaId);
 
     List<CompraProductoDto> articulos = new ArrayList<>();
@@ -42,8 +42,18 @@ public class CompraProductosService {
         List<ArticuloInsumo> articulosInsumos = articuloInsumoRepository.findByCategoriaId(subcategoria.getId());
 
         for (ArticuloManufacturado articulo : articulosManufacturados) {
-            CompraProductoDto dto = convertToDto(articulo);
-            articulos.add(dto);
+            boolean canBeCreated = true;
+            for (ArticuloManufacturadoDetalle detalle : articulo.getArticuloManufacturadoDetalles()) {
+                ArticuloInsumo insumo = detalle.getArticuloInsumo();
+                if (insumo.getStockActual() < detalle.getCantidad()) {
+                    canBeCreated = false;
+                    break;
+                }
+            }
+            if (canBeCreated) {
+                CompraProductoDto dto = convertToDto(articulo);
+                articulos.add(dto);
+            }
         }
 
         for (ArticuloInsumo articulo : articulosInsumos) {
