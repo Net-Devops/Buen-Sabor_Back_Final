@@ -28,8 +28,8 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Set<Categoria> findByCategoriaPadreIsNull();
     boolean existsByCategoriaPadre_IdAndEliminadoFalse(Long categoriaPadreId);
 
-    Set<Categoria> findBySucursal_Id(Long sucursalId);
-    Set<Categoria> findByCategoriaPadre_IdAndSucursal_Id(Long categoriaPadreId, Long sucursalId);
+    Set<Categoria> findBySucursales_Id(Long sucursalId);
+    Set<Categoria> findByCategoriaPadre_IdAndSucursales_Id(Long categoriaPadreId, Long sucursalId);
     Set<Categoria> findBySucursalesNotContains(Sucursal sucursal);
     Set<Categoria> findByCategoriaPadre_IdAndSucursalesNotContains(Long categoriaPadreId, Sucursal sucursal);
 

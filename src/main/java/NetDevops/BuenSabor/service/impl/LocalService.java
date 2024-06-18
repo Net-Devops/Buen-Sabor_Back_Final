@@ -25,7 +25,7 @@ public class LocalService {
 //region  Categoria
     public Set<CategoriaDto> traerTodo(Long sucursalId) throws Exception {
     try {
-        Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursal_Id(sucursalId);
+        Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursales_Id(sucursalId);
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria lista: listaCategoriaOriginal){
             CategoriaDto categoriadto = new CategoriaDto();
@@ -56,7 +56,7 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
     subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
     subCategoriaDto.setEliminado(categoria.isEliminado());
 
-    Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursal_Id(categoria.getId(), sucursalId);
+    Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursales_Id(categoria.getId(), sucursalId);
     for (Categoria subCategoria : subCategorias) {
         SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
         subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
