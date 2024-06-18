@@ -31,6 +31,9 @@ public class CategoriaService implements ICategoriaService {
 
 @Override
 public Categoria cargar(Categoria categoria) throws Exception {
+    if (categoriaRepository.existsByDenominacionAndEliminadoFalse(categoria.getDenominacion())) {
+        throw new Exception("Ya existe una categoria con esa denominacion");
+    }
     List<Sucursal> sucursales = new ArrayList<>();
     for (Sucursal sucursal: categoria.getSucursales()) {
         sucursales.add(sucursalRepository.findById(sucursal.getId())
