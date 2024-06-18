@@ -33,7 +33,7 @@ public class CompraProductosService {
     @Autowired
     private ICategoriaRepository categoriaRepository;
 
-   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
+  public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
     Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_Id(categoriaId);
 
     List<CompraProductoDto> articulos = new ArrayList<>();
@@ -42,8 +42,18 @@ public class CompraProductosService {
         List<ArticuloInsumo> articulosInsumos = articuloInsumoRepository.findByCategoriaId(subcategoria.getId());
 
         for (ArticuloManufacturado articulo : articulosManufacturados) {
-            CompraProductoDto dto = convertToDto(articulo);
-            articulos.add(dto);
+            boolean canBeCreated = true;
+            for (ArticuloManufacturadoDetalle detalle : articulo.getArticuloManufacturadoDetalles()) {
+                ArticuloInsumo insumo = detalle.getArticuloInsumo();
+                if (insumo.getStockActual() < detalle.getCantidad()) {
+                    canBeCreated = false;
+                    break;
+                }
+            }
+            if (canBeCreated) {
+                CompraProductoDto dto = convertToDto(articulo);
+                articulos.add(dto);
+            }
         }
 
         for (ArticuloInsumo articulo : articulosInsumos) {
@@ -93,33 +103,50 @@ private CompraProductoDto convertToDto(Articulo articulo) {
 
 
     public CompraPedidoDto crearPedido(CompraPedidoDto compraPedidoDto) throws Exception {
-        try {
-            Pedido pedido = new Pedido();
-            // Set other properties...
-            pedido.setFechaPedido(LocalDate.now());
-            pedido.setHora(LocalTime.now());
-            pedido.setTotal(compraPedidoDto.getTotal());
+    try {
+        Pedido pedido = new Pedido();
+        // Set other properties...
+        pedido.setFechaPedido(LocalDate.now());
+        pedido.setHora(LocalTime.now());
+        pedido.setTotal(compraPedidoDto.getTotal());
 
+        List<PedidoDetalle> pedidoDetalles = new ArrayList<>();
+        for (PedidoDetalleDto detalleDto : compraPedidoDto.getPedidoDetalle()) {
+            Articulo articulo = articuloRepository.findById(detalleDto.getProducto().getId())
+                    .orElseThrow(() -> new NoSuchElementException("Articulo no encontrado con id: " + detalleDto.getProducto().getId()));
 
-            List<PedidoDetalle> pedidoDetalles = new ArrayList<>();
-            for (PedidoDetalleDto detalleDto : compraPedidoDto.getPedidoDetalle()) {
-                Articulo articulo = articuloRepository.findById(detalleDto.getProducto().getId())
-                        .orElseThrow(() -> new NoSuchElementException("Articulo no encontrado con id: " + detalleDto.getProducto().getId()));
-                PedidoDetalle detalle = new PedidoDetalle();
-                detalle.setArticulo(articulo);
-                detalle.setCantidad(detalleDto.getCantidad());
-                detalle.setPedido(pedido);
-                pedidoDetalles.add(detalle);
+            if (articulo instanceof ArticuloInsumo) {
+                ArticuloInsumo articuloInsumo = (ArticuloInsumo) articulo;
+                // Subtract the quantity from the stock of the ArticuloInsumo
+                articuloInsumo.setStockActual(articuloInsumo.getStockActual() - detalleDto.getCantidad());
+                // Save the updated ArticuloInsumo in the database
+                articuloRepository.save(articuloInsumo);
+            } else if (articulo instanceof ArticuloManufacturado) {
+                ArticuloManufacturado articuloManufacturado = (ArticuloManufacturado) articulo;
+                for (ArticuloManufacturadoDetalle detalle : articuloManufacturado.getArticuloManufacturadoDetalles()) {
+                    ArticuloInsumo articuloInsumo = detalle.getArticuloInsumo();
+                    // Subtract the quantity needed for the manufacturing from the stock of the ArticuloInsumo
+                    articuloInsumo.setStockActual(articuloInsumo.getStockActual() - detalle.getCantidad());
+                    // Save the updated ArticuloInsumo in the database
+                    articuloRepository.save(articuloInsumo);
+                }
             }
-            pedido.setPedidoDetalle(pedidoDetalles);
-            pedidoRepository.save(pedido);
-            CompraPedidoDto pedidoDto = modelMapper.map(pedido, CompraPedidoDto.class);
 
-            return pedidoDto;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            PedidoDetalle detalle = new PedidoDetalle();
+            detalle.setArticulo(articulo);
+            detalle.setCantidad(detalleDto.getCantidad());
+            detalle.setPedido(pedido);
+            pedidoDetalles.add(detalle);
         }
+        pedido.setPedidoDetalle(pedidoDetalles);
+        pedidoRepository.save(pedido);
+        CompraPedidoDto pedidoDto = modelMapper.map(pedido, CompraPedidoDto.class);
+
+        return pedidoDto;
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
     }
+}
 
 
 }
