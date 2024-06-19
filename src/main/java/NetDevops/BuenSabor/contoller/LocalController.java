@@ -50,6 +50,25 @@ public class LocalController {
     }
     //endregion
 
+    //region Promociones
+    @GetMapping("/promocion/sucursal/{sucursalId}")
+    public ResponseEntity<?> traerPromocionesPorSucursal(@PathVariable Long sucursalId){
+        try {
+            return ResponseEntity.ok().body(localService.buscarPromocionesPorSucursal(sucursalId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/promocion/detalle/{promocionId}")
+    public ResponseEntity<?> traerPromocionDetallePorPromocion(@PathVariable Long promocionId){
+        try {
+            return ResponseEntity.ok().body(localService.buscarDetallesPorPromocion(promocionId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //endregion
 
     //region ArticuloInsumo
     @GetMapping("/articulo/insumo/sucursal/{sucursalId}")

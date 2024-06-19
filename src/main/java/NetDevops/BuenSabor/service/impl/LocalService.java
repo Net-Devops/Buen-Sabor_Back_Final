@@ -2,16 +2,13 @@ package NetDevops.BuenSabor.service.impl;
 
 import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
-import NetDevops.BuenSabor.entities.ArticuloInsumo;
-import NetDevops.BuenSabor.entities.Categoria;
-import NetDevops.BuenSabor.entities.Sucursal;
-import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
-import NetDevops.BuenSabor.repository.ICategoriaRepository;
-import NetDevops.BuenSabor.repository.ISucursalRepository;
+import NetDevops.BuenSabor.entities.*;
+import NetDevops.BuenSabor.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -22,6 +19,10 @@ public class LocalService {
     private ISucursalRepository sucursalRepository;
     @Autowired
     private IAriticuloInsumoRepository articuloInsumoRepository;
+    @Autowired
+    private IPromocionRepository promocionRepository;
+    @Autowired
+    private IPromocionDetalleRepository promocionDetalleRepository;
 
 //region  Categoria
     public Set<CategoriaDto> traerTodo(Long sucursalId) throws Exception {
@@ -143,6 +144,18 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 //endregion
 
 //region Promociones
+    public List<Promocion> buscarPromocionesPorSucursal(Long sucursalId) throws Exception{
+        try{
+            return promocionRepository.findBySucursales_Id(sucursalId);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage() + "No se pudo encontrar la promocion");
+
+        }
+    }
+    public List<PromocionDetalle> buscarDetallesPorPromocion(Long promocionId) {
+        return promocionDetalleRepository.findByPromocion_Id(promocionId);
+    }
+
 
 //endregion
 

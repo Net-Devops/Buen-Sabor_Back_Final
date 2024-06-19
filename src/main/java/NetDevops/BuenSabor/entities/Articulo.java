@@ -1,6 +1,8 @@
 package NetDevops.BuenSabor.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -19,7 +21,11 @@ import java.util.Set;
 @SuperBuilder
 //@Audited
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ArticuloInsumo.class, name = "insumo"),
+        @JsonSubTypes.Type(value = ArticuloManufacturado.class, name = "manufacturado")
+})
 public abstract class Articulo extends Base{
 
 
