@@ -2,11 +2,15 @@ package NetDevops.BuenSabor.service.impl;
 
 import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
+import NetDevops.BuenSabor.dto.promocion.ArticuloPromocionDto;
+import NetDevops.BuenSabor.dto.promocion.PromocionDetalleDto;
+import NetDevops.BuenSabor.dto.promocion.PromocionDto;
 import NetDevops.BuenSabor.entities.*;
 import NetDevops.BuenSabor.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -144,18 +148,72 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 //endregion
 
 //region Promociones
-    public List<Promocion> buscarPromocionesPorSucursal(Long sucursalId) throws Exception{
-        try{
-            return promocionRepository.findBySucursales_Id(sucursalId);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage() + "No se pudo encontrar la promocion");
-
+    public List<PromocionDto> buscarPromocionesPorSucursal(Long sucursalId) throws Exception{
+    try{
+        List<Promocion> promociones = promocionRepository.findBySucursales_Id(sucursalId);
+        List<PromocionDto> dtos = new ArrayList<>();
+        for (Promocion promocion : promociones) {
+            dtos.add(convertToDto(promocion));
         }
+        return dtos;
+    } catch (Exception e) {
+        throw new Exception(e.getMessage() + "No se pudo encontrar la promocion");
     }
-    public List<PromocionDetalle> buscarDetallesPorPromocion(Long promocionId) {
-        return promocionDetalleRepository.findByPromocion_Id(promocionId);
-    }
+}
 
+   public List<PromocionDetalleDto> buscarDetallesPorPromocion(Long promocionId) {
+    List<PromocionDetalle> promocionDetalles = promocionDetalleRepository.findByPromocion_Id(promocionId);
+    List<PromocionDetalleDto> dtos = new ArrayList<>();
+    for (PromocionDetalle promocionDetalle : promocionDetalles) {
+        dtos.add(convertToDto(promocionDetalle));
+    }
+    return dtos;
+}
+
+//region Convertir a DTO
+public PromocionDto convertToDto(Promocion promocion) {
+    PromocionDto dto = new PromocionDto();
+    dto.setId(promocion.getId());
+    dto.setDenominacion(promocion.getDenominacion());
+    dto.setFechaDesde(promocion.getFechaDesde());
+    dto.setFechaHasta(promocion.getFechaHasta());
+    dto.setHoraDesde(promocion.getHoraDesde());
+    dto.setHoraHasta(promocion.getHoraHasta());
+    dto.setDescripcionDescuento(promocion.getDescripcionDescuento());
+    dto.setPrecioPromocional(promocion.getPrecioPromocional());
+    dto.setTipoPromocion(promocion.getTipoPromocion());
+    dto.setImagenes(promocion.getImagenes());
+    //dto.setSucursales(promocion.getSucursales());
+//    for (PromocionDetalle promocionDetalle : promocion.getPromocionDetalles()) {
+//        dto.getPromocionDetallesDto().add(convertToDto(promocionDetalle));
+//    }
+    return dto;
+}
+
+
+public ArticuloPromocionDto convertToDto(ArticuloManufacturado articuloManufacturado) {
+    ArticuloPromocionDto dto = new ArticuloPromocionDto();
+    dto.setId(articuloManufacturado.getId());
+    dto.setDenominacion(articuloManufacturado.getDenominacion());
+    dto.setDescripcion(articuloManufacturado.getDescripcion());
+    dto.setPrecioVenta(articuloManufacturado.getPrecioVenta());
+    dto.setTiempoEstimadoMinutos(articuloManufacturado.getTiempoEstimadoMinutos());
+    dto.setPreparacion(articuloManufacturado.getPreparacion());
+    dto.setImagenes(articuloManufacturado.getImagenes());
+    dto.setCodigo(articuloManufacturado.getCodigo());
+    dto.setUnidadMedida(articuloManufacturado.getUnidadMedida());
+    return dto;
+}
+
+public PromocionDetalleDto convertToDto(PromocionDetalle promocionDetalle) {
+    PromocionDetalleDto dto = new PromocionDetalleDto();
+    dto.setId(promocionDetalle.getId());
+    dto.setCantidad(promocionDetalle.getCantidad());
+    dto.setArticuloManufacturadoDto(convertToDto(promocionDetalle.getArticuloManufacturado()));
+    dto.setImagenPromocion(promocionDetalle.getImagenPromocion());
+    return dto;
+}
+//endregion
 
 //endregion
 
