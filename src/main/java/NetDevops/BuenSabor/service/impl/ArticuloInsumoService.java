@@ -90,13 +90,15 @@ public List<ArticuloInsumo> mostrarLista() throws Exception {
    @Override
 public ArticuloInsumo cargar(ArticuloInsumo articuloInsumo) throws Exception {
     try {
+        Long sucursalId = articuloInsumo.getSucursal().getId();
 
-        if(articuloInsumoRepository.existsByCodigoAndEliminadoFalse(articuloInsumo.getCodigo())){
-            throw new Exception("Ya existe un articulo con ese codigo");
+        if(articuloInsumoRepository.existsByCodigoAndSucursal_Id(articuloInsumo.getCodigo(), sucursalId)){
+            throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
         }
-        if (articuloInsumoRepository.existsByDenominacionAndEliminadoFalse(articuloInsumo.getDenominacion())){
-            throw new Exception("Ya existe un articulo con esa denominacion");
+        if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId)){
+            throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
+
 
         if (articuloInsumo.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
@@ -158,11 +160,13 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
             throw new Exception("No se encontro el articulo");
         }
 
-        if (articuloInsumoRepository.existsByCodigoAndEliminadoFalseAndIdNot(articuloInsumo.getCodigo(), id)){
-            throw new Exception("Ya existe un articulo con ese codigo");
+        Long sucursalId = articuloInsumo.getSucursal().getId();
+
+        if(articuloInsumoRepository.existsByCodigoAndSucursal_Id(articuloInsumo.getCodigo(), sucursalId)){
+            throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
         }
-        if (articuloInsumoRepository.existsByDenominacionAndEliminadoFalseAndIdNot(articuloInsumo.getDenominacion(), id)){
-            throw new Exception("Ya existe un articulo con esa denominacion");
+        if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId)){
+            throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
 
         //region Logica para eliminar Imagenes
