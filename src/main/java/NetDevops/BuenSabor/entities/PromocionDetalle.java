@@ -17,8 +17,8 @@ public class PromocionDetalle extends Base{
     private int cantidad;
 
     @ManyToOne
-    @JoinColumn(name = "articulo_id")
-    private Articulo articulo;
+    @JoinColumn(name = "articulo_insumo_id")
+    private ArticuloManufacturado articuloManufacturado;
     @ManyToOne
     @JoinColumn(name = "promocion_id")
     @JsonBackReference
