@@ -18,13 +18,18 @@ public class PromocionService implements IPromocionService {
     private IPromocionRepository promocionRepository;
 
     @Override
-    public Promocion save(Promocion promocion) throws Exception {
-        try {
-            return promocionRepository.save(promocion);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+public Promocion save(Promocion promocion) throws Exception {
+    try {
+        // Establecer la relación bidireccional con PromocionDetalle
+        for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
+            detalle.setPromocion(promocion);
         }
+
+        return promocionRepository.save(promocion);
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
     }
+}
 
     @Override
     public Set<Promocion> getAll() throws Exception {

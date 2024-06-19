@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,6 +21,7 @@ public class PromocionDetalle extends Base{
     private Articulo articulo;
     @ManyToOne
     @JoinColumn(name = "promocion_id")
+    @JsonBackReference
     private Promocion promocion;
     @ManyToOne
     @JoinColumn(name = "imagen_promocion_id")
