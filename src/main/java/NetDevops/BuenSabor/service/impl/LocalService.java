@@ -10,10 +10,7 @@ import NetDevops.BuenSabor.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class LocalService {
@@ -225,6 +222,28 @@ public PromocionDetalleDto convertToDto(PromocionDetalle promocionDetalle) {
            throw new Exception(e.getMessage());
        }
     }
+
+public ArticuloInsumo aumentarStock(Long id, Integer cantidad) throws Exception {
+    try {
+        // Buscar el ArticuloInsumo en la base de datos
+        Optional<ArticuloInsumo> optionalArticuloInsumo = articuloInsumoRepository.findById(id);
+        if (!optionalArticuloInsumo.isPresent()) {
+            throw new Exception("No se encontró el ArticuloInsumo con id " + id);
+        }
+
+        // Aumentar el stockActual
+        ArticuloInsumo articuloInsumo = optionalArticuloInsumo.get();
+        articuloInsumo.setStockActual(articuloInsumo.getStockActual() + cantidad);
+
+        // Guardar el ArticuloInsumo actualizado en la base de datos
+        return articuloInsumoRepository.save(articuloInsumo);
+    } catch (Exception e) {
+        throw new Exception("Error al aumentar el stock: " + e.getMessage());
+    }
+}
+
+
+
 
 
     //endregion

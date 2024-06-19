@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.contoller;
 
+import NetDevops.BuenSabor.entities.ArticuloInsumo;
 import NetDevops.BuenSabor.service.impl.LocalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +80,17 @@ public ResponseEntity<?> traerArticulosInsumoPorSucursal(@PathVariable Long sucu
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
+
+    @PutMapping("articulo/insumo/aumentarStock/{id}")
+    public ResponseEntity<ArticuloInsumo> aumentarStock(@PathVariable Long id, @RequestParam Integer cantidad) {
+        try {
+            ArticuloInsumo articuloInsumo = localService.aumentarStock(id, cantidad);
+            return ResponseEntity.ok(articuloInsumo);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 
     //endregion
 }
