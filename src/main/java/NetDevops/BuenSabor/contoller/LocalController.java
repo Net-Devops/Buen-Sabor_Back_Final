@@ -82,9 +82,9 @@ public ResponseEntity<?> traerArticulosInsumoPorSucursal(@PathVariable Long sucu
 }
 
     @PutMapping("articulo/insumo/aumentarStock/{id}")
-    public ResponseEntity<ArticuloInsumo> aumentarStock(@PathVariable Long id, @RequestParam Integer cantidad) {
+    public ResponseEntity<ArticuloInsumo> aumentarStock(@PathVariable Long id, @RequestParam Integer cantidad, @RequestParam Double nuevoPrecioVenta, @RequestParam Double nuevoPrecioCompra) {
         try {
-            ArticuloInsumo articuloInsumo = localService.aumentarStock(id, cantidad);
+            ArticuloInsumo articuloInsumo = localService.aumentarStock(id, cantidad, nuevoPrecioVenta, nuevoPrecioCompra);
             return ResponseEntity.ok(articuloInsumo);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

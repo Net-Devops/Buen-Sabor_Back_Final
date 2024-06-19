@@ -223,7 +223,7 @@ public PromocionDetalleDto convertToDto(PromocionDetalle promocionDetalle) {
        }
     }
 
-public ArticuloInsumo aumentarStock(Long id, Integer cantidad) throws Exception {
+public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPrecioVenta, Double nuevoPrecioCompra) throws Exception {
     try {
         // Buscar el ArticuloInsumo en la base de datos
         Optional<ArticuloInsumo> optionalArticuloInsumo = articuloInsumoRepository.findById(id);
@@ -231,14 +231,16 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad) throws Exception 
             throw new Exception("No se encontró el ArticuloInsumo con id " + id);
         }
 
-        // Aumentar el stockActual
+        // Aumentar el stockActual y actualizar los precios
         ArticuloInsumo articuloInsumo = optionalArticuloInsumo.get();
         articuloInsumo.setStockActual(articuloInsumo.getStockActual() + cantidad);
+        articuloInsumo.setPrecioVenta(nuevoPrecioVenta);
+        articuloInsumo.setPrecioCompra(nuevoPrecioCompra);
 
         // Guardar el ArticuloInsumo actualizado en la base de datos
         return articuloInsumoRepository.save(articuloInsumo);
     } catch (Exception e) {
-        throw new Exception("Error al aumentar el stock: " + e.getMessage());
+        throw new Exception("Error al aumentar el stock y actualizar los precios: " + e.getMessage());
     }
 }
 
