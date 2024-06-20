@@ -163,10 +163,10 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
         ArticuloInsumo articuloInsumoViejo = articuloInsumoRepository.findById(id).get();
         Long sucursalId = articuloInsumoViejo.getSucursal().getId();
 
-        if(articuloInsumoRepository.existsByCodigoAndSucursal_Id(articuloInsumo.getCodigo(), sucursalId)){
+        if(articuloInsumoRepository.existsByCodigoAndSucursal_Id(articuloInsumo.getCodigo(), sucursalId) && !articuloInsumo.getCodigo().equals(articuloInsumoViejo.getCodigo())){
             throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
         }
-        if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId)){
+        if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId) && !articuloInsumo.getDenominacion().equals(articuloInsumoViejo.getDenominacion())){
             throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
 
