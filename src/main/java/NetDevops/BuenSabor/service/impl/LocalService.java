@@ -160,12 +160,13 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
         throw new Exception(e.getMessage() + "No se pudo encontrar la promocion");
     }
 }
-
-   public List<PromocionDetalleDto> buscarDetallesPorPromocion(Long promocionId) {
+public List<PromocionDetalleDto> buscarDetallesPorPromocion(Long promocionId) {
     List<PromocionDetalle> promocionDetalles = promocionDetalleRepository.findByPromocion_Id(promocionId);
     List<PromocionDetalleDto> dtos = new ArrayList<>();
     for (PromocionDetalle promocionDetalle : promocionDetalles) {
-        dtos.add(convertToDto(promocionDetalle));
+        if (!promocionDetalle.isEliminado()) {
+            dtos.add(convertToDto(promocionDetalle));
+        }
     }
     return dtos;
 }

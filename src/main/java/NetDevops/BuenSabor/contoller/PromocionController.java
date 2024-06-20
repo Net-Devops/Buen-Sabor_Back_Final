@@ -1,7 +1,9 @@
 package NetDevops.BuenSabor.contoller;
 
 import NetDevops.BuenSabor.entities.Promocion;
+import NetDevops.BuenSabor.repository.IPromocionDetalleRepository;
 import NetDevops.BuenSabor.service.IPromocionService;
+import NetDevops.BuenSabor.service.impl.PromocionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/promociones")
 public class PromocionController {
     @Autowired
-    private IPromocionService promocionService;
+    private PromocionService promocionService;
+    @Autowired
+    private IPromocionDetalleRepository promocionDetalleRepository;
 
     @GetMapping("/traer-todo/")
     public ResponseEntity getAll() {
@@ -42,6 +46,7 @@ public class PromocionController {
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable Long id, @RequestBody Promocion promocion) {
         try {
+
             return ResponseEntity.status(HttpStatus.OK).body(promocionService.update(id, promocion));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -64,6 +69,16 @@ public class PromocionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @DeleteMapping("/eliminar-detalles/{id}")
+public ResponseEntity deleteAllPromocionDetalles(@PathVariable Long id) {
+    try {
+        promocionService.deleteAllPromocionDetalles(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
 
 
 }

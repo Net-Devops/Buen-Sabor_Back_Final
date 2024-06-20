@@ -3,12 +3,15 @@ package NetDevops.BuenSabor.service.impl;
 import NetDevops.BuenSabor.entities.ImagenPromocion;
 import NetDevops.BuenSabor.entities.Promocion;
 import NetDevops.BuenSabor.entities.PromocionDetalle;
+import NetDevops.BuenSabor.repository.IPromocionDetalleRepository;
 import NetDevops.BuenSabor.repository.IPromocionRepository;
 import NetDevops.BuenSabor.service.IPromocionService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 public class PromocionService implements IPromocionService {
     @Autowired
     private IPromocionRepository promocionRepository;
+    @Autowired
+    private IPromocionDetalleRepository promocionDetalleRepository;
 
     @Override
 public Promocion save(Promocion promocion) throws Exception {
@@ -48,33 +53,39 @@ public Promocion save(Promocion promocion) throws Exception {
               throw new Exception(e.getMessage());
        }
     }
-//
-//    @Override
-//    public Promocion update(Long id, Promocion promocion) throws Exception {
-//        try {
-//            //promocion.setId(id);
-//            return promocionRepository.save(promocion);
-//        } catch (Exception e) {
-//            throw new Exception(e.getMessage());
-//        }
-//    }
+
 
 @Override
+@Transactional
 public Promocion update(Long id, Promocion newPromocion) {
     try {
-        Promocion updatedPromocion;
-
         if (promocionRepository.findById(id).isPresent()) {
             Promocion existingPromocion = promocionRepository.findById(id).get();
 
-            existingPromocion.setDenominacion(newPromocion.getDenominacion());
-            existingPromocion.setFechaDesde(newPromocion.getFechaDesde());
-            existingPromocion.setFechaHasta(newPromocion.getFechaHasta());
-            existingPromocion.setHoraDesde(newPromocion.getHoraDesde());
-            existingPromocion.setHoraHasta(newPromocion.getHoraHasta());
-            existingPromocion.setDescripcionDescuento(newPromocion.getDescripcionDescuento());
-            existingPromocion.setPrecioPromocional(newPromocion.getPrecioPromocional());
-            existingPromocion.setTipoPromocion(newPromocion.getTipoPromocion());
+            if (newPromocion.getDenominacion() != null) {
+                existingPromocion.setDenominacion(newPromocion.getDenominacion());
+            }
+            if (newPromocion.getFechaDesde() != null) {
+                existingPromocion.setFechaDesde(newPromocion.getFechaDesde());
+            }
+            if (newPromocion.getFechaHasta() != null) {
+                existingPromocion.setFechaHasta(newPromocion.getFechaHasta());
+            }
+            if (newPromocion.getHoraDesde() != null) {
+                existingPromocion.setHoraDesde(newPromocion.getHoraDesde());
+            }
+            if (newPromocion.getHoraHasta() != null) {
+                existingPromocion.setHoraHasta(newPromocion.getHoraHasta());
+            }
+            if (newPromocion.getDescripcionDescuento() != null) {
+                existingPromocion.setDescripcionDescuento(newPromocion.getDescripcionDescuento());
+            }
+            if (newPromocion.getPrecioPromocional() != null) {
+                existingPromocion.setPrecioPromocional(newPromocion.getPrecioPromocional());
+            }
+            if (newPromocion.getTipoPromocion() != null) {
+                existingPromocion.setTipoPromocion(newPromocion.getTipoPromocion());
+            }
 
             // Marcar como eliminadas las ImagenPromocion que no están en newPromocion
             for (ImagenPromocion imagen : existingPromocion.getImagenes()) {
@@ -90,7 +101,6 @@ public Promocion update(Long id, Promocion newPromocion) {
                 }
             }
 
-            existingPromocion.setPromocionDetalles(newPromocion.getPromocionDetalles());
             existingPromocion.setImagenes(newPromocion.getImagenes());
 
             return promocionRepository.save(existingPromocion);
@@ -99,7 +109,6 @@ public Promocion update(Long id, Promocion newPromocion) {
             throw new Exception("No existe la promoción con el id proporcionado");
         }
     } catch (Exception e) {
-        // Aquí puedes manejar la excepción como prefieras
         throw new RuntimeException("Error al actualizar la promoción", e);
     }
 }
@@ -176,6 +185,21 @@ public boolean delete(Long id) throws Exception {
             throw new Exception(e.getMessage());
         }
     }
+
+public void deleteAllPromocionDetalles(Long promocionId) throws Exception {
+    try {
+        List<PromocionDetalle> detalles = promocionDetalleRepository.findByPromocionId(promocionId);
+        for (PromocionDetalle detalle : detalles) {
+            Promocion promocion = detalle.getPromocion();
+            detalle.setPromocion(null);
+            promocion.getPromocionDetalles().remove(detalle); // Elimina la referencia en promocion_promocion_detalles
+            promocionDetalleRepository.save(detalle);
+            promocionDetalleRepository.delete(detalle);
+        }
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
+    }
+}
 
 
 }
