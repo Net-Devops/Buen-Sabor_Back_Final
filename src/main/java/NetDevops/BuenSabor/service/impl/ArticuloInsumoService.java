@@ -90,13 +90,15 @@ public List<ArticuloInsumo> mostrarLista() throws Exception {
    @Override
 public ArticuloInsumo cargar(ArticuloInsumo articuloInsumo) throws Exception {
     try {
+        Long sucursalId = articuloInsumo.getSucursal().getId();
 
-        if(articuloInsumoRepository.existsByCodigoAndEliminadoFalse(articuloInsumo.getCodigo())){
-            throw new Exception("Ya existe un articulo con ese codigo");
+        if(articuloInsumoRepository.existsByCodigoAndSucursal_Id(articuloInsumo.getCodigo(), sucursalId)){
+            throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
         }
-        if (articuloInsumoRepository.existsByDenominacionAndEliminadoFalse(articuloInsumo.getDenominacion())){
-            throw new Exception("Ya existe un articulo con esa denominacion");
+        if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId)){
+            throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
+
 
         if (articuloInsumo.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
@@ -158,12 +160,16 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
             throw new Exception("No se encontro el articulo");
         }
 
-        if (articuloInsumoRepository.existsByCodigoAndEliminadoFalseAndIdNot(articuloInsumo.getCodigo(), id)){
-            throw new Exception("Ya existe un articulo con ese codigo");
+        ArticuloInsumo articuloInsumoViejo = articuloInsumoRepository.findById(id).get();
+        Long sucursalId = articuloInsumoViejo.getSucursal().getId();
+
+        if(articuloInsumoRepository.existsByCodigoAndSucursal_Id(articuloInsumo.getCodigo(), sucursalId) && !articuloInsumo.getCodigo().equals(articuloInsumoViejo.getCodigo())){
+            throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
         }
-        if (articuloInsumoRepository.existsByDenominacionAndEliminadoFalseAndIdNot(articuloInsumo.getDenominacion(), id)){
-            throw new Exception("Ya existe un articulo con esa denominacion");
+        if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId) && !articuloInsumo.getDenominacion().equals(articuloInsumoViejo.getDenominacion())){
+            throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
+
 
         //region Logica para eliminar Imagenes
         Set<ImagenArticulo> imagenesViejas = imagenRepository.findByArticulo_Id(id);
@@ -198,6 +204,10 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
                 }
             }
         }
+        articuloInsumo.setPrecioCompra(articuloInsumoViejo.getPrecioCompra());
+        articuloInsumo.setPrecioVenta(articuloInsumoViejo.getPrecioVenta());
+        articuloInsumo.setStockActual(articuloInsumoViejo.getStockActual());
+        articuloInsumo.setSucursal(articuloInsumoViejo.getSucursal());
 
         return articuloInsumoRepository.save(articuloInsumo);
 

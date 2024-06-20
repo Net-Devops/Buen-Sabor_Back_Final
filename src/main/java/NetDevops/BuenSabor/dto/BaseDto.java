@@ -11,4 +11,5 @@ import java.io.Serializable;
 @MappedSuperclass
 public abstract class BaseDto implements Serializable {
     private Long id;
+    private boolean eliminado;
 }

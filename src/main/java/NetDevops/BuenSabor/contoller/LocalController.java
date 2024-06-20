@@ -1,9 +1,14 @@
 package NetDevops.BuenSabor.contoller;
 
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
+import NetDevops.BuenSabor.entities.ArticuloInsumo;
+import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.service.impl.LocalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/local")
@@ -50,6 +55,25 @@ public class LocalController {
     }
     //endregion
 
+    //region Promociones
+    @GetMapping("/promocion/sucursal/{sucursalId}")
+    public ResponseEntity<?> traerPromocionesPorSucursal(@PathVariable Long sucursalId){
+        try {
+            return ResponseEntity.ok().body(localService.buscarPromocionesPorSucursal(sucursalId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/promocion/detalle/{promocionId}")
+    public ResponseEntity<?> traerPromocionDetallePorPromocion(@PathVariable Long promocionId){
+        try {
+            return ResponseEntity.ok().body(localService.buscarDetallesPorPromocion(promocionId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //endregion
 
     //region ArticuloInsumo
     @GetMapping("/articulo/insumo/sucursal/{sucursalId}")
@@ -60,6 +84,31 @@ public ResponseEntity<?> traerArticulosInsumoPorSucursal(@PathVariable Long sucu
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
+
+    @PutMapping("articulo/insumo/aumentarStock/{id}")
+    public ResponseEntity<ArticuloInsumo> aumentarStock(@PathVariable Long id, @RequestParam Integer cantidad, @RequestParam Double nuevoPrecioVenta, @RequestParam Double nuevoPrecioCompra) {
+        try {
+            ArticuloInsumo articuloInsumo = localService.aumentarStock(id, cantidad, nuevoPrecioVenta, nuevoPrecioCompra);
+            return ResponseEntity.ok(articuloInsumo);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    //endregion
+
+    //region ArticuloManufacturado
+
+    @GetMapping("/articulo/manufacturado/sucursal/{sucursalId}")
+    public ResponseEntity<List<ArticuloManufacturadoTablaDto>> buscarArticulosPorSucursal(@PathVariable Long sucursalId) {
+        try {
+            List<ArticuloManufacturadoTablaDto> articulos = localService.buscarArticulosPorSucursal(sucursalId);
+            return ResponseEntity.ok(articulos);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     //endregion
 }

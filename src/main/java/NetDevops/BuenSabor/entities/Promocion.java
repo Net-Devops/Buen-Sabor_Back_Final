@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.entities;
 
 import NetDevops.BuenSabor.enums.TipoPromocion;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,6 +36,7 @@ public class Promocion extends Base{
 
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<PromocionDetalle> promocionDetalles = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)

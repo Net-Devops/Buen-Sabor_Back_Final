@@ -18,6 +18,7 @@ public class Categoria extends Base{
 
     private String denominacion;
     private String urlIcono;
+    @JsonBackReference
     @OneToMany(mappedBy = "categoria")
     private Set<Articulo> articulos = new HashSet<>();
 

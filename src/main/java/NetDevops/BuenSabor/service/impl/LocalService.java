@@ -1,18 +1,17 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
-import NetDevops.BuenSabor.entities.ArticuloInsumo;
-import NetDevops.BuenSabor.entities.Categoria;
-import NetDevops.BuenSabor.entities.Sucursal;
-import NetDevops.BuenSabor.repository.IAriticuloInsumoRepository;
-import NetDevops.BuenSabor.repository.ICategoriaRepository;
-import NetDevops.BuenSabor.repository.ISucursalRepository;
+import NetDevops.BuenSabor.dto.promocion.ArticuloPromocionDto;
+import NetDevops.BuenSabor.dto.promocion.PromocionDetalleDto;
+import NetDevops.BuenSabor.dto.promocion.PromocionDto;
+import NetDevops.BuenSabor.entities.*;
+import NetDevops.BuenSabor.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class LocalService {
@@ -22,6 +21,12 @@ public class LocalService {
     private ISucursalRepository sucursalRepository;
     @Autowired
     private IAriticuloInsumoRepository articuloInsumoRepository;
+    @Autowired
+    private IPromocionRepository promocionRepository;
+    @Autowired
+    private IPromocionDetalleRepository promocionDetalleRepository;
+    @Autowired
+    private IArticuloManufacturadoRepository articuloManufacturadoRepository;
 
 //region  Categoria
     public Set<CategoriaDto> traerTodo(Long sucursalId) throws Exception {
@@ -143,6 +148,75 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 //endregion
 
 //region Promociones
+    public List<PromocionDto> buscarPromocionesPorSucursal(Long sucursalId) throws Exception{
+    try{
+        List<Promocion> promociones = promocionRepository.findBySucursales_Id(sucursalId);
+        List<PromocionDto> dtos = new ArrayList<>();
+        for (Promocion promocion : promociones) {
+            dtos.add(convertToDto(promocion));
+        }
+        return dtos;
+    } catch (Exception e) {
+        throw new Exception(e.getMessage() + "No se pudo encontrar la promocion");
+    }
+}
+
+   public List<PromocionDetalleDto> buscarDetallesPorPromocion(Long promocionId) {
+    List<PromocionDetalle> promocionDetalles = promocionDetalleRepository.findByPromocion_Id(promocionId);
+    List<PromocionDetalleDto> dtos = new ArrayList<>();
+    for (PromocionDetalle promocionDetalle : promocionDetalles) {
+        dtos.add(convertToDto(promocionDetalle));
+    }
+    return dtos;
+}
+
+//region Convertir a DTO
+public PromocionDto convertToDto(Promocion promocion) {
+    PromocionDto dto = new PromocionDto();
+    dto.setId(promocion.getId());
+    dto.setEliminado(promocion.isEliminado());
+    dto.setDenominacion(promocion.getDenominacion());
+    dto.setFechaDesde(promocion.getFechaDesde());
+    dto.setFechaHasta(promocion.getFechaHasta());
+    dto.setHoraDesde(promocion.getHoraDesde());
+    dto.setHoraHasta(promocion.getHoraHasta());
+    dto.setDescripcionDescuento(promocion.getDescripcionDescuento());
+    dto.setPrecioPromocional(promocion.getPrecioPromocional());
+    dto.setTipoPromocion(promocion.getTipoPromocion());
+    dto.setImagenes(promocion.getImagenes());
+    //dto.setSucursales(promocion.getSucursales());
+//    for (PromocionDetalle promocionDetalle : promocion.getPromocionDetalles()) {
+//        dto.getPromocionDetallesDto().add(convertToDto(promocionDetalle));
+//    }
+    return dto;
+}
+
+
+public ArticuloPromocionDto convertToDto(ArticuloManufacturado articuloManufacturado) {
+    ArticuloPromocionDto dto = new ArticuloPromocionDto();
+    dto.setId(articuloManufacturado.getId());
+    dto.setEliminado(articuloManufacturado.isEliminado());
+    dto.setDenominacion(articuloManufacturado.getDenominacion());
+    dto.setDescripcion(articuloManufacturado.getDescripcion());
+    dto.setPrecioVenta(articuloManufacturado.getPrecioVenta());
+    dto.setTiempoEstimadoMinutos(articuloManufacturado.getTiempoEstimadoMinutos());
+    dto.setPreparacion(articuloManufacturado.getPreparacion());
+    dto.setImagenes(articuloManufacturado.getImagenes());
+    dto.setCodigo(articuloManufacturado.getCodigo());
+    dto.setUnidadMedida(articuloManufacturado.getUnidadMedida());
+    return dto;
+}
+
+public PromocionDetalleDto convertToDto(PromocionDetalle promocionDetalle) {
+    PromocionDetalleDto dto = new PromocionDetalleDto();
+    dto.setId(promocionDetalle.getId());
+    dto.setEliminado(promocionDetalle.isEliminado());
+    dto.setCantidad(promocionDetalle.getCantidad());
+    dto.setArticuloManufacturadoDto(convertToDto(promocionDetalle.getArticuloManufacturado()));
+    dto.setImagenPromocion(promocionDetalle.getImagenPromocion());
+    return dto;
+}
+//endregion
 
 //endregion
 
@@ -155,9 +229,75 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
        }
     }
 
+public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPrecioVenta, Double nuevoPrecioCompra) throws Exception {
+    try {
+        // Buscar el ArticuloInsumo en la base de datos
+        Optional<ArticuloInsumo> optionalArticuloInsumo = articuloInsumoRepository.findById(id);
+        if (!optionalArticuloInsumo.isPresent()) {
+            throw new Exception("No se encontró el ArticuloInsumo con id " + id);
+        }
+
+        // Aumentar el stockActual y actualizar los precios
+        ArticuloInsumo articuloInsumo = optionalArticuloInsumo.get();
+        articuloInsumo.setStockActual(articuloInsumo.getStockActual() + cantidad);
+        articuloInsumo.setPrecioVenta(nuevoPrecioVenta);
+        articuloInsumo.setPrecioCompra(nuevoPrecioCompra);
+
+        // Guardar el ArticuloInsumo actualizado en la base de datos
+        return articuloInsumoRepository.save(articuloInsumo);
+    } catch (Exception e) {
+        throw new Exception("Error al aumentar el stock y actualizar los precios: " + e.getMessage());
+    }
+}
+
+
+
+
 
     //endregion
 
+//region Articulo Manufacturado
+
+   public List<ArticuloManufacturadoTablaDto> buscarArticulosPorSucursal(Long sucursalId) throws Exception {
+    try {
+        // Buscar los ArticuloManufacturado en la base de datos asociados a la Sucursal
+        List<ArticuloManufacturado> articulos = articuloManufacturadoRepository.findBySucursal_Id(sucursalId);
+        if (articulos.isEmpty()) {
+            throw new Exception("No se encontraron ArticulosManufacturados para la Sucursal con id " + sucursalId);
+        }
+        // Convertir a DTO antes de devolver
+        List<ArticuloManufacturadoTablaDto> articulosDto = new ArrayList<>();
+        for (ArticuloManufacturado articulo : articulos) {
+            articulosDto.add(convertirArticuloManufacturadoToDto(articulo));
+        }
+        return articulosDto;
+    } catch (Exception e) {
+        throw new Exception("Error al buscar los ArticulosManufacturados: " + e.getMessage());
+    }
+}
+
+    //region Convertir a DTO
+    public ArticuloManufacturadoTablaDto convertirArticuloManufacturadoToDto(ArticuloManufacturado articulo) {
+    ArticuloManufacturadoTablaDto dto = new ArticuloManufacturadoTablaDto();
+    dto.setId(articulo.getId());
+    dto.setCodigo(articulo.getCodigo());
+    dto.setDenominacion(articulo.getDenominacion());
+    // Asegúrate de tener un método para obtener la URL de la imagen principal
+        if (!articulo.getImagenes().isEmpty()) {
+            ImagenArticulo primeraImagen = articulo.getImagenes().iterator().next();
+            dto.setImagen(primeraImagen.getUrl());
+            dto.setDenominacion(primeraImagen.getUrl());
+        }
+    dto.setPrecioVenta(articulo.getPrecioVenta());
+    dto.setDescripcion(articulo.getDescripcion());
+    dto.setTiempoEstimadoCocina(articulo.getTiempoEstimadoMinutos());
+    return dto;
+}
+
+    //endregion
+
+
+//endregion
 
 
 }
