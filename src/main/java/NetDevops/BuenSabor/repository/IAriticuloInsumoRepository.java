@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface IAriticuloInsumoRepository extends JpaRepository<ArticuloInsumo, Long> {
@@ -25,4 +26,6 @@ public interface IAriticuloInsumoRepository extends JpaRepository<ArticuloInsumo
     boolean existsByCodigoAndEliminadoFalseAndIdNot(String codigo, Long id);
     boolean existsByDenominacionAndEliminadoFalseAndIdNot(String denominacion, Long id);
     //endregion
+
+    Set<ArticuloInsumo> findBySucursal_Id(Long sucursalId);
 }
