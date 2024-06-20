@@ -105,23 +105,22 @@ public Promocion update(Long id, Promocion newPromocion) {
 }
 
 
-
-
-   @Override
+@Override
 public boolean delete(Long id) throws Exception {
     try {
         if (promocionRepository.existsById(id)) {
             Promocion promocion = promocionRepository.findById(id).get();
-            promocion.setEliminado(true);
+            boolean nuevoEstado = !promocion.isEliminado();
+            promocion.setEliminado(nuevoEstado);
 
-            // Realizar la eliminación lógica de las ImagenPromocion asociadas
+            // Cambiar el estado de eliminado de las ImagenPromocion asociadas
             for (ImagenPromocion imagen : promocion.getImagenes()) {
-                imagen.setEliminado(true);
+                imagen.setEliminado(nuevoEstado);
             }
 
-            // Realizar la eliminación lógica de las PromocionDetalle asociadas
+            // Cambiar el estado de eliminado de las PromocionDetalle asociadas
             for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
-                detalle.setEliminado(true);
+                detalle.setEliminado(nuevoEstado);
             }
 
             promocionRepository.save(promocion);

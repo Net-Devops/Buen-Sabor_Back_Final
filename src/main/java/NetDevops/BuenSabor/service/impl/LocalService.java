@@ -174,6 +174,7 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 public PromocionDto convertToDto(Promocion promocion) {
     PromocionDto dto = new PromocionDto();
     dto.setId(promocion.getId());
+    dto.setEliminado(promocion.isEliminado());
     dto.setDenominacion(promocion.getDenominacion());
     dto.setFechaDesde(promocion.getFechaDesde());
     dto.setFechaHasta(promocion.getFechaHasta());
@@ -194,6 +195,7 @@ public PromocionDto convertToDto(Promocion promocion) {
 public ArticuloPromocionDto convertToDto(ArticuloManufacturado articuloManufacturado) {
     ArticuloPromocionDto dto = new ArticuloPromocionDto();
     dto.setId(articuloManufacturado.getId());
+    dto.setEliminado(articuloManufacturado.isEliminado());
     dto.setDenominacion(articuloManufacturado.getDenominacion());
     dto.setDescripcion(articuloManufacturado.getDescripcion());
     dto.setPrecioVenta(articuloManufacturado.getPrecioVenta());
@@ -208,6 +210,7 @@ public ArticuloPromocionDto convertToDto(ArticuloManufacturado articuloManufactu
 public PromocionDetalleDto convertToDto(PromocionDetalle promocionDetalle) {
     PromocionDetalleDto dto = new PromocionDetalleDto();
     dto.setId(promocionDetalle.getId());
+    dto.setEliminado(promocionDetalle.isEliminado());
     dto.setCantidad(promocionDetalle.getCantidad());
     dto.setArticuloManufacturadoDto(convertToDto(promocionDetalle.getArticuloManufacturado()));
     dto.setImagenPromocion(promocionDetalle.getImagenPromocion());
