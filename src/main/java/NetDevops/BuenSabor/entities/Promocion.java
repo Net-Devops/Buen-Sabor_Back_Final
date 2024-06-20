@@ -39,8 +39,10 @@ public class Promocion extends Base{
     @JsonManagedReference
     private Set<PromocionDetalle> promocionDetalles = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<ImagenPromocion> imagenes = new HashSet<>();
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private Set<ImagenPromocion> imagenes = new HashSet<>();
+
+    private String imagen;
 
 
    @ManyToMany

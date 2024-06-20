@@ -184,7 +184,7 @@ public PromocionDto convertToDto(Promocion promocion) {
     dto.setDescripcionDescuento(promocion.getDescripcionDescuento());
     dto.setPrecioPromocional(promocion.getPrecioPromocional());
     dto.setTipoPromocion(promocion.getTipoPromocion());
-    dto.setImagenes(promocion.getImagenes());
+    dto.setImagen(promocion.getImagen());
     //dto.setSucursales(promocion.getSucursales());
 //    for (PromocionDetalle promocionDetalle : promocion.getPromocionDetalles()) {
 //        dto.getPromocionDetallesDto().add(convertToDto(promocionDetalle));
@@ -287,7 +287,7 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
         if (!articulo.getImagenes().isEmpty()) {
             ImagenArticulo primeraImagen = articulo.getImagenes().iterator().next();
             dto.setImagen(primeraImagen.getUrl());
-            dto.setDenominacion(primeraImagen.getUrl());
+
         }
     dto.setPrecioVenta(articulo.getPrecioVenta());
     dto.setDescripcion(articulo.getDescripcion());

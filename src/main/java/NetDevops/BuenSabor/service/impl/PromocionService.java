@@ -87,12 +87,6 @@ public Promocion update(Long id, Promocion newPromocion) {
                 existingPromocion.setTipoPromocion(newPromocion.getTipoPromocion());
             }
 
-            // Marcar como eliminadas las ImagenPromocion que no están en newPromocion
-            for (ImagenPromocion imagen : existingPromocion.getImagenes()) {
-                if (!newPromocion.getImagenes().contains(imagen)) {
-                    imagen.setEliminado(true);
-                }
-            }
 
             // Marcar como eliminadas las PromocionDetalle que no están en newPromocion
             for (PromocionDetalle detalle : existingPromocion.getPromocionDetalles()) {
@@ -101,7 +95,6 @@ public Promocion update(Long id, Promocion newPromocion) {
                 }
             }
 
-            existingPromocion.setImagenes(newPromocion.getImagenes());
 
             return promocionRepository.save(existingPromocion);
 
@@ -122,10 +115,7 @@ public boolean delete(Long id) throws Exception {
             boolean nuevoEstado = !promocion.isEliminado();
             promocion.setEliminado(nuevoEstado);
 
-            // Cambiar el estado de eliminado de las ImagenPromocion asociadas
-            for (ImagenPromocion imagen : promocion.getImagenes()) {
-                imagen.setEliminado(nuevoEstado);
-            }
+
 
             // Cambiar el estado de eliminado de las PromocionDetalle asociadas
             for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
@@ -159,12 +149,7 @@ public boolean delete(Long id) throws Exception {
                 if (promocion.isEliminado()) {
                     promocion.setEliminado(false);
 
-                    // Reactivar las ImagenPromocion asociadas
-                    for (ImagenPromocion imagen : promocion.getImagenes()) {
-                        if (imagen.isEliminado()) {
-                            imagen.setEliminado(false);
-                        }
-                    }
+
 
                     // Reactivar las PromocionDetalle asociadas
                     for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
