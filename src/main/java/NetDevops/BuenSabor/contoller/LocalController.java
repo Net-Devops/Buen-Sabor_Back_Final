@@ -1,10 +1,14 @@
 package NetDevops.BuenSabor.contoller;
 
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.entities.ArticuloInsumo;
+import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.service.impl.LocalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/local")
@@ -91,6 +95,20 @@ public ResponseEntity<?> traerArticulosInsumoPorSucursal(@PathVariable Long sucu
         }
     }
 
+
+    //endregion
+
+    //region ArticuloManufacturado
+
+    @GetMapping("/articulo/manufacturado/sucursal/{sucursalId}")
+    public ResponseEntity<List<ArticuloManufacturadoTablaDto>> buscarArticulosPorSucursal(@PathVariable Long sucursalId) {
+        try {
+            List<ArticuloManufacturadoTablaDto> articulos = localService.buscarArticulosPorSucursal(sucursalId);
+            return ResponseEntity.ok(articulos);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     //endregion
 }

@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
 import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
 import NetDevops.BuenSabor.dto.promocion.ArticuloPromocionDto;
@@ -24,6 +25,8 @@ public class LocalService {
     private IPromocionRepository promocionRepository;
     @Autowired
     private IPromocionDetalleRepository promocionDetalleRepository;
+    @Autowired
+    private IArticuloManufacturadoRepository articuloManufacturadoRepository;
 
 //region  Categoria
     public Set<CategoriaDto> traerTodo(Long sucursalId) throws Exception {
@@ -250,6 +253,48 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
 
     //endregion
 
+//region Articulo Manufacturado
+
+   public List<ArticuloManufacturadoTablaDto> buscarArticulosPorSucursal(Long sucursalId) throws Exception {
+    try {
+        // Buscar los ArticuloManufacturado en la base de datos asociados a la Sucursal
+        List<ArticuloManufacturado> articulos = articuloManufacturadoRepository.findBySucursal_Id(sucursalId);
+        if (articulos.isEmpty()) {
+            throw new Exception("No se encontraron ArticulosManufacturados para la Sucursal con id " + sucursalId);
+        }
+        // Convertir a DTO antes de devolver
+        List<ArticuloManufacturadoTablaDto> articulosDto = new ArrayList<>();
+        for (ArticuloManufacturado articulo : articulos) {
+            articulosDto.add(convertirArticuloManufacturadoToDto(articulo));
+        }
+        return articulosDto;
+    } catch (Exception e) {
+        throw new Exception("Error al buscar los ArticulosManufacturados: " + e.getMessage());
+    }
+}
+
+    //region Convertir a DTO
+    public ArticuloManufacturadoTablaDto convertirArticuloManufacturadoToDto(ArticuloManufacturado articulo) {
+    ArticuloManufacturadoTablaDto dto = new ArticuloManufacturadoTablaDto();
+    dto.setId(articulo.getId());
+    dto.setCodigo(articulo.getCodigo());
+    dto.setDenominacion(articulo.getDenominacion());
+    // Asegúrate de tener un método para obtener la URL de la imagen principal
+        if (!articulo.getImagenes().isEmpty()) {
+            ImagenArticulo primeraImagen = articulo.getImagenes().iterator().next();
+            dto.setImagen(primeraImagen.getUrl());
+            dto.setDenominacion(primeraImagen.getUrl());
+        }
+    dto.setPrecioVenta(articulo.getPrecioVenta());
+    dto.setDescripcion(articulo.getDescripcion());
+    dto.setTiempoEstimadoCocina(articulo.getTiempoEstimadoMinutos());
+    return dto;
+}
+
+    //endregion
+
+
+//endregion
 
 
 }

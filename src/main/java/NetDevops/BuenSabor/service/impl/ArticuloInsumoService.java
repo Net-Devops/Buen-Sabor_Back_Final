@@ -168,6 +168,7 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
         if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId)){
             throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
+        ArticuloInsumo articuloInsumoViejo = articuloInsumoRepository.findById(id).get();
 
         //region Logica para eliminar Imagenes
         Set<ImagenArticulo> imagenesViejas = imagenRepository.findByArticulo_Id(id);
@@ -202,6 +203,10 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
                 }
             }
         }
+        articuloInsumo.setPrecioCompra(articuloInsumoViejo.getPrecioCompra());
+        articuloInsumo.setPrecioVenta(articuloInsumoViejo.getPrecioVenta());
+        articuloInsumo.setStockActual(articuloInsumoViejo.getStockActual());
+        articuloInsumo.setSucursal(articuloInsumoViejo.getSucursal());
 
         return articuloInsumoRepository.save(articuloInsumo);
 
