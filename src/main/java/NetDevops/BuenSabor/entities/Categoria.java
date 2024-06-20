@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"categoriaPadre", "subCategorias"})
 public class Categoria extends Base{
 
    @ManyToMany
@@ -24,13 +25,16 @@ public class Categoria extends Base{
 
     @OneToMany(mappedBy = "categoriaPadre")
     private Set<Categoria> subCategorias = new HashSet<>();
-
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "categoria_padre_id")
     private Categoria categoriaPadre;
-
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
 
     public void agregarSubCategoria(Categoria subCategoria) {
         this.subCategorias.add(subCategoria);
     }
+
 }

@@ -1,14 +1,14 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
-import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
-import NetDevops.BuenSabor.dto.categoria.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.categoria.*;
 import NetDevops.BuenSabor.dto.sucursal.SucursalSimpleDto;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
+import NetDevops.BuenSabor.entities.Empresa;
 import NetDevops.BuenSabor.entities.Sucursal;
 import NetDevops.BuenSabor.repository.IArticuloRepository;
 import NetDevops.BuenSabor.repository.ICategoriaRepository;
+import NetDevops.BuenSabor.repository.IEmpresaRepository;
 import NetDevops.BuenSabor.repository.ISucursalRepository;
 import NetDevops.BuenSabor.service.ICategoriaService;
 import jakarta.transaction.Transactional;
@@ -424,5 +424,67 @@ public Set<CategoriaDto> traerTodo() throws Exception {
 
     return subCategoriaDto;
 }
+//----------------------------------- Categoria con Empresas--------------------
+    @Autowired
+    private IEmpresaRepository empresaRepository;
+
+    public Categoria crearCategoriaporEmpresa(CategoriaEmpresaDTO categoriaEmpresaDTO) {
+    Empresa empresa = empresaRepository.findById(categoriaEmpresaDTO.getEmpresaId())
+            .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada"));
+
+    Categoria categoria = new Categoria();
+    categoria.setDenominacion(categoriaEmpresaDTO.getDenominacion());
+    categoria.setEmpresa(empresa);
+
+    return categoriaRepository.save(categoria);
+}
+
+    public Categoria actualizarDenominacion(Long id, String nuevaDenominacion) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada"));
+
+        categoria.setDenominacion(nuevaDenominacion);
+
+        return categoriaRepository.save(categoria);
+    }
+
+    public Categoria cambiarEstadoEliminado(Long id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada"));
+
+        categoria.setEliminado(!categoria.isEliminado());
+
+        return categoriaRepository.save(categoria);
+    }
+
+    public Categoria crearSubCategoriaConEmpresa(SubCategoriaConEmpresaDTO subCategoriaDTO) {
+        Categoria categoriaPadre = categoriaRepository.findById(subCategoriaDTO.getIdCategoriaPadre())
+                .orElseThrow(() -> new IllegalArgumentException("Categoría padre no encontrada"));
+
+        // Verificar si la empresa de la categoría padre es nula
+        if (categoriaPadre.getEmpresa() == null) {
+            throw new IllegalArgumentException("La categoría padre no tiene una empresa asociada");
+        }
+
+        // Obtener el ID de la empresa de la categoría padre
+        Long idEmpresaCategoriaPadre = categoriaPadre.getEmpresa().getId();
+
+        Categoria subCategoria = new Categoria();
+        subCategoria.setDenominacion(subCategoriaDTO.getDenominacion());
+        subCategoria.setCategoriaPadre(categoriaPadre);
+
+        // Establecer la empresa de la categoría padre en la subcategoría
+        subCategoria.setEmpresa(categoriaPadre.getEmpresa());
+
+        categoriaPadre.agregarSubCategoria(subCategoria);
+
+        // Guardar el ID de la empresa de la categoría padre en el DTO
+        subCategoriaDTO.setIdEmpresaCategoriaPadre(idEmpresaCategoriaPadre);
+
+        return categoriaRepository.save(subCategoria);
+    }
+    public List<Categoria> obtenerCategoriasPorIdEmpresa(Long idEmpresa) {
+        return categoriaRepository.findAllByEmpresaId(idEmpresa);
+    }
 
 }

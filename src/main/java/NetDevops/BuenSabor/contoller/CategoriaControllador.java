@@ -1,12 +1,17 @@
 package NetDevops.BuenSabor.contoller;
 
 
+import NetDevops.BuenSabor.dto.categoria.CategoriaEmpresaDTO;
+import NetDevops.BuenSabor.dto.categoria.SubCategoriaConEmpresaDTO;
 import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.service.ICategoriaService;
+import NetDevops.BuenSabor.service.impl.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // GET http://localhost:8080/api/categorias/
 
@@ -165,6 +170,42 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+
+
+    //---------------------Categoria por Empresa------------------------------------------------------------
+    @Autowired
+    private CategoriaService catService;
+
+    @PostMapping("/porEmpresa")
+    public ResponseEntity<Categoria> crearCategoriaporEmpresa(@RequestBody CategoriaEmpresaDTO categoriaDTO) {
+        Categoria nuevaCategoria = catService.crearCategoriaporEmpresa(categoriaDTO);
+        return ResponseEntity.ok(nuevaCategoria);
+    }
+
+    @PutMapping("/{id}/denominacion")
+    public ResponseEntity<Categoria> actualizarDenominacion(@PathVariable Long id, @RequestBody String nuevaDenominacion) {
+        Categoria categoriaActualizada = catService.actualizarDenominacion(id, nuevaDenominacion);
+        return ResponseEntity.ok(categoriaActualizada);
+    }
+    @PutMapping("/{id}/eliminado")
+    public ResponseEntity<Categoria> cambiarEstadoEliminado(@PathVariable Long id) {
+        Categoria categoriaActualizada = catService.cambiarEstadoEliminado(id);
+        return ResponseEntity.ok(categoriaActualizada);
+    }
+
+
+    @PostMapping("/subcategoriaConEmpresa")
+    public ResponseEntity<Categoria> crearSubCategoriaConEmpresa(@RequestBody SubCategoriaConEmpresaDTO subCategoriaDTO) {
+        Categoria nuevaSubCategoria = catService.crearSubCategoriaConEmpresa(subCategoriaDTO);
+        return ResponseEntity.ok(nuevaSubCategoria);
+    }
+
+    @GetMapping("/porEmpresa/{idEmpresa}")
+    public ResponseEntity<List<Categoria>> obtenerCategoriasPorIdEmpresa(@PathVariable Long idEmpresa) {
+        List<Categoria> categorias = catService.obtenerCategoriasPorIdEmpresa(idEmpresa);
+        return ResponseEntity.ok(categorias);
     }
 
 }
