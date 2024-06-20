@@ -160,7 +160,8 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
             throw new Exception("No se encontro el articulo");
         }
 
-        Long sucursalId = articuloInsumo.getSucursal().getId();
+        ArticuloInsumo articuloInsumoViejo = articuloInsumoRepository.findById(id).get();
+        Long sucursalId = articuloInsumoViejo.getSucursal().getId();
 
         if(articuloInsumoRepository.existsByCodigoAndSucursal_Id(articuloInsumo.getCodigo(), sucursalId)){
             throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
@@ -168,7 +169,7 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
         if (articuloInsumoRepository.existsByDenominacionAndSucursal_Id(articuloInsumo.getDenominacion(), sucursalId)){
             throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
-        ArticuloInsumo articuloInsumoViejo = articuloInsumoRepository.findById(id).get();
+
 
         //region Logica para eliminar Imagenes
         Set<ImagenArticulo> imagenesViejas = imagenRepository.findByArticulo_Id(id);
