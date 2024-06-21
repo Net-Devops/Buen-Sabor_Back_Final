@@ -30,13 +30,9 @@ public class Funcionalidades {
         fop.flush();
         fop.close();
 
-        // Crear una ruta para el archivo
-        Path path = Paths.get(uploadDir, fileName);
-        String ruta = path.toString();
+        // Aquí puedes guardar el nombre del archivo en la base de datos y setearlo en la clase correspondiente
 
-        // Aquí puedes guardar la ruta en la base de datos y setearla en la clase correspondiente
-
-        return ruta;
+        return fileName;
     }
 
     public String convertirImagenABase64(String rutaImagen) throws IOException {
