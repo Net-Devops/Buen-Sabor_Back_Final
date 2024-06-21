@@ -70,19 +70,7 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
     return subCategoriaDto;
 }
 
-    public Categoria agregarSucursalACategoria(Long categoriaId, Long sucursalId) throws Exception {
-        Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
-        Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
-
-        if (categoria == null || sucursal == null) {
-            throw new Exception("La categoría o la sucursal no existen");
-        }
-
-        categoria.getSucursales().add(sucursal);
-        return categoriaRepository.save(categoria);
-    }
-
-    public Categoria desasociarSucursalDeCategoria(Long categoriaId, Long sucursalId) throws Exception {
+   public Categoria agregarSucursalACategoria(Long categoriaId, Long sucursalId) throws Exception {
     Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
     Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
 
@@ -90,8 +78,48 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
         throw new Exception("La categoría o la sucursal no existen");
     }
 
-    categoria.getSucursales().remove(sucursal);
+    // Agregar la sucursal a la categoría
+    categoria.getSucursales().add(sucursal);
+
+    // Agregar la sucursal a las subcategorías de la categoría
+    agregarSucursalASubcategorias(categoria, sucursal);
+
     return categoriaRepository.save(categoria);
+}
+
+private void agregarSucursalASubcategorias(Categoria categoria, Sucursal sucursal) {
+    for (Categoria subCategoria : categoria.getSubCategorias()) {
+        subCategoria.getSucursales().add(sucursal);
+
+        //Recursivamente agregar la sucursal a las subcategorías de la subcategoría
+        agregarSucursalASubcategorias(subCategoria, sucursal);
+    }
+}
+
+public Categoria desasociarSucursalDeCategoria(Long categoriaId, Long sucursalId) throws Exception {
+    Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
+    Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
+
+    if (categoria == null || sucursal == null) {
+        throw new Exception("La categoría o la sucursal no existen");
+    }
+
+    // Remover la sucursal de la categoría
+    categoria.getSucursales().remove(sucursal);
+
+    // Remover la sucursal de las subcategorías de la categoría
+    desasociarSucursalDeSubcategorias(categoria, sucursal);
+
+    return categoriaRepository.save(categoria);
+}
+
+private void desasociarSucursalDeSubcategorias(Categoria categoria, Sucursal sucursal) {
+    for (Categoria subCategoria : categoria.getSubCategorias()) {
+        subCategoria.getSucursales().remove(sucursal);
+
+        // Recursivamente remover la sucursal de las subcategorías de la subcategoría
+        desasociarSucursalDeSubcategorias(subCategoria, sucursal);
+    }
 }
 
 public Set<CategoriaDto> traerCategoriasNoAsociadasASucursal(Long sucursalId) throws Exception {
