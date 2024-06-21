@@ -86,6 +86,9 @@ public Promocion update(Long id, Promocion newPromocion) {
             if (newPromocion.getTipoPromocion() != null) {
                 existingPromocion.setTipoPromocion(newPromocion.getTipoPromocion());
             }
+            if (newPromocion.getImagen() !=null){
+                existingPromocion.setImagen(newPromocion.getImagen());
+            }
 
 
             // Marcar como eliminadas las PromocionDetalle que no están en newPromocion
