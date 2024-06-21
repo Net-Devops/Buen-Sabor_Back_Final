@@ -13,8 +13,8 @@ private String nombre;
 private String razonSocial;
 private Long cuil;
 private String imagen;
-@OneToMany(mappedBy = "empresa")
-    private Set<Categoria> categorias;
+
+
 
 
 }

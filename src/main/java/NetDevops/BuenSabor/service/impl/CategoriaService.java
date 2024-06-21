@@ -483,8 +483,14 @@ public Set<CategoriaDto> traerTodo() throws Exception {
 
         return categoriaRepository.save(subCategoria);
     }
-    public List<Categoria> obtenerCategoriasPorIdEmpresa(Long idEmpresa) {
-        return categoriaRepository.findAllByEmpresaId(idEmpresa);
-    }
-
+   //---------------------
+   public List<Categoria> obtenerCategoriasPorIdEmpresa(Long idEmpresa) {
+       List<Categoria> categorias = categoriaRepository.findByEmpresaId(idEmpresa);
+       for (Categoria categoria : categorias) {
+           // Carga las subcategorías asociadas a cada categoría
+           categoria.getSubCategorias().size();
+       }
+       return categorias;
+   }
+//----------------------
 }

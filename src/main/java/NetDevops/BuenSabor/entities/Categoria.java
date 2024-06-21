@@ -1,6 +1,7 @@
 package NetDevops.BuenSabor.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,13 +23,16 @@ public class Categoria extends Base{
     @JsonBackReference
     @OneToMany(mappedBy = "categoria")
     private Set<Articulo> articulos = new HashSet<>();
+//----------
+@OneToMany(mappedBy = "categoriaPadre", cascade = CascadeType.ALL)
 
-    @OneToMany(mappedBy = "categoriaPadre")
-    private Set<Categoria> subCategorias = new HashSet<>();
+private List<Categoria> subCategorias;
+//------
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "categoria_padre_id")
     private Categoria categoriaPadre;
+
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;

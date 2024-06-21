@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.entities.Categoria;
 import NetDevops.BuenSabor.entities.Sucursal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,7 +21,14 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Set<Categoria> findByCategoriaPadre_Id(Long categoriaPadreId);
     //para traer las subcategoria
     Set<Categoria> findByCategoriaPadreIsNotNullAndEliminadoFalse();
-    List<Categoria> findAllByEmpresaId(Long idEmpresa);
+
+
+    //---------
+    List<Categoria> findByEmpresaId(Long idEmpresa);
+//----------------
+
+
+
 
     @Query("SELECT c FROM Categoria c WHERE c.categoriaPadre IS NULL OR c.categoriaPadre.id = 0")
     Set<Categoria> ListaCategorias();
