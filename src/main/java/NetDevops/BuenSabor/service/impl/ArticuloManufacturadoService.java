@@ -45,18 +45,17 @@ public ArticuloManufacturado cargarArticuloManufacturado(ArticuloManufacturado a
             throw new Exception("Ya existe un articulo con ese codigo");
         }
 
-        // Guardar las imágenes en base64 que vienen con el ArticuloManufacturado
         if (articuloManufacturado.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
-                try {
-                    String filename = UUID.randomUUID().toString() + ".jpg";
-                    String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), filename);
-                    imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
-                    imagen.setArticulo(articuloManufacturado); // Asignar el artículo a la imagen
-                    imagenRepository.save(imagen);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                // Generar un nombre de archivo único para cada imagen
+                String filename = UUID.randomUUID().toString() + ".jpg";
+
+                // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
+                String ruta = funcionalidades.guardarImagen(imagen.getUrl(), filename);
+
+                // Actualizar el campo url en ImagenArticulo
+                imagen.setUrl(ruta);
+                imagen.setArticulo(articuloManufacturado);
             }
         }
 
