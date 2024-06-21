@@ -9,6 +9,7 @@ import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.ImagenArticuloRepository;
 import NetDevops.BuenSabor.service.IArticuloManufacturadoService;
 import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
+import NetDevops.BuenSabor.service.util.ImagenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
     @Autowired
     private ImagenArticuloRepository imagenRepository;
     @Autowired
-    private Funcionalidades funcionalidades;
+    private ImagenService imagenService;
 
 //region Crud Basico
 
@@ -51,7 +52,7 @@ public ArticuloManufacturado cargarArticuloManufacturado(ArticuloManufacturado a
                 String filename = UUID.randomUUID().toString() + ".jpg";
 
                 // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
-                String ruta = funcionalidades.guardarImagen(imagen.getUrl(), filename);
+                String ruta = imagenService.guardarImagenNueva(imagen.getUrl(), filename);
 
                 // Actualizar el campo url en ImagenArticulo
                 imagen.setUrl(ruta);
@@ -84,7 +85,7 @@ public ArticuloManufacturado buscarPorId(Long id) throws Exception {
         if (Manufacturado.getImagenes() != null) {
             for (ImagenArticulo imagen : Manufacturado.getImagenes()) {
                 try {
-                    String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+                    String imagenBase64 = imagenService.convertirImagenABase64Nueva(imagen.getUrl());
                     imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -110,7 +111,7 @@ public Set<ArticuloManufacturado> listaArticuloManufacturado() throws Exception 
             if (articuloManufacturado.getImagenes() != null) {
                 for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
                     try {
-                        String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+                        String imagenBase64 = imagenService.convertirImagenABase64Nueva(imagen.getUrl());
                         imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -197,7 +198,7 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
             } else {
                 // Convertir la imagen a base64
                 try {
-                    String imagenBase64 = funcionalidades.convertirImagenABase64(imagenVieja.getUrl());
+                    String imagenBase64 = imagenService.convertirImagenABase64Nueva(imagenVieja.getUrl());
                     imagenVieja.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -232,7 +233,7 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
             if (articulo.getImagenes() != null && !articulo.getImagenes().isEmpty()) {
                 ImagenArticulo imagen = articulo.getImagenes().iterator().next();
                 try {
-                    String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+                    String imagenBase64 = imagenService.convertirImagenABase64Nueva(imagen.getUrl());
                     dto.setImagen(imagenBase64); // Actualizar el campo imagen en ArticuloManufacturadoTablaDto con la imagen en base64
                 } catch (IOException e) {
                     throw new RuntimeException(e);
