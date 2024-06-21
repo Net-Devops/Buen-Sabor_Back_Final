@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class ArticuloManufacturadoService implements IArticuloManufacturadoService {
@@ -32,7 +33,8 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
 //region Crud Basico
 
     //region Cargar
-    @Override
+
+@Override
 public ArticuloManufacturado cargarArticuloManufacturado(ArticuloManufacturado articuloManufacturado) throws Exception {
     try {
 
@@ -47,8 +49,11 @@ public ArticuloManufacturado cargarArticuloManufacturado(ArticuloManufacturado a
         if (articuloManufacturado.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
                 try {
-                    String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), "nombreArchivo"); // Reemplaza "nombreArchivo" con el nombre de archivo que desees
-                    imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo con la ruta de la imagen
+                    String filename = UUID.randomUUID().toString() + ".jpg";
+                    String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), filename);
+                    imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
+                    imagen.setArticulo(articuloManufacturado); // Asignar el artículo a la imagen
+                    imagenRepository.save(imagen);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

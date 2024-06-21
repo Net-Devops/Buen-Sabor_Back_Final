@@ -79,4 +79,18 @@ public class UnidadMedidaController {
         }
     }
 
+    @PutMapping("/toggle-active/{id}")
+    public ResponseEntity toggleActive(@PathVariable Long id) {
+        try {
+            boolean result = unidadMedidaService.toggleActive(id);
+            if (result) {
+                return ResponseEntity.status(HttpStatus.OK).body("Estado de UnidadMedida cambiado exitosamente");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al cambiar el estado de UnidadMedida");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

@@ -24,39 +24,40 @@ public class UnidadMedidaService implements IUnidadMedidaService {
         }
     }
 
-    @Override
-    public UnidadMedida cargar(UnidadMedida unidadMedida) throws Exception {
-        try {
-                if (unidadMedida.getDenominacion() == null || unidadMedida.getDenominacion().isEmpty()){
-                    throw new Exception("El nombre de la unidad de medida no puede ser nulo");
-                }
-                if (unidadMedidaRepository.existsByDenominacionAndEliminadoFalse(unidadMedida.getDenominacion())){
-                    throw new Exception("Ya existe una unidad de medida con ese nombre");
-                }
-            return unidadMedidaRepository.save(unidadMedida);
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
+  @Override
+public UnidadMedida cargar(UnidadMedida unidadMedida) throws Exception {
+    try {
+        if (unidadMedida.getDenominacion() == null || unidadMedida.getDenominacion().isEmpty()){
+            throw new Exception("El nombre de la unidad de medida no puede ser nulo");
         }
-    }
-
-    @Override
-    public UnidadMedida actualizar(Long id, UnidadMedida unidadMedida) throws Exception {
-        try {
-
-            if (!unidadMedidaRepository.existsById(id)){
-                throw new Exception("La unidad de medida no puede ser nula");
-            }
-            if (unidadMedida.getDenominacion() == null || unidadMedida.getDenominacion().isEmpty()){
-                throw new Exception("El nombre de la unidad de medida no puede ser nulo");
-            }
-            if (unidadMedidaRepository.existsByDenominacionAndEliminadoFalse(unidadMedida.getDenominacion())){
-                throw new Exception("Ya existe una unidad de medida con ese nombre");
-            }
-            return unidadMedidaRepository.save(unidadMedida);
-        }catch (Exception e){
-            throw new Exception(e.getMessage());
+        if (unidadMedidaRepository.existsByDenominacionIgnoreCase(unidadMedida.getDenominacion().toLowerCase())){
+            throw new Exception("Ya existe una unidad de medida con ese nombre");
         }
+        return unidadMedidaRepository.save(unidadMedida);
+    }catch (Exception e){
+        throw new Exception(e.getMessage());
     }
+}
+@Override
+public UnidadMedida actualizar(Long id, UnidadMedida unidadMedida) throws Exception {
+    try {
+        if (!unidadMedidaRepository.existsById(id)){
+            throw new Exception("La unidad de medida no puede ser nula");
+        }
+        if (unidadMedida.getDenominacion() == null || unidadMedida.getDenominacion().isEmpty()){
+            throw new Exception("El nombre de la unidad de medida no puede ser nulo");
+        }
+        if (unidadMedidaRepository.existsByDenominacionIgnoreCase(unidadMedida.getDenominacion())){
+            throw new Exception("Ya existe una unidad de medida con ese nombre");
+        }
+        UnidadMedida unidadMedidaExistente = unidadMedidaRepository.findById(id).get();
+        unidadMedidaExistente.setDenominacion(unidadMedida.getDenominacion());
+        // Aquí puedes agregar más campos de UnidadMedida para actualizar si los hay
+        return unidadMedidaRepository.save(unidadMedidaExistente);
+    }catch (Exception e){
+        throw new Exception(e.getMessage());
+    }
+}
 
 
     @Override
@@ -113,4 +114,23 @@ public class UnidadMedidaService implements IUnidadMedidaService {
             throw new Exception(e);
         }
     }
+
+public boolean toggleActive(Long id) throws Exception {
+    try {
+        if (unidadMedidaRepository.existsById(id)) {
+            UnidadMedida unidadMedida = unidadMedidaRepository.findById(id).get();
+            if (unidadMedida.isEliminado()) {
+                unidadMedida.setEliminado(false);
+            } else {
+                unidadMedida.setEliminado(true);
+            }
+            unidadMedidaRepository.save(unidadMedida);
+            return true;
+        } else {
+            throw new Exception("No existe la UnidadMedida con el id proporcionado");
+        }
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
+    }
+}
 }
