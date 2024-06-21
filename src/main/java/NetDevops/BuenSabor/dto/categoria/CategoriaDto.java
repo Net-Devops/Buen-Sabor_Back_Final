@@ -14,7 +14,6 @@ public class CategoriaDto extends BaseDto {
 
     private String denominacion;
     private String urlIcono;
-    private Boolean eliminado;
     private Set<SucursalSimpleDto> sucursales = new HashSet<>();
     private Set<SubCategoriaDto> subCategoriaDtos = new HashSet<>();
 }

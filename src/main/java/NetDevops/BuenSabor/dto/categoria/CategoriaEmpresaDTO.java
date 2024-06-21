@@ -8,8 +8,9 @@ import java.util.Set;
 
 @Data
 public class CategoriaEmpresaDTO extends BaseDto {
+
     private String denominacion;
+    private boolean eliminado;
     private Long empresaId;
-    private Boolean eliminado;
     private Set<SubCategoriaConEmpresaDTO> subCategoriaDtos = new HashSet<>();
 }

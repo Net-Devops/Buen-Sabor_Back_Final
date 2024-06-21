@@ -15,10 +15,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoriaService implements ICategoriaService {
@@ -484,13 +482,61 @@ public Set<CategoriaDto> traerTodo() throws Exception {
         return categoriaRepository.save(subCategoria);
     }
    //---------------------
-   public List<Categoria> obtenerCategoriasPorIdEmpresa(Long idEmpresa) {
+   public List<CategoriaEmpresaDTO> obtenerCategoriasPorIdEmpresa(Long idEmpresa) {
        List<Categoria> categorias = categoriaRepository.findByEmpresaId(idEmpresa);
-       for (Categoria categoria : categorias) {
-           // Carga las subcategorías asociadas a cada categoría
-           categoria.getSubCategorias().size();
-       }
-       return categorias;
+       int maxDepth = 10; // Ajusta según tus necesidades
+       Set<Long> procesadas = new HashSet<>();
+       return categorias.stream()
+               .map(categoria -> convertirACategoriaEmpresaDTO(categoria, maxDepth, procesadas))
+               .filter(Objects::nonNull)
+               .collect(Collectors.toList());
    }
+
+    private CategoriaEmpresaDTO convertirACategoriaEmpresaDTO(Categoria categoria, int depth, Set<Long> procesadas) {
+        if (procesadas.contains(categoria.getId())) {
+            return null; // ya procesado
+        }
+        procesadas.add(categoria.getId());
+
+        CategoriaEmpresaDTO dto = new CategoriaEmpresaDTO();
+        dto.setId(categoria.getId());
+        dto.setDenominacion(categoria.getDenominacion());
+        dto.setEmpresaId(categoria.getEmpresa().getId());
+        dto.setEliminado(categoria.isEliminado()); // Asegúrate de usar el getter correcto
+
+        if (depth > 0) {
+            Set<SubCategoriaConEmpresaDTO> subCategoriaDtos = categoria.getSubCategorias().stream()
+                    .map(subCategoria -> convertirASubCategoriaConEmpresaDTO(subCategoria, depth - 1, procesadas))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            dto.setSubCategoriaDtos(subCategoriaDtos);
+        }
+
+        return dto;
+    }
+
+    private SubCategoriaConEmpresaDTO convertirASubCategoriaConEmpresaDTO(Categoria subCategoria, int depth, Set<Long> procesadas) {
+        if (procesadas.contains(subCategoria.getId())) {
+            return null; // ya procesado
+        }
+        procesadas.add(subCategoria.getId());
+
+        SubCategoriaConEmpresaDTO dto = new SubCategoriaConEmpresaDTO();
+        dto.setId(subCategoria.getId());
+        dto.setDenominacion(subCategoria.getDenominacion());
+        dto.setIdCategoriaPadre(subCategoria.getCategoriaPadre().getId());
+        dto.setIdEmpresaCategoriaPadre(subCategoria.getCategoriaPadre().getEmpresa().getId());
+        dto.setEliminado(subCategoria.isEliminado()); // Asegúrate de usar el getter correcto
+
+        if (depth > 0) {
+            Set<SubCategoriaConEmpresaDTO> subSubCategoriaDtos = subCategoria.getSubCategorias().stream()
+                    .map(subSubCategoria -> convertirASubCategoriaConEmpresaDTO(subSubCategoria, depth - 1, procesadas))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            dto.setSubSubCategoriaDtos(subSubCategoriaDtos);
+        }
+
+        return dto;
+    }
 //----------------------
 }

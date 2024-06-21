@@ -204,12 +204,13 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
 
     //------------------
     @GetMapping("/porEmpresa/{idEmpresa}")
-    public ResponseEntity<List<Categoria>> obtenerCategoriasPorIdEmpresa(@PathVariable Long idEmpresa) {
-        List<Categoria> categorias = catService.obtenerCategoriasPorIdEmpresa(idEmpresa);
+    public ResponseEntity<List<CategoriaEmpresaDTO>> obtenerCategoriasPorIdEmpresa(@PathVariable Long idEmpresa) {
+        List<CategoriaEmpresaDTO> categorias = catService.obtenerCategoriasPorIdEmpresa(idEmpresa);
         if (categorias.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(categorias);
     }
+
 //-----------------------
 }

@@ -20,15 +20,17 @@ public class Categoria extends Base{
 
     private String denominacion;
     private String urlIcono;
-    @JsonBackReference
+
+    @JsonBackReference(value = "categoria-articulos")
     @OneToMany(mappedBy = "categoria")
     private Set<Articulo> articulos = new HashSet<>();
 //----------
+@JsonManagedReference(value = "categoria-subCategorias")
 @OneToMany(mappedBy = "categoriaPadre", cascade = CascadeType.ALL)
 
 private List<Categoria> subCategorias;
 //------
-    @JsonBackReference
+    @JsonBackReference(value = "categoriaPadre-subCategorias")
     @ManyToOne
     @JoinColumn(name = "categoria_padre_id")
     private Categoria categoriaPadre;

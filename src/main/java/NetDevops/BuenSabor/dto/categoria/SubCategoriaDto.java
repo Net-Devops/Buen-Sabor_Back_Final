@@ -15,7 +15,7 @@ public class SubCategoriaDto extends BaseDto {
     private Long idCategoriaPadre;
     private Set<SubCategoriaDto> subSubCategoriaDtos = new HashSet<>();
     private Set<SucursalSimpleDto> sucursales = new HashSet<>();
-    private boolean eliminado;
+
 
 
 }

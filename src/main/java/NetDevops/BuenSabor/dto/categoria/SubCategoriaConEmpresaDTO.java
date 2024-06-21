@@ -13,5 +13,5 @@ public class SubCategoriaConEmpresaDTO extends BaseDto {
     private Long idCategoriaPadre;
     private Long idEmpresaCategoriaPadre; // Nuevo campo para el ID de la empresa de la categoría padre
     private Set<SubCategoriaConEmpresaDTO> subSubCategoriaDtos = new HashSet<>();
-    private boolean eliminado;
+
 }
