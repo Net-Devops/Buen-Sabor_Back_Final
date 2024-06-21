@@ -45,14 +45,14 @@ public class LocalController {
         }
     }
 
-    @GetMapping("/traerCategoriasNoAsociadasASucursal/{sucursalId}")
-    public ResponseEntity<?> traerCategoriasNoAsociadasASucursal(@PathVariable Long sucursalId){
-        try {
-            return ResponseEntity.ok(localService.traerCategoriasNoAsociadasASucursal(sucursalId));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+   @GetMapping("/traerCategoriasNoAsociadasASucursal/{sucursalId}/{empresaId}")
+public ResponseEntity<?> traerCategoriasNoAsociadasASucursal(@PathVariable Long sucursalId, @PathVariable Long empresaId){
+    try {
+        return ResponseEntity.ok(localService.traerCategoriasNoAsociadasASucursal(sucursalId, empresaId));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
+}
     //endregion
 
     //region Promociones

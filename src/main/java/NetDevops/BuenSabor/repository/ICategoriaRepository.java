@@ -1,6 +1,7 @@
 package NetDevops.BuenSabor.repository;
 
 import NetDevops.BuenSabor.entities.Categoria;
+import NetDevops.BuenSabor.entities.Empresa;
 import NetDevops.BuenSabor.entities.Sucursal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -41,7 +42,7 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Set<Categoria> findBySucursalesNotContains(Sucursal sucursal);
     Set<Categoria> findByCategoriaPadre_IdAndSucursalesNotContains(Long categoriaPadreId, Sucursal sucursal);
 
-
-
+Set<Categoria> findBySucursalesNotContainsAndEmpresa(Sucursal sucursal, Empresa empresa);
+    Set<Categoria> findByCategoriaPadre_IdAndSucursalesNotContainsAndEmpresa(Long categoriaPadreId, Sucursal sucursal, Empresa empresa);
 
 }
