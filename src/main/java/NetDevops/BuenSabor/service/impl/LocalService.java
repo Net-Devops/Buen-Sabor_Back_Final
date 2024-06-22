@@ -36,19 +36,24 @@ public class LocalService {
         Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursales_Id(sucursalId);
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria lista: listaCategoriaOriginal){
-            CategoriaDto categoriadto = new CategoriaDto();
-            categoriadto.setDenominacion(lista.getDenominacion());
-            categoriadto.setUrlIcono(lista.getUrlIcono());
-            categoriadto.setId(lista.getId());
-            categoriadto.setEliminado(lista.isEliminado());
+            // Solo agregar a la lista las categorías que no tienen una categoría padre
+            if (lista.getCategoriaPadre() == null) {
+                CategoriaDto categoriadto = new CategoriaDto();
+                categoriadto.setDenominacion(lista.getDenominacion());
+                categoriadto.setUrlIcono(lista.getUrlIcono());
+                categoriadto.setId(lista.getId());
+                categoriadto.setEliminado(lista.isEliminado());
 
-            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
+                Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
 
-            for (Categoria subCategoria : subCategorias) {
-                SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
-                categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                for (Categoria subCategoria : subCategorias) {
+                    if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(lista.getId())) {
+                        SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
+                        categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                    }
+                }
+                listaDto.add(categoriadto);
             }
-            listaDto.add(categoriadto);
         }
         return listaDto;
     } catch (Exception e) {
@@ -66,8 +71,10 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
 
     Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursales_Id(categoria.getId(), sucursalId);
     for (Categoria subCategoria : subCategorias) {
-        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
-        subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(categoria.getId())) {
+            SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
+            subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        }
     }
     return subCategoriaDto;
 }
@@ -135,19 +142,22 @@ public Set<CategoriaDto> traerCategoriasNoAsociadasASucursal(Long sucursalId, Lo
         Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursalesNotContainsAndEmpresa(sucursal, empresa);
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria lista: listaCategoriaOriginal){
-            CategoriaDto categoriadto = new CategoriaDto();
-            categoriadto.setDenominacion(lista.getDenominacion());
-            categoriadto.setUrlIcono(lista.getUrlIcono());
-            categoriadto.setId(lista.getId());
-            categoriadto.setEliminado(lista.isEliminado());
+            // Solo agregar a la lista las categorías que no tienen una categoría padre
+            if (lista.getCategoriaPadre() == null) {
+                CategoriaDto categoriadto = new CategoriaDto();
+                categoriadto.setDenominacion(lista.getDenominacion());
+                categoriadto.setUrlIcono(lista.getUrlIcono());
+                categoriadto.setId(lista.getId());
+                categoriadto.setEliminado(lista.isEliminado());
 
-            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContainsAndEmpresa(lista.getId(), sucursal, empresa);
+                Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContainsAndEmpresa(lista.getId(), sucursal, empresa);
 
-            for (Categoria subCategoria : subCategorias) {
-                SubCategoriaDto subCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
-                categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                for (Categoria subCategoria : subCategorias) {
+                    SubCategoriaDto subCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
+                    categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                }
+                listaDto.add(categoriadto);
             }
-            listaDto.add(categoriadto);
         }
         return listaDto;
     } catch (Exception e) {
@@ -171,12 +181,13 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 
     Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContainsAndEmpresa(categoria.getId(), sucursal, empresa);
     for (Categoria subCategoria : subCategorias) {
-        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
-        subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(categoria.getId())) {
+            SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
+            subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        }
     }
     return subCategoriaDto;
 }
-
 //endregion
 
 //region Promociones
