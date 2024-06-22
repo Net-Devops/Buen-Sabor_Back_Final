@@ -171,8 +171,10 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
 
     Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContainsAndEmpresa(categoria.getId(), sucursal, empresa);
     for (Categoria subCategoria : subCategorias) {
-        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
-        subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(categoria.getId())) {
+            SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
+            subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        }
     }
     return subCategoriaDto;
 }
