@@ -36,21 +36,24 @@ public class LocalService {
         Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursales_Id(sucursalId);
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria lista: listaCategoriaOriginal){
-            CategoriaDto categoriadto = new CategoriaDto();
-            categoriadto.setDenominacion(lista.getDenominacion());
-            categoriadto.setUrlIcono(lista.getUrlIcono());
-            categoriadto.setId(lista.getId());
-            categoriadto.setEliminado(lista.isEliminado());
+            // Solo agregar a la lista las categorías que no tienen una categoría padre
+            if (lista.getCategoriaPadre() == null) {
+                CategoriaDto categoriadto = new CategoriaDto();
+                categoriadto.setDenominacion(lista.getDenominacion());
+                categoriadto.setUrlIcono(lista.getUrlIcono());
+                categoriadto.setId(lista.getId());
+                categoriadto.setEliminado(lista.isEliminado());
 
-            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
+                Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
 
-            for (Categoria subCategoria : subCategorias) {
-                if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(lista.getId())) {
-                    SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
-                    categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                for (Categoria subCategoria : subCategorias) {
+                    if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(lista.getId())) {
+                        SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
+                        categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                    }
                 }
+                listaDto.add(categoriadto);
             }
-            listaDto.add(categoriadto);
         }
         return listaDto;
     } catch (Exception e) {
