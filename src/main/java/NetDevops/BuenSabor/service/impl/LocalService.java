@@ -41,6 +41,7 @@ public class LocalService {
             categoriadto.setUrlIcono(lista.getUrlIcono());
             categoriadto.setId(lista.getId());
             categoriadto.setEliminado(lista.isEliminado());
+            categoriadto.setEmpresaId(lista.getEmpresa().getId());
 
             Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
 
@@ -63,6 +64,7 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
     subCategoriaDto.setId(categoria.getId());
     subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
     subCategoriaDto.setEliminado(categoria.isEliminado());
+    subCategoriaDto.setEmpresaId(categoria.getEmpresa().getId());
 
     Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursales_Id(categoria.getId(), sucursalId);
     for (Categoria subCategoria : subCategorias) {
