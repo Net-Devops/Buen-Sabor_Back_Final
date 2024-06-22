@@ -1,7 +1,9 @@
 package NetDevops.BuenSabor.contoller;
 
+import NetDevops.BuenSabor.dto.pedido.PedidoDto;
 import NetDevops.BuenSabor.entities.Pedido;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
+import NetDevops.BuenSabor.enums.Estado;
 import NetDevops.BuenSabor.service.impl.PedidoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
-    @GetMapping("/{sucursalId}")
+    @GetMapping("traer-lista/{sucursalId}")
 public ResponseEntity<?> lista(@PathVariable Long sucursalId) {
     try {
         return ResponseEntity.ok().body(pedidoService.traerPedidos(sucursalId));
@@ -70,5 +72,16 @@ public ResponseEntity<?> lista(@PathVariable Long sucursalId) {
         }
 
     }
+
+@PutMapping("/estado/{id}")
+public ResponseEntity<?> cambiarEstadoPedido(@PathVariable Long id, @RequestBody String nuevoEstado) {
+    try {
+        Estado estado = Estado.valueOf(nuevoEstado.toUpperCase());
+        PedidoDto pedidoActualizado = pedidoService.cambiarEstadoPedido(id, estado);
+        return ResponseEntity.ok().body(pedidoActualizado);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
 
 }

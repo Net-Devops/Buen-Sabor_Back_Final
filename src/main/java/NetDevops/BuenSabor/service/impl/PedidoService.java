@@ -1,8 +1,15 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.pedido.ArticuloManufacturadoDto;
+import NetDevops.BuenSabor.dto.pedido.PedidoDetalleDto;
+import NetDevops.BuenSabor.dto.pedido.PedidoDto;
+import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.entities.Pedido;
+import NetDevops.BuenSabor.entities.PedidoDetalle;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
+import NetDevops.BuenSabor.enums.Estado;
 import NetDevops.BuenSabor.enums.Rol;
+import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.IPedidoRepository;
 import NetDevops.BuenSabor.service.IPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +23,8 @@ import java.util.stream.Collectors;
 public class PedidoService implements IPedidoService {
     @Autowired
     private IPedidoRepository pedidoRepository;
-
+@Autowired
+private IArticuloManufacturadoRepository articuloManufacturadoRepository;
 
     @Override
     public Pedido crearPedido(Pedido pedido) throws Exception {
@@ -61,13 +69,48 @@ public class PedidoService implements IPedidoService {
         }
     }
 
-   @Override
-public List<Pedido> traerPedidos(Long sucursalId) throws Exception{
+@Override
+public List<PedidoDto> traerPedidos(Long sucursalId) throws Exception{
     try {
-        return pedidoRepository.findBySucursal_Id(sucursalId);
+        List<Pedido> pedidos = pedidoRepository.findBySucursal_Id(sucursalId);
+        return pedidos.stream()
+            .map(this::convertToDto)
+            .collect(Collectors.toList());
     } catch (Exception e) {
         throw new Exception(e.getMessage());
     }
+}
+
+private PedidoDto convertToDto(Pedido pedido) {
+    PedidoDto pedidoDto = new PedidoDto();
+    pedidoDto.setId(pedido.getId());
+    pedidoDto.setHora(pedido.getHora());
+    pedidoDto.setTotal(pedido.getTotal());
+    pedidoDto.setTotalCostoProduccion(pedido.getTotalCostoProduccion());
+    pedidoDto.setEstado(pedido.getEstado());
+    pedidoDto.setFormaPago(pedido.getFormaPago());
+    pedidoDto.setTipoEnvio(pedido.getTipoEnvio());
+    pedidoDto.setFechaPedido(pedido.getFechaPedido());
+    pedidoDto.setPreferenceMPId(pedido.getPreferenceMPId());
+    pedidoDto.setPedidoDetalleDto(pedido.getPedidoDetalle().stream()
+        .map(this::convertDetalleToDto)
+        .collect(Collectors.toList()));
+    return pedidoDto;
+}
+
+private PedidoDetalleDto convertDetalleToDto(PedidoDetalle detalle) {
+    PedidoDetalleDto detalleDto = new PedidoDetalleDto();
+    detalleDto.setId(detalle.getId());
+    detalleDto.setCantidad(detalle.getCantidad());
+    detalleDto.setArticulo(convertArticuloToDto(articuloManufacturadoRepository.findById(detalle.getArticulo().getId()).orElse(null)));
+    return detalleDto;
+}
+
+private ArticuloManufacturadoDto convertArticuloToDto(ArticuloManufacturado articulo) {
+    ArticuloManufacturadoDto articuloDto = new ArticuloManufacturadoDto();
+    articuloDto.setId(articulo.getId());
+    articuloDto.setDenominacion(articulo.getDenominacion());
+    return articuloDto;
 }
 
     @Override
@@ -97,6 +140,21 @@ public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception{
                 // Otros roles no pueden ver ningún pedido
                 return new ArrayList<>();
         }
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
+    }
+}
+
+
+public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Exception {
+    try {
+        Pedido pedido = pedidoRepository.findById(id).orElse(null);
+        if (pedido == null) {
+            throw new Exception("Pedido no encontrado");
+        }
+        pedido.setEstado(nuevoEstado);
+        Pedido savedPedido = pedidoRepository.save(pedido);
+        return convertToDto(savedPedido); // Convertir a PedidoDto antes de devolver
     } catch (Exception e) {
         throw new Exception(e.getMessage());
     }
