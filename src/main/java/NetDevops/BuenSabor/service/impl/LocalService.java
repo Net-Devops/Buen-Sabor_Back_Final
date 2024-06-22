@@ -45,8 +45,10 @@ public class LocalService {
             Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
 
             for (Categoria subCategoria : subCategorias) {
-                SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
-                categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(lista.getId())) {
+                    SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
+                    categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                }
             }
             listaDto.add(categoriadto);
         }
@@ -66,8 +68,10 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
 
     Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursales_Id(categoria.getId(), sucursalId);
     for (Categoria subCategoria : subCategorias) {
-        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
-        subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(categoria.getId())) {
+            SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente(subCategoria, sucursalId);
+            subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+        }
     }
     return subCategoriaDto;
 }
