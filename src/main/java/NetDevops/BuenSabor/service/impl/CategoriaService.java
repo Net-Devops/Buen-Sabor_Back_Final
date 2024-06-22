@@ -1,24 +1,22 @@
 package NetDevops.BuenSabor.service.impl;
 
-import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
-import NetDevops.BuenSabor.dto.categoria.SubCategoriaDto;
-import NetDevops.BuenSabor.dto.categoria.SubCategoriaListaDto;
+import NetDevops.BuenSabor.dto.categoria.*;
 import NetDevops.BuenSabor.dto.sucursal.SucursalSimpleDto;
 import NetDevops.BuenSabor.entities.Articulo;
 import NetDevops.BuenSabor.entities.Categoria;
+import NetDevops.BuenSabor.entities.Empresa;
 import NetDevops.BuenSabor.entities.Sucursal;
 import NetDevops.BuenSabor.repository.IArticuloRepository;
 import NetDevops.BuenSabor.repository.ICategoriaRepository;
+import NetDevops.BuenSabor.repository.IEmpresaRepository;
 import NetDevops.BuenSabor.repository.ISucursalRepository;
 import NetDevops.BuenSabor.service.ICategoriaService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoriaService implements ICategoriaService {
@@ -424,5 +422,121 @@ public Set<CategoriaDto> traerTodo() throws Exception {
 
     return subCategoriaDto;
 }
+//----------------------------------- Categoria con Empresas--------------------
+    @Autowired
+    private IEmpresaRepository empresaRepository;
 
+    public Categoria crearCategoriaporEmpresa(CategoriaEmpresaDTO categoriaEmpresaDTO) {
+    Empresa empresa = empresaRepository.findById(categoriaEmpresaDTO.getEmpresaId())
+            .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada"));
+
+    Categoria categoria = new Categoria();
+    categoria.setDenominacion(categoriaEmpresaDTO.getDenominacion());
+    categoria.setEmpresa(empresa);
+
+    return categoriaRepository.save(categoria);
+}
+
+    public Categoria actualizarDenominacion(Long id, String nuevaDenominacion) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada"));
+
+        categoria.setDenominacion(nuevaDenominacion);
+
+        return categoriaRepository.save(categoria);
+    }
+
+    public Categoria cambiarEstadoEliminado(Long id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada"));
+
+        categoria.setEliminado(!categoria.isEliminado());
+
+        return categoriaRepository.save(categoria);
+    }
+
+    public Categoria crearSubCategoriaConEmpresa(SubCategoriaConEmpresaDTO subCategoriaDTO) {
+        Categoria categoriaPadre = categoriaRepository.findById(subCategoriaDTO.getIdCategoriaPadre())
+                .orElseThrow(() -> new IllegalArgumentException("Categoría padre no encontrada"));
+
+        // Verificar si la empresa de la categoría padre es nula
+        if (categoriaPadre.getEmpresa() == null) {
+            throw new IllegalArgumentException("La categoría padre no tiene una empresa asociada");
+        }
+
+        // Obtener el ID de la empresa de la categoría padre
+        Long idEmpresaCategoriaPadre = categoriaPadre.getEmpresa().getId();
+
+        Categoria subCategoria = new Categoria();
+        subCategoria.setDenominacion(subCategoriaDTO.getDenominacion());
+        subCategoria.setCategoriaPadre(categoriaPadre);
+
+        // Establecer la empresa de la categoría padre en la subcategoría
+        subCategoria.setEmpresa(categoriaPadre.getEmpresa());
+
+        categoriaPadre.agregarSubCategoria(subCategoria);
+
+        // Guardar el ID de la empresa de la categoría padre en el DTO
+        subCategoriaDTO.setIdEmpresaCategoriaPadre(idEmpresaCategoriaPadre);
+
+        return categoriaRepository.save(subCategoria);
+    }
+   //---------------------
+   public List<CategoriaEmpresaDTO> obtenerCategoriasPorIdEmpresa(Long idEmpresa) {
+       List<Categoria> categorias = categoriaRepository.findByEmpresaId(idEmpresa);
+       int maxDepth = 10; // Ajusta según tus necesidades
+       Set<Long> procesadas = new HashSet<>();
+       return categorias.stream()
+               .map(categoria -> convertirACategoriaEmpresaDTO(categoria, maxDepth, procesadas))
+               .filter(Objects::nonNull)
+               .collect(Collectors.toList());
+   }
+
+    private CategoriaEmpresaDTO convertirACategoriaEmpresaDTO(Categoria categoria, int depth, Set<Long> procesadas) {
+        if (procesadas.contains(categoria.getId())) {
+            return null; // ya procesado
+        }
+        procesadas.add(categoria.getId());
+
+        CategoriaEmpresaDTO dto = new CategoriaEmpresaDTO();
+        dto.setId(categoria.getId());
+        dto.setDenominacion(categoria.getDenominacion());
+        dto.setEmpresaId(categoria.getEmpresa().getId());
+        dto.setEliminado(categoria.isEliminado()); // Asegúrate de usar el getter correcto
+
+        if (depth > 0) {
+            Set<SubCategoriaConEmpresaDTO> subCategoriaDtos = categoria.getSubCategorias().stream()
+                    .map(subCategoria -> convertirASubCategoriaConEmpresaDTO(subCategoria, depth - 1, procesadas))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            dto.setSubCategoriaDtos(subCategoriaDtos);
+        }
+
+        return dto;
+    }
+
+    private SubCategoriaConEmpresaDTO convertirASubCategoriaConEmpresaDTO(Categoria subCategoria, int depth, Set<Long> procesadas) {
+        if (procesadas.contains(subCategoria.getId())) {
+            return null; // ya procesado
+        }
+        procesadas.add(subCategoria.getId());
+
+        SubCategoriaConEmpresaDTO dto = new SubCategoriaConEmpresaDTO();
+        dto.setId(subCategoria.getId());
+        dto.setDenominacion(subCategoria.getDenominacion());
+        dto.setIdCategoriaPadre(subCategoria.getCategoriaPadre().getId());
+        dto.setIdEmpresaCategoriaPadre(subCategoria.getCategoriaPadre().getEmpresa().getId());
+        dto.setEliminado(subCategoria.isEliminado()); // Asegúrate de usar el getter correcto
+
+        if (depth > 0) {
+            Set<SubCategoriaConEmpresaDTO> subSubCategoriaDtos = subCategoria.getSubCategorias().stream()
+                    .map(subSubCategoria -> convertirASubCategoriaConEmpresaDTO(subSubCategoria, depth - 1, procesadas))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            dto.setSubSubCategoriaDtos(subSubCategoriaDtos);
+        }
+
+        return dto;
+    }
+//----------------------
 }

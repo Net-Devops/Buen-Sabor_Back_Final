@@ -27,6 +27,8 @@ public class LocalService {
     private IPromocionDetalleRepository promocionDetalleRepository;
     @Autowired
     private IArticuloManufacturadoRepository articuloManufacturadoRepository;
+    @Autowired
+    private IEmpresaRepository empresaRepository;
 
 //region  Categoria
     public Set<CategoriaDto> traerTodo(Long sucursalId) throws Exception {
@@ -70,19 +72,7 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
     return subCategoriaDto;
 }
 
-    public Categoria agregarSucursalACategoria(Long categoriaId, Long sucursalId) throws Exception {
-        Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
-        Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
-
-        if (categoria == null || sucursal == null) {
-            throw new Exception("La categoría o la sucursal no existen");
-        }
-
-        categoria.getSucursales().add(sucursal);
-        return categoriaRepository.save(categoria);
-    }
-
-    public Categoria desasociarSucursalDeCategoria(Long categoriaId, Long sucursalId) throws Exception {
+   public Categoria agregarSucursalACategoria(Long categoriaId, Long sucursalId) throws Exception {
     Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
     Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
 
@@ -90,18 +80,59 @@ private SubCategoriaDto agregarSubCategoriasRecursivamente(Categoria categoria, 
         throw new Exception("La categoría o la sucursal no existen");
     }
 
-    categoria.getSucursales().remove(sucursal);
+    // Agregar la sucursal a la categoría
+    categoria.getSucursales().add(sucursal);
+
+    // Agregar la sucursal a las subcategorías de la categoría
+    agregarSucursalASubcategorias(categoria, sucursal);
+
     return categoriaRepository.save(categoria);
 }
 
-public Set<CategoriaDto> traerCategoriasNoAsociadasASucursal(Long sucursalId) throws Exception {
+private void agregarSucursalASubcategorias(Categoria categoria, Sucursal sucursal) {
+    for (Categoria subCategoria : categoria.getSubCategorias()) {
+        subCategoria.getSucursales().add(sucursal);
+
+        //Recursivamente agregar la sucursal a las subcategorías de la subcategoría
+        agregarSucursalASubcategorias(subCategoria, sucursal);
+    }
+}
+
+public Categoria desasociarSucursalDeCategoria(Long categoriaId, Long sucursalId) throws Exception {
+    Categoria categoria = categoriaRepository.findById(categoriaId).orElse(null);
+    Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
+
+    if (categoria == null || sucursal == null) {
+        throw new Exception("La categoría o la sucursal no existen");
+    }
+
+    // Remover la sucursal de la categoría
+    categoria.getSucursales().remove(sucursal);
+
+    // Remover la sucursal de las subcategorías de la categoría
+    desasociarSucursalDeSubcategorias(categoria, sucursal);
+
+    return categoriaRepository.save(categoria);
+}
+
+private void desasociarSucursalDeSubcategorias(Categoria categoria, Sucursal sucursal) {
+    for (Categoria subCategoria : categoria.getSubCategorias()) {
+        subCategoria.getSucursales().remove(sucursal);
+
+        // Recursivamente remover la sucursal de las subcategorías de la subcategoría
+        desasociarSucursalDeSubcategorias(subCategoria, sucursal);
+    }
+}
+
+public Set<CategoriaDto> traerCategoriasNoAsociadasASucursal(Long sucursalId, Long empresaId) throws Exception {
     try {
         Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
-        if (sucursal == null) {
-            throw new Exception("La sucursal no existe");
+        Empresa empresa = empresaRepository.findById(empresaId).orElse(null);
+        if (sucursal == null || empresa == null) {
+            throw new Exception("La sucursal o la empresa no existen");
         }
 
-        Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursalesNotContains(sucursal);
+        Set<Categoria> listaCategoriaOriginal = categoriaRepository.findBySucursalesNotContainsAndEmpresa(sucursal, empresa);
         Set<CategoriaDto> listaDto = new HashSet<>();
         for (Categoria lista: listaCategoriaOriginal){
             CategoriaDto categoriadto = new CategoriaDto();
@@ -110,10 +141,10 @@ public Set<CategoriaDto> traerCategoriasNoAsociadasASucursal(Long sucursalId) th
             categoriadto.setId(lista.getId());
             categoriadto.setEliminado(lista.isEliminado());
 
-            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContains(lista.getId(), sucursal);
+            Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContainsAndEmpresa(lista.getId(), sucursal, empresa);
 
             for (Categoria subCategoria : subCategorias) {
-                SubCategoriaDto subCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId);
+                SubCategoriaDto subCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
                 categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
             }
             listaDto.add(categoriadto);
@@ -124,10 +155,11 @@ public Set<CategoriaDto> traerCategoriasNoAsociadasASucursal(Long sucursalId) th
     }
 }
 
-private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(Categoria categoria, Long sucursalId) throws Exception {
+private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(Categoria categoria, Long sucursalId, Long empresaId) throws Exception {
     Sucursal sucursal = sucursalRepository.findById(sucursalId).orElse(null);
-    if (sucursal == null) {
-        throw new Exception("La sucursal no existe");
+    Empresa empresa = empresaRepository.findById(empresaId).orElse(null);
+    if (sucursal == null || empresa == null) {
+        throw new Exception("La sucursal o la empresa no existen");
     }
 
     SubCategoriaDto subCategoriaDto = new SubCategoriaDto();
@@ -137,9 +169,9 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
     subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
     subCategoriaDto.setEliminado(categoria.isEliminado());
 
-    Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContains(categoria.getId(), sucursal);
+    Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndSucursalesNotContainsAndEmpresa(categoria.getId(), sucursal, empresa);
     for (Categoria subCategoria : subCategorias) {
-        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId);
+        SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasNoAsociadasASucursalRecursivamente(subCategoria, sucursalId, empresaId);
         subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
     }
     return subCategoriaDto;

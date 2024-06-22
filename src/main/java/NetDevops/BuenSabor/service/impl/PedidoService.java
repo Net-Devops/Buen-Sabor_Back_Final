@@ -61,14 +61,14 @@ public class PedidoService implements IPedidoService {
         }
     }
 
-    @Override
-    public List<Pedido> traerPedidos() throws Exception{
-        try {
-            return pedidoRepository.findAll();
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+   @Override
+public List<Pedido> traerPedidos(Long sucursalId) throws Exception{
+    try {
+        return pedidoRepository.findBySucursal_Id(sucursalId);
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
     }
+}
 
     @Override
 public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception{

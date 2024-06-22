@@ -10,6 +10,6 @@ public interface IPedidoService {
     public Pedido actualizarPedido(Long id,Pedido pedido) throws Exception;
     public Pedido buscarPorId(Long id) throws Exception;
     public boolean eliminarPedido(Long id) throws Exception;
-    public List<Pedido> traerPedidos() throws Exception;
+    public List<Pedido> traerPedidos(Long sucursalId) throws Exception;
     public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception;
 }

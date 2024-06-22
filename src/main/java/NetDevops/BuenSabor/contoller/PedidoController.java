@@ -18,14 +18,14 @@ public class PedidoController {
     @Autowired
     private PedidoService pedidoService;
 
-    @GetMapping("/")
-    public ResponseEntity<?> lista() {
-        try {
-            return ResponseEntity.ok().body(pedidoService.traerPedidos());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @GetMapping("/{sucursalId}")
+public ResponseEntity<?> lista(@PathVariable Long sucursalId) {
+    try {
+        return ResponseEntity.ok().body(pedidoService.traerPedidos(sucursalId));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
