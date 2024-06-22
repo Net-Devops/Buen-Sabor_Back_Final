@@ -178,7 +178,6 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
     }
     return subCategoriaDto;
 }
-
 //endregion
 
 //region Promociones
