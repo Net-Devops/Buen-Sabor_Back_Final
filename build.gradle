@@ -25,6 +25,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
@@ -40,7 +41,13 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-core:5.6.0'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'com.itextpdf:itext7-core:7.1.14'
-
+	// Auth0
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-authorization-server'
+	implementation 'com.konghq:unirest-java:3.11.12' // Para obtener el token
+	//Seguridad
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Envers
+	implementation 'org.hibernate.orm:hibernate-envers:6.4.4.Final'
 }
 
 tasks.named('test') {
