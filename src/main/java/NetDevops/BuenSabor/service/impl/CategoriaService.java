@@ -482,15 +482,7 @@ public Set<CategoriaDto> traerTodo() throws Exception {
         return categoriaRepository.save(subCategoria);
     }
    //---------------------
-   public List<CategoriaEmpresaDTO> obtenerCategoriasPorIdEmpresa(Long idEmpresa) {
-       List<Categoria> categorias = categoriaRepository.findByEmpresaId(idEmpresa);
-       int maxDepth = 10; // Ajusta según tus necesidades
-       Set<Long> procesadas = new HashSet<>();
-       return categorias.stream()
-               .map(categoria -> convertirACategoriaEmpresaDTO(categoria, maxDepth, procesadas))
-               .filter(Objects::nonNull)
-               .collect(Collectors.toList());
-   }
+
 
     private CategoriaEmpresaDTO convertirACategoriaEmpresaDTO(Categoria categoria, int depth, Set<Long> procesadas) {
         if (procesadas.contains(categoria.getId())) {
@@ -539,4 +531,54 @@ public Set<CategoriaDto> traerTodo() throws Exception {
         return dto;
     }
 //----------------------
+public Set<CategoriaDto> traerTodo2(Long empresaId) throws Exception {
+    try {
+        Set<Categoria> listaCategoriaOriginal = categoriaRepository.findByEmpresaId(empresaId);
+        Set<CategoriaDto> listaDto = new HashSet<>();
+        for (Categoria lista: listaCategoriaOriginal){
+            // Solo agregar a la lista las categorías que no tienen una categoría padre
+            if (lista.getCategoriaPadre() == null) {
+                CategoriaDto categoriadto = new CategoriaDto();
+                categoriadto.setDenominacion(lista.getDenominacion());
+                categoriadto.setUrlIcono(lista.getUrlIcono());
+                categoriadto.setId(lista.getId());
+                categoriadto.setEliminado(lista.isEliminado());
+
+                Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_Id(lista.getId());
+
+                for (Categoria subCategoria : subCategorias) {
+                    if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(lista.getId())) {
+                        SubCategoriaDto subCategoriaDto = agregarSubCategoriasRecursivamente2(subCategoria, empresaId);
+                        categoriadto.getSubCategoriaDtos().add(subCategoriaDto);
+                    }
+                }
+                listaDto.add(categoriadto);
+            }
+        }
+        return listaDto;
+    } catch (Exception e) {
+        throw new Exception(e);
+    }
+}
+
+    private SubCategoriaDto agregarSubCategoriasRecursivamente2(Categoria categoria, Long empresaId) {
+        SubCategoriaDto subCategoriaDto = new SubCategoriaDto();
+        subCategoriaDto.setDenominacion(categoria.getDenominacion());
+        subCategoriaDto.setUrlIcono(categoria.getUrlIcono());
+        subCategoriaDto.setId(categoria.getId());
+        subCategoriaDto.setIdCategoriaPadre(categoria.getCategoriaPadre() != null ? categoria.getCategoriaPadre().getId() : null);
+        subCategoriaDto.setEliminado(categoria.isEliminado());
+
+        Set<Categoria> subCategorias = categoriaRepository.findByCategoriaPadre_IdAndEmpresa_Id(categoria.getId(), empresaId);
+        for (Categoria subCategoria : subCategorias) {
+            if (subCategoria.getCategoriaPadre() != null && subCategoria.getCategoriaPadre().getId().equals(categoria.getId())) {
+                SubCategoriaDto subSubCategoriaDto = agregarSubCategoriasRecursivamente2(subCategoria, empresaId);
+                subCategoriaDto.getSubSubCategoriaDtos().add(subSubCategoriaDto);
+            }
+        }
+        return subCategoriaDto;
+    }
+
+
+
 }

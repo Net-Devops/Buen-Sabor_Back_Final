@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 // GET http://localhost:8080/api/categorias/
 
@@ -204,12 +205,12 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
 
     //------------------
     @GetMapping("/porEmpresa/{idEmpresa}")
-    public ResponseEntity<List<CategoriaEmpresaDTO>> obtenerCategoriasPorIdEmpresa(@PathVariable Long idEmpresa) {
-        List<CategoriaEmpresaDTO> categorias = catService.obtenerCategoriasPorIdEmpresa(idEmpresa);
-        if (categorias.isEmpty()) {
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<?> obtenerCategoriasPorIdEmpresa(@PathVariable Long idEmpresa) {
+        try {
+            return ResponseEntity.ok(catService.traerTodo2(idEmpresa));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok(categorias);
     }
 
 //-----------------------

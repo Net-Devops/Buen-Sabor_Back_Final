@@ -25,7 +25,8 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
 
 
     //---------
-    List<Categoria> findByEmpresaId(Long idEmpresa);
+    Set<Categoria> findByEmpresaId(Long idEmpresa);
+    Set<Categoria> findByCategoriaPadre_IdAndEmpresa_Id(Long categoriaPadreId, Long idEmpresa);
 //----------------
 
 
