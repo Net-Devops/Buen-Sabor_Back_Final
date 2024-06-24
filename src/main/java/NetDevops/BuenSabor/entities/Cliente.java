@@ -17,6 +17,7 @@ public class Cliente extends Base{
     private String email;
     private LocalDate fechaNacimiento;
     private Rol rol = Rol.CLIENTE;
+    private String imagen;
 
 
    @ManyToMany
@@ -26,8 +27,6 @@ public class Cliente extends Base{
   inverseJoinColumns = @JoinColumn(name = "domicilio_id"))
 private List<Domicilio> domicilios;
 
-    @OneToOne
-    private ImagenCliente imagenCliente;
     @OneToOne
     private UsuarioCliente usuarioCliente;
 

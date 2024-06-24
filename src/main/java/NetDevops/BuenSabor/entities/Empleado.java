@@ -18,9 +18,9 @@ public class Empleado extends Base {
     private String email;
     private LocalDate fechaNacimiento;
     private Rol rol;
+    private String imagen;
 
-    @OneToOne
-    private ImagenEmpleado imagenEmpleado;
+
     @OneToOne
     private UsuarioEmpleado usuarioEmpleado;
     @ManyToOne
