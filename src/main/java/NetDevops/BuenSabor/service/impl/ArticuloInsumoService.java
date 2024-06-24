@@ -184,30 +184,27 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
             }
         });
 
-       if (articuloInsumo.getImagenes() != null) {
-    for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
-        // Dividir el string base64 en el nombre de la imagen y los datos de la imagen
-        String[] parts = imagen.getUrl().split(";", 2);
-        String filename = "insumo-"+parts[0]; // El nombre de la imagen
-        String base64Image = parts[1]; // Los datos de la imagen en base64
+        if (articuloInsumo.getImagenes() != null) {
+            for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
+                // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
+                String filename = UUID.randomUUID().toString() + ".jpg";
+                try {
+                    String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), filename);
+                    imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
+                    imagen.setArticulo(articuloInsumo); // Asignar el artículo a la imagen
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-        try {
-            String rutaImagen = funcionalidades.guardarImagen(base64Image, filename);
-            imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
-            imagen.setArticulo(articuloInsumo); // Asignar el artículo a la imagen
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                // Verificar si la imagen ya existe en el conjunto de imágenes viejas
+                boolean exists = imagenesViejas.stream().anyMatch(oldImage -> oldImage.getUrl().equals(imagen.getUrl()));
+
+                // Si la imagen no existe en las imágenes viejas y existe en las nuevas, guardarla
+                if (!exists && imagenesNuevas.contains(imagen)) {
+                    imagenRepository.save(imagen);
+                }
+            }
         }
-
-        // Verificar si la imagen ya existe en el conjunto de imágenes viejas
-        boolean exists = imagenesViejas.stream().anyMatch(oldImage -> oldImage.getUrl().equals(imagen.getUrl()));
-
-        // Si la imagen no existe en las imágenes viejas y existe en las nuevas, guardarla
-        if (!exists && imagenesNuevas.contains(imagen)) {
-            imagenRepository.save(imagen);
-        }
-    }
-}
         articuloInsumo.setPrecioCompra(articuloInsumoViejo.getPrecioCompra());
         articuloInsumo.setPrecioVenta(articuloInsumoViejo.getPrecioVenta());
         articuloInsumo.setStockActual(articuloInsumoViejo.getStockActual());
