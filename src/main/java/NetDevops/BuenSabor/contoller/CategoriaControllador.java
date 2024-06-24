@@ -154,14 +154,14 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/categoriasPadre/")
-    public ResponseEntity<?> obtenerCategoriasPadre() {
-        try {
-            return ResponseEntity.ok().body(categoriaService.traerCategoriaPadre());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+   @GetMapping("/categoriasPadre/{sucursalId}")
+public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
+    try {
+        return ResponseEntity.ok().body(categoriaService.traerCategoriaPadre(sucursalId));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
+}
 
     @GetMapping("/{id}/tieneSubCategorias")
     public ResponseEntity<?> tieneSubCategorias(@PathVariable Long id) {

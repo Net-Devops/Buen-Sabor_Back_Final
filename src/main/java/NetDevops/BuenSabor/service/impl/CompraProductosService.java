@@ -34,12 +34,12 @@ public class CompraProductosService {
     private ICategoriaRepository categoriaRepository;
 
   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
-    Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_Id(categoriaId);
+    Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(categoriaId);
 
     List<CompraProductoDto> articulos = new ArrayList<>();
     for (Categoria subcategoria : subcategorias) {
-        List<ArticuloManufacturado> articulosManufacturados = articuloManufacturadoRepository.findByCategoriaId(subcategoria.getId());
-        List<ArticuloInsumo> articulosInsumos = articuloInsumoRepository.findByCategoriaId(subcategoria.getId());
+        List<ArticuloManufacturado> articulosManufacturados = articuloManufacturadoRepository.findByCategoriaIdAndEliminadoFalse(subcategoria.getId());
+        List<ArticuloInsumo> articulosInsumos = articuloInsumoRepository.findByCategoriaIdAndEliminadoFalse(subcategoria.getId());
 
         for (ArticuloManufacturado articulo : articulosManufacturados) {
             boolean canBeCreated = true;

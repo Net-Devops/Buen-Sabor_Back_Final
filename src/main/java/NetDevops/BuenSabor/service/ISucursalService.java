@@ -14,4 +14,5 @@ public interface ISucursalService {
     public Sucursal reactivate(Long id) throws Exception;
     public List<Sucursal> traerPorEmpresaId(Long empresaId) throws Exception;
     public Sucursal guardarSucursalDto(SucursalDto sucursalDto) throws Exception;
+    public List<Sucursal> obtenerSucursalesActivas() throws Exception ;
 }

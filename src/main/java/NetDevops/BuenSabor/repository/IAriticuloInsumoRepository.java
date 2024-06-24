@@ -30,4 +30,7 @@ public interface IAriticuloInsumoRepository extends JpaRepository<ArticuloInsumo
     Set<ArticuloInsumo> findBySucursal_Id(Long sucursalId);
     boolean existsByCodigoAndSucursal_Id(String codigo, Long sucursalId);
 boolean existsByDenominacionAndSucursal_Id(String denominacion, Long sucursalId);
+
+    List<ArticuloInsumo> findByCategoriaIdAndEliminadoFalse(Long categoriaId);
+
 }

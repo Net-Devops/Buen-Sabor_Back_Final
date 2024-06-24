@@ -22,5 +22,6 @@ List<ArticuloManufacturado> findByCategoriaId(Long categoriaId);
     boolean existsByDenominacionAndEliminadoFalseAndIdNot(String denominacion, Long id);
     //endregion
     List<ArticuloManufacturado> findBySucursal_Id(Long sucursalId);
+    List<ArticuloManufacturado> findByCategoriaIdAndEliminadoFalse(Long categoriaId);
 
 }

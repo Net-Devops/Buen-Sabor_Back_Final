@@ -145,4 +145,13 @@ public Sucursal update(Long id, Sucursal sucursal) throws Exception {
     }
 
 
+    public List<Sucursal> obtenerSucursalesActivas() throws Exception {
+       try {
+           return sucursalRepository.findByEliminadoFalse();
+       } catch (Exception e) {
+           throw new Exception(e.getMessage());
+       }
+    }
+
+
 }

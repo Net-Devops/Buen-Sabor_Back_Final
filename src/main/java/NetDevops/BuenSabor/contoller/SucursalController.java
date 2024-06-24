@@ -86,4 +86,13 @@ public class SucursalController {
         }
     }
 
+    @GetMapping("/traerSucursales/")
+    public ResponseEntity<?> traerSucursales(){
+        try {
+            return ResponseEntity.ok(sucursalService.obtenerSucursalesActivas());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

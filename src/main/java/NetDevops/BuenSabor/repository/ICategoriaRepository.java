@@ -22,7 +22,7 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Set<Categoria> findByCategoriaPadre_Id(Long categoriaPadreId);
     //para traer las subcategoria
     Set<Categoria> findByCategoriaPadreIsNotNullAndEliminadoFalse();
-
+    Set<Categoria> findBySucursales_IdAndEliminadoFalse(Long sucursalId);
 
     //---------
     Set<Categoria> findByEmpresaId(Long idEmpresa);
