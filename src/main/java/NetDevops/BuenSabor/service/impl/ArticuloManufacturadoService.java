@@ -316,6 +316,7 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
         }
     }
 
+    @Override
     public ArticuloManufacturado  traerArticuloBase64(Long id) throws Exception {
         try {
             ArticuloManufacturado Manufacturado = articuloManufacturadoRepository.findByIdAndEliminadoFalse(id);

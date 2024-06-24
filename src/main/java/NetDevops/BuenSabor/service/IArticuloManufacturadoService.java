@@ -15,4 +15,5 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
 public Set<ArticuloManufacturadoTablaDto> tablaArticuloManufacturado() throws Exception;
 public boolean reactivate(Long id) throws Exception;
 public List<ArticuloManufacturado> traerTodos() throws Exception;
+public ArticuloManufacturado  traerArticuloBase64(Long id) throws Exception;
 }
