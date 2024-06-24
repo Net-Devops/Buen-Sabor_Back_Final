@@ -202,6 +202,7 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
                 imagenVieja.setEliminado(true);
                 imagenVieja.setArticulo(null);
                 imagenRepository.save(imagenVieja);
+                funcionalidades.eliminarImagen(imagenVieja.getUrl());
                 imagenRepository.delete(imagenVieja);
             }
         });
