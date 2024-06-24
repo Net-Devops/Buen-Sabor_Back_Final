@@ -54,7 +54,7 @@ public ArticuloManufacturado cargarArticuloManufacturado(ArticuloManufacturado a
                 String filename = UUID.randomUUID().toString() + ".jpg";
 
                 // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
-                String ruta = imagenService.guardarImagenNueva(imagen.getUrl(), filename);
+                String ruta = funcionalidades.guardarImagen(imagen.getUrl(), filename);
 
                 // Actualizar el campo url en ImagenArticulo
                 imagen.setUrl(ruta);
