@@ -316,6 +316,31 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
         }
     }
 
+    public ArticuloManufacturado  traerArticuloBase64(Long id) throws Exception {
+        try {
+            ArticuloManufacturado Manufacturado = articuloManufacturadoRepository.findByIdAndEliminadoFalse(id);
+            if (Manufacturado == null) {
+                throw new Exception("No se encontro el articulo");
+            }
+
+            // Convertir las imágenes a base64
+            if (Manufacturado.getImagenes() != null) {
+                for (ImagenArticulo imagen : Manufacturado.getImagenes()) {
+                    try {
+                        String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+                        imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            return Manufacturado;
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+
 
     //endregion
 }

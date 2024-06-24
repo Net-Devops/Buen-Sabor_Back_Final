@@ -49,4 +49,18 @@ public class Funcionalidades {
         return imagenBase64;
     }
 
+    public boolean eliminarImagen(String rutaImagen) {
+        // Crear un objeto File con la ruta de la imagen
+        File file = new File(rutaImagen);
+
+        // Verificar si el archivo existe
+        if (file.exists()) {
+            // Si el archivo existe, intentar eliminarlo
+            return file.delete();
+        } else {
+            // Si el archivo no existe, retornar false
+            return false;
+        }
+    }
+
 }
