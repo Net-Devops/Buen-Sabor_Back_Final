@@ -180,6 +180,7 @@ public ArticuloInsumo actualizar(Long id, ArticuloInsumo articuloInsumo) throws 
                 imagenVieja.setEliminado(true);
                 imagenVieja.setArticulo(null);
                 imagenRepository.save(imagenVieja);
+                imagenRepository.delete(imagenVieja);
             }
         });
 

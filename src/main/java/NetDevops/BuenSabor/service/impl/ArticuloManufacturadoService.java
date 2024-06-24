@@ -30,6 +30,8 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
     private ImagenArticuloRepository imagenRepository;
     @Autowired
     private ImagenService imagenService;
+    @Autowired
+    private Funcionalidades funcionalidades;
 
 //region Crud Basico
 
@@ -161,18 +163,21 @@ public Set<ArticuloManufacturado> listaArticuloManufacturado() throws Exception 
 
     //region Actualizar
 
-    @Override
+@Override
 public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloManufacturado articuloManufacturado) throws Exception {
     try {
+        if (!articuloManufacturadoRepository.existsById(id)){
+            throw new Exception("No se encontro el articulo");
+        }
 
-        if (!articuloManufacturadoRepository.existsById(id)) {
-            throw new Exception("No se encontró el artículo");
+        ArticuloManufacturado articuloManufacturadoViejo = articuloManufacturadoRepository.findById(id).get();
+        Long sucursalId = articuloManufacturadoViejo.getSucursal().getId();
+
+        if(articuloManufacturadoRepository.existsByCodigoAndSucursal_Id(articuloManufacturado.getCodigo(), sucursalId) && !articuloManufacturado.getCodigo().equals(articuloManufacturadoViejo.getCodigo())){
+            throw new Exception("Ya existe un articulo con ese codigo en la misma sucursal");
         }
-        if (articuloManufacturadoRepository.existsByCodigoAndEliminadoFalseAndIdNot(articuloManufacturado.getCodigo(), id)) {
-            throw new Exception("Ya existe un articulo con ese codigo");
-        }
-        if (articuloManufacturadoRepository.existsByDenominacionAndEliminadoFalseAndIdNot(articuloManufacturado.getDenominacion(), id)) {
-            throw new Exception("Ya existe un articulo con esa denominacion");
+        if (articuloManufacturadoRepository.existsByDenominacionAndSucursal_Id(articuloManufacturado.getDenominacion(), sucursalId) && !articuloManufacturado.getDenominacion().equals(articuloManufacturadoViejo.getDenominacion())){
+            throw new Exception("Ya existe un articulo con esa denominacion en la misma sucursal");
         }
 
         //region Logica para eliminar Detalles
@@ -181,7 +186,9 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
 
         detallesViejos.forEach(detalleViejo -> {
             if (!detallesNuevos.contains(detalleViejo)) {
-                detalleRepository.delete(detalleViejo);
+                detalleViejo.setEliminado(true);
+                detalleViejo.setArticuloManufacturado(null);
+                detalleRepository.save(detalleViejo);
             }
         });
         //endregion
@@ -195,20 +202,38 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
                 imagenVieja.setEliminado(true);
                 imagenVieja.setArticulo(null);
                 imagenRepository.save(imagenVieja);
-            } else {
-                // Convertir la imagen a base64
+            }
+        });
+
+        if (articuloManufacturado.getImagenes() != null) {
+            for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
+                // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
+                String filename = UUID.randomUUID().toString() + ".jpg";
                 try {
-                    String imagenBase64 = imagenService.convertirImagenABase64Nueva(imagenVieja.getUrl());
-                    imagenVieja.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
+                    String rutaImagen = funcionalidades.guardarImagen(imagen.getUrl(), filename);
+                    imagen.setUrl(rutaImagen); // Actualizar el campo url en ImagenArticulo
+                    imagen.setArticulo(articuloManufacturado); // Asignar el artículo a la imagen
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
+                // Verificar si la imagen ya existe en el conjunto de imágenes viejas
+                boolean exists = imagenesViejas.stream().anyMatch(oldImage -> oldImage.getUrl().equals(imagen.getUrl()));
+
+                // Si la imagen no existe en las imágenes viejas y existe en las nuevas, guardarla
+                if (!exists && imagenesNuevas.contains(imagen)) {
+                    imagenRepository.save(imagen);
+                }
             }
-        });
-        //endregion
+        }
+
+        articuloManufacturado.setPrecioVenta(articuloManufacturadoViejo.getPrecioVenta());
+        articuloManufacturado.setTiempoEstimadoMinutos(articuloManufacturadoViejo.getTiempoEstimadoMinutos());
+        articuloManufacturado.setSucursal(articuloManufacturadoViejo.getSucursal());
 
         return articuloManufacturadoRepository.save(articuloManufacturado);
-    }catch (Exception e){
+
+    } catch (Exception e) {
         throw new Exception(e);
     }
 }

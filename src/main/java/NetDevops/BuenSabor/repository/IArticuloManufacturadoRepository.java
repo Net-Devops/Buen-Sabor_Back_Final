@@ -24,4 +24,6 @@ List<ArticuloManufacturado> findByCategoriaId(Long categoriaId);
     List<ArticuloManufacturado> findBySucursal_Id(Long sucursalId);
     List<ArticuloManufacturado> findByCategoriaIdAndEliminadoFalse(Long categoriaId);
 
+    boolean existsByCodigoAndSucursal_Id(String codigo, Long sucursalId);
+    boolean existsByDenominacionAndSucursal_Id(String denominacion, Long sucursalId);
 }
