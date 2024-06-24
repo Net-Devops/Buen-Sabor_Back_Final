@@ -72,6 +72,14 @@ public ResponseEntity<?> traerCategoriasNoAsociadasASucursal(@PathVariable Long 
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/promocion/traer/{promocionId}")
+    public ResponseEntity<?> traerPromocionPorId(@PathVariable Long promocionId){
+        try {
+            return ResponseEntity.ok().body(localService.getById(promocionId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
     //endregion
 

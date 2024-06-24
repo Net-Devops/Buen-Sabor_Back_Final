@@ -214,6 +214,15 @@ public List<PromocionDetalleDto> buscarDetallesPorPromocion(Long promocionId) {
     return dtos;
 }
 
+    public PromocionDto getById(Long id) throws Exception {
+        try {
+            Promocion promocion = promocionRepository.findById(id).get();
+            return convertToDto(promocion);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
 //region Convertir a DTO
 public PromocionDto convertToDto(Promocion promocion) {
     PromocionDto dto = new PromocionDto();
@@ -228,7 +237,7 @@ public PromocionDto convertToDto(Promocion promocion) {
     dto.setPrecioPromocional(promocion.getPrecioPromocional());
     dto.setTipoPromocion(promocion.getTipoPromocion());
     dto.setImagen(promocion.getImagen());
-    //dto.setSucursales(promocion.getSucursales());
+//    dto.setSucursales(promocion.getSucursales());
 //    for (PromocionDetalle promocionDetalle : promocion.getPromocionDetalles()) {
 //        dto.getPromocionDetallesDto().add(convertToDto(promocionDetalle));
 //    }

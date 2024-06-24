@@ -1,5 +1,9 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.promocion.ArticuloPromocionDto;
+import NetDevops.BuenSabor.dto.promocion.PromocionDetalleDto;
+import NetDevops.BuenSabor.dto.promocion.PromocionDto;
+import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.entities.ImagenPromocion;
 import NetDevops.BuenSabor.entities.Promocion;
 import NetDevops.BuenSabor.entities.PromocionDetalle;
@@ -46,12 +50,58 @@ public Promocion save(Promocion promocion) throws Exception {
     }
 
     @Override
-    public Promocion getById(Long id) throws Exception {
-       try {
-              return promocionRepository.findById(id).get();
-         } catch (Exception e) {
-              throw new Exception(e.getMessage());
-       }
+    public PromocionDto getById(Long id) throws Exception {
+    try {
+        Promocion promocion = promocionRepository.findById(id).get();
+        return convertToDto(promocion);
+    } catch (Exception e) {
+        throw new Exception(e.getMessage());
+    }
+}
+
+    public PromocionDto convertToDto(Promocion promocion) {
+        PromocionDto dto = new PromocionDto();
+        dto.setId(promocion.getId());
+        dto.setEliminado(promocion.isEliminado());
+        dto.setDenominacion(promocion.getDenominacion());
+        dto.setFechaDesde(promocion.getFechaDesde());
+        dto.setFechaHasta(promocion.getFechaHasta());
+        dto.setHoraDesde(promocion.getHoraDesde());
+        dto.setHoraHasta(promocion.getHoraHasta());
+        dto.setDescripcionDescuento(promocion.getDescripcionDescuento());
+        dto.setPrecioPromocional(promocion.getPrecioPromocional());
+        dto.setTipoPromocion(promocion.getTipoPromocion());
+        dto.setImagen(promocion.getImagen());
+        for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
+            dto.getPromocionDetallesDto().add(convertirDetalleToDto(detalle));
+        }
+        return dto;
+    }
+
+
+    public ArticuloPromocionDto convertirArticuloToDto(ArticuloManufacturado articuloManufacturado) {
+        ArticuloPromocionDto dto = new ArticuloPromocionDto();
+        dto.setId(articuloManufacturado.getId());
+        dto.setEliminado(articuloManufacturado.isEliminado());
+        dto.setDenominacion(articuloManufacturado.getDenominacion());
+        dto.setDescripcion(articuloManufacturado.getDescripcion());
+        dto.setPrecioVenta(articuloManufacturado.getPrecioVenta());
+        dto.setTiempoEstimadoMinutos(articuloManufacturado.getTiempoEstimadoMinutos());
+        dto.setPreparacion(articuloManufacturado.getPreparacion());
+        dto.setImagenes(articuloManufacturado.getImagenes());
+        dto.setCodigo(articuloManufacturado.getCodigo());
+        dto.setUnidadMedida(articuloManufacturado.getUnidadMedida());
+        return dto;
+    }
+
+    public PromocionDetalleDto convertirDetalleToDto(PromocionDetalle promocionDetalle) {
+        PromocionDetalleDto dto = new PromocionDetalleDto();
+        dto.setId(promocionDetalle.getId());
+        dto.setEliminado(promocionDetalle.isEliminado());
+        dto.setCantidad(promocionDetalle.getCantidad());
+        dto.setArticuloManufacturadoDto(convertirArticuloToDto(promocionDetalle.getArticuloManufacturado()));
+        dto.setImagenPromocion(promocionDetalle.getImagenPromocion());
+        return dto;
     }
 
 
