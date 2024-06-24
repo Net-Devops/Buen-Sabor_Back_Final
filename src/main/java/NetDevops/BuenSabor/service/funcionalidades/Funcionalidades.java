@@ -31,12 +31,12 @@ public class Funcionalidades {
         fop.close();
 
         // Crear una ruta para el archivo
-        Path path = Paths.get(uploadDir, fileName);
-        String ruta = path.toString();
+//        Path path = Paths.get(uploadDir, fileName);
+//        String ruta = path.toString();
 
         // Aquí puedes guardar la ruta en la base de datos y setearla en la clase correspondiente
 
-        return ruta;
+        return fileName;
     }
 
     public String convertirImagenABase64(String rutaImagen) throws IOException {
