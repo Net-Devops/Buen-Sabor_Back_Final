@@ -72,7 +72,16 @@ private CompraProductoDto convertToDto(Articulo articulo) {
     dto.setDescripcion(articulo.getDescripcion());
     dto.setCodigo(articulo.getCodigo());
     dto.setPrecioVenta(articulo.getPrecioVenta());
-    dto.setImagenes(new ArrayList<>(articulo.getImagenes())); // Convert Set to List
+
+    List<ImagenArticulo> processedImages = new ArrayList<>();
+    for (ImagenArticulo imagen : articulo.getImagenes()) {
+        String imagePath = imagen.getUrl();
+        imagePath = imagePath.replace("src\\main\\resources\\images\\", "");
+        imagen.setUrl(imagePath);
+        processedImages.add(imagen);
+    }
+    dto.setImagenes(processedImages); // Convert Set to List
+
     dto.setCategoriaId(articulo.getCategoria().getId());
     if (articulo.getSucursal() != null) {
         dto.setSucursalId(articulo.getSucursal().getId());
