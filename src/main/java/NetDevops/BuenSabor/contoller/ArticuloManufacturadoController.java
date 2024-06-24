@@ -92,7 +92,7 @@ public class ArticuloManufacturadoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/manufacturado/base64/{id}")
+    @GetMapping("/imagenBase64/{id}")
     public ResponseEntity<?> traerManufacturadoBase64(@PathVariable Long id) {
         try {
             return ResponseEntity.ok().body(articuloManufacturadoService.traerArticuloBase64(id));
