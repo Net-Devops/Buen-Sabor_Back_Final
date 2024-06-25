@@ -5,7 +5,7 @@ import lombok.Data;
 
 
 @Data
-public class UserResponseDto {
+public class UserResponseDto  {
     private String username;
     private Rol role;
     private Long idUsuario;

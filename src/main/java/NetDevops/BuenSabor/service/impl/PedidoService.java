@@ -3,13 +3,11 @@ package NetDevops.BuenSabor.service.impl;
 import NetDevops.BuenSabor.dto.pedido.ArticuloManufacturadoDto;
 import NetDevops.BuenSabor.dto.pedido.PedidoDetalleDto;
 import NetDevops.BuenSabor.dto.pedido.PedidoDto;
-import NetDevops.BuenSabor.entities.ArticuloManufacturado;
-import NetDevops.BuenSabor.entities.Pedido;
-import NetDevops.BuenSabor.entities.PedidoDetalle;
-import NetDevops.BuenSabor.entities.UsuarioEmpleado;
+import NetDevops.BuenSabor.entities.*;
 import NetDevops.BuenSabor.enums.Estado;
 import NetDevops.BuenSabor.enums.Rol;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
+import NetDevops.BuenSabor.repository.IClienteRepository;
 import NetDevops.BuenSabor.repository.IPedidoRepository;
 import NetDevops.BuenSabor.service.IPedidoService;
 import NetDevops.BuenSabor.service.util.EmailService;
@@ -31,6 +29,8 @@ private IArticuloManufacturadoRepository articuloManufacturadoRepository;
 private PdfService pdfService;
 @Autowired
 private EmailService emailService;
+@Autowired
+private IClienteRepository clienteRepository;
 
     @Override
     public Pedido crearPedido(Pedido pedido) throws Exception {
@@ -155,6 +155,7 @@ public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception{
 public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Exception {
     try {
         Pedido pedido = pedidoRepository.findById(id).orElse(null);
+        Cliente cliente = clienteRepository.findById(pedido.getCliente().getId()).orElse(null);
         if (pedido == null) {
             throw new Exception("Pedido no encontrado");
         }
@@ -169,9 +170,9 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
             throw new Exception("No se puede cambiar el estado de un pedido cancelado");
         }else if(nuevoEstado == Estado.ENTREGADO){
             // Generate PDF
-            byte[] pdf = pdfService.createPdfPedido(pedido);
+            byte[] pdf = pdfService.createPdfPedido(pedido,cliente);
             // Send email
-            String to = "salleiinico@gmail.com"; // replace with the customer's email
+            String to = cliente.getEmail(); // replace with the customer's email
             String subject = "Pedido creado";
             String content = "Su pedido ha sido creado con éxito. Encuentra adjunta la factura.";
             emailService.sendEmailWithAttachment(to, subject, content, pdf);

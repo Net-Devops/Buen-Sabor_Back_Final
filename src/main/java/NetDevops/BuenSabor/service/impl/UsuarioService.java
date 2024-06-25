@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.usuario.RegistroDto;
 import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
 import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.Empleado;
@@ -80,5 +81,70 @@ public class UsuarioService implements IUsuarioService {
             throw new InvalidCredentialsException("Invalid username or password");
         }
     }
+
+    public UserResponseDto login(String username, String password) throws InvalidCredentialsException {
+    // Primero, intenta encontrar el usuario en UsuarioCliente
+    UsuarioCliente usuarioCliente = usuarioClienteRepository.findByUsername(username);
+    if (usuarioCliente != null && BCrypt.checkpw(password, usuarioCliente.getPassword())) {
+        Cliente cliente = clienteRepository.findByUsuarioCliente_Id(usuarioCliente.getId());
+        UserResponseDto userResponse = new UserResponseDto();
+        userResponse.setUsername(usuarioCliente.getUsername());
+        userResponse.setRole(cliente.getRol());
+        userResponse.setIdUsuario(cliente.getId());
+
+        return userResponse;
+    }
+
+    // Si no se encuentra en UsuarioCliente, intenta encontrarlo en UsuarioEmpleado
+    UsuarioEmpleado usuarioEmpleado = usuarioEmpleadoRepository.findByUsername(username);
+    if (usuarioEmpleado != null && BCrypt.checkpw(password, usuarioEmpleado.getPassword())) {
+        Empleado empleado = empleadoRepository.findByUsuarioEmpleado_Id(usuarioEmpleado.getId());
+        UserResponseDto userResponse = new UserResponseDto();
+        userResponse.setUsername(usuarioEmpleado.getUsername());
+        userResponse.setRole(empleado.getRol());
+        userResponse.setIdUsuario(empleado.getId());
+
+        return userResponse;
+    }
+
+    // Si no se encuentra en ninguno de los dos, lanza una excepción
+    throw new InvalidCredentialsException("Invalid username or password");
+}
+
+
+   public UsuarioCliente registrarUsuario(RegistroDto registroDto) throws Exception {
+    // Check if the username already exists
+    if (usuarioClienteRepository.existsByUsername(registroDto.getUsername())) {
+        throw new Exception("Username already exists");
+    }
+
+    // Create a new UsuarioCliente and set its properties from registroDto
+    UsuarioCliente usuario = new UsuarioCliente();
+    usuario.setUsername(registroDto.getUsername());
+
+    // Hash the password before saving it
+    String hashedPassword = BCrypt.hashpw(registroDto.getPassword(), BCrypt.gensalt());
+    usuario.setPassword(hashedPassword);
+
+    // Save the new UsuarioCliente to the database
+    UsuarioCliente savedUsuario = usuarioClienteRepository.save(usuario);
+
+    // Create a new Cliente and set its properties from registroDto
+    Cliente cliente = new Cliente();
+    cliente.setNombre(registroDto.getCliente().getNombre());
+    cliente.setApellido(registroDto.getCliente().getApellido());
+    cliente.setTelefono(registroDto.getCliente().getTelefono());
+    cliente.setEmail(registroDto.getCliente().getEmail());
+    cliente.setFechaNacimiento(registroDto.getCliente().getFechaNacimiento());
+    cliente.setImagen(registroDto.getCliente().getImagen());
+
+    // Set the saved UsuarioCliente to the Cliente
+    cliente.setUsuarioCliente(savedUsuario);
+
+    // Save the Cliente to the database
+    clienteRepository.save(cliente);
+
+    return savedUsuario;
+}
 
 }

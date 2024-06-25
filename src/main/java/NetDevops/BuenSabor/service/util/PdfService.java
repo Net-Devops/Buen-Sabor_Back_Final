@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.service.util;
 
 
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
+import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.Pedido;
 import NetDevops.BuenSabor.entities.PedidoDetalle;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -16,7 +17,7 @@ import com.itextpdf.layout.property.HorizontalAlignment;
 @Service
 public class PdfService {
 
-    public byte[] createPdfPedido(Pedido pedido) {
+    public byte[] createPdfPedido(Pedido pedido, Cliente cliente) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter writer = new PdfWriter(byteArrayOutputStream);
         PdfDocument pdf = new PdfDocument(writer);
