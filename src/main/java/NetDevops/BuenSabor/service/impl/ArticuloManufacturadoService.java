@@ -207,6 +207,8 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
             }
         });
 
+        articuloManufacturado = articuloManufacturadoRepository.save(articuloManufacturado);
+
         if (articuloManufacturado.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloManufacturado.getImagenes()) {
                 // Utilizar la función guardarImagen de Funcionalidades para guardar la imagen
