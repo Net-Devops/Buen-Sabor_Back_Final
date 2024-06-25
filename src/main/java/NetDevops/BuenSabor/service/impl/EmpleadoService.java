@@ -63,9 +63,7 @@ public class EmpleadoService implements IEmpleadoService {
             throw new Exception(e.getMessage());
         }
     }
-
-
-   /*------------------------------*/
+    /*------------------------------*/
     public List<Empleado> traerEmpleadosPorSucursal(Long sucursalId) throws Exception {
         try {
             return empleadoRepository.findBySucursalId(sucursalId);
@@ -87,4 +85,6 @@ public class EmpleadoService implements IEmpleadoService {
             throw new Exception("Error al eliminar el empleado: " + e.getMessage());
         }
     }
+
+
 }
