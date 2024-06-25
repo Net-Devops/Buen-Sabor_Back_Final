@@ -134,6 +134,7 @@ private CompraProductoDto convertToDto(Articulo articulo) {
         pedido.setFechaPedido(LocalDate.now());
         pedido.setHora(LocalTime.now());
         pedido.setTotal(compraPedidoDto.getTotal());
+        pedido.setDomicilio(compraPedidoDto.getDomicilio());
 
         List<PedidoDetalle> pedidoDetalles = new ArrayList<>();
         for (PedidoDetalleDto detalleDto : compraPedidoDto.getPedidoDetalle()) {

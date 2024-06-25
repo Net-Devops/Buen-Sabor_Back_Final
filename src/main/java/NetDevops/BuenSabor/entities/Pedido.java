@@ -25,7 +25,7 @@ public class Pedido extends Base{
 
     @ManyToOne
     private Sucursal sucursal;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Domicilio domicilio;
     @ManyToOne
     private Cliente cliente;
