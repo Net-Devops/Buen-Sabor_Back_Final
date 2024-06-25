@@ -1,10 +1,12 @@
 package NetDevops.BuenSabor.contoller;
 
-import NetDevops.BuenSabor.entities.Cliente;
-import NetDevops.BuenSabor.entities.Empleado;
+import NetDevops.BuenSabor.dto.usuario.RegistroDto;
+import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
+import NetDevops.BuenSabor.dto.usuario.UsuarioDto;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
 import NetDevops.BuenSabor.service.impl.UsuarioService;
+import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,5 +54,25 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDto> login(@RequestBody UsuarioDto userDto) {
+        try {
+            UserResponseDto userResponse = usuarioService.login(userDto.getUsername(), userDto.getPassword());
+            return ResponseEntity.ok(userResponse);
+        } catch (InvalidCredentialsException e) {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PostMapping("/registro/usuario-cliente")
+    public ResponseEntity<?> registrarUsuario(@RequestBody RegistroDto registroDto) {
+        try {
+            UsuarioCliente usuario = usuarioService.registrarUsuario(registroDto);
+            return ResponseEntity.ok(usuario);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 }
