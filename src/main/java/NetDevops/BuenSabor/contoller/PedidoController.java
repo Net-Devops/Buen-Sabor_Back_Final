@@ -4,9 +4,11 @@ import NetDevops.BuenSabor.dto.pedido.PedidoDto;
 import NetDevops.BuenSabor.entities.Pedido;
 import NetDevops.BuenSabor.entities.UsuarioEmpleado;
 import NetDevops.BuenSabor.enums.Estado;
+import NetDevops.BuenSabor.errores.ApiError;
 import NetDevops.BuenSabor.service.impl.PedidoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,7 +82,8 @@ public ResponseEntity<?> cambiarEstadoPedido(@PathVariable Long id, @RequestBody
         PedidoDto pedidoActualizado = pedidoService.cambiarEstadoPedido(id, estado);
         return ResponseEntity.ok().body(pedidoActualizado);
     } catch (Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 }
 

@@ -12,6 +12,8 @@ import NetDevops.BuenSabor.enums.Rol;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.IPedidoRepository;
 import NetDevops.BuenSabor.service.IPedidoService;
+import NetDevops.BuenSabor.service.util.EmailService;
+import NetDevops.BuenSabor.service.util.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,10 @@ public class PedidoService implements IPedidoService {
     private IPedidoRepository pedidoRepository;
 @Autowired
 private IArticuloManufacturadoRepository articuloManufacturadoRepository;
+@Autowired
+private PdfService pdfService;
+@Autowired
+private EmailService emailService;
 
     @Override
     public Pedido crearPedido(Pedido pedido) throws Exception {
@@ -152,8 +158,28 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
         if (pedido == null) {
             throw new Exception("Pedido no encontrado");
         }
+
+        // Comprobar si el estado actual es FACTURADO
+        if (pedido.getEstado() == Estado.ENTREGADO) {
+            throw new Exception("No se puede cambiar el estado de un pedido ya facturado");
+        } else if (pedido.getEstado() == Estado.CONFIRMADO && nuevoEstado == Estado.PENDIENTE) {
+
+            throw new Exception("No se puede cambiar el estado de un pedido confirmado a pendiente");
+        } else if(pedido.getEstado() == Estado.CANCELADO){
+            throw new Exception("No se puede cambiar el estado de un pedido cancelado");
+        }else if(nuevoEstado == Estado.ENTREGADO){
+            // Generate PDF
+            byte[] pdf = pdfService.createPdfPedido(pedido);
+            // Send email
+            String to = "salleiinico@gmail.com"; // replace with the customer's email
+            String subject = "Pedido creado";
+            String content = "Su pedido ha sido creado con éxito. Encuentra adjunta la factura.";
+            emailService.sendEmailWithAttachment(to, subject, content, pdf);
+        }
+
         pedido.setEstado(nuevoEstado);
         Pedido savedPedido = pedidoRepository.save(pedido);
+
         return convertToDto(savedPedido); // Convertir a PedidoDto antes de devolver
     } catch (Exception e) {
         throw new Exception(e.getMessage());

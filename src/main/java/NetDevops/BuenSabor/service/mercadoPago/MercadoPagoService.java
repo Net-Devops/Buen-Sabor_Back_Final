@@ -20,10 +20,7 @@ import java.util.List;
 
 @Service
 public class MercadoPagoService {
-@Autowired
-private EmailService emailService;
-@Autowired
-private PdfService pdfService;
+
     public PreferenceMP getPreferenciaIdMercadoPago(Pedido pedido) {
 
         // Agrega credenciales
@@ -58,17 +55,6 @@ private PdfService pdfService;
             PreferenceMP mpPreference = new PreferenceMP();
             mpPreference.setStatusCode(preference.getResponse().getStatusCode());
             mpPreference.setId(preference.getId());
-
-
-            // Generate PDF
-            byte[] pdf = pdfService.createPdfPedido(pedido);
-
-            // Send email
-            String to = "salleiinico@gmail.com"; // replace with the customer's email
-            String subject = "Pedido creado";
-            String content = "Su pedido ha sido creado con éxito. Encuentra adjunta la factura.";
-            emailService.sendEmailWithAttachment(to, subject, content, pdf);
-
 
 
             return mpPreference;

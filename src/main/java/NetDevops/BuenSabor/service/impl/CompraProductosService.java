@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.dto.compraProducto.CompraPedidoDto;
 import NetDevops.BuenSabor.dto.compraProducto.CompraProductoDto;
 import NetDevops.BuenSabor.dto.compraProducto.PedidoDetalleDto;
 import NetDevops.BuenSabor.entities.*;
+import NetDevops.BuenSabor.enums.Estado;
 import NetDevops.BuenSabor.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,6 +164,8 @@ private CompraProductoDto convertToDto(Articulo articulo) {
             pedidoDetalles.add(detalle);
         }
         pedido.setPedidoDetalle(pedidoDetalles);
+        pedido.setSucursal(pedidoDetalles.get(0).getArticulo().getSucursal());
+        pedido.setEstado(Estado.PENDIENTE);
         pedidoRepository.save(pedido);
         CompraPedidoDto pedidoDto = modelMapper.map(pedido, CompraPedidoDto.class);
 
