@@ -63,4 +63,28 @@ public class EmpleadoService implements IEmpleadoService {
             throw new Exception(e.getMessage());
         }
     }
+
+
+   /*------------------------------*/
+    public List<Empleado> traerEmpleadosPorSucursal(Long sucursalId) throws Exception {
+        try {
+            return empleadoRepository.findBySucursalId(sucursalId);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public Empleado eliminarEmpleadoActualizando(Long idEmpleado) throws Exception {
+        try {
+            Empleado empleado = empleadoRepository.findById(idEmpleado).orElse(null);
+            if (empleado == null) {
+                throw new Exception("Empleado no encontrado");
+            }
+            // Cambiar el estado de eliminado
+            empleado.setEliminado(!empleado.isEliminado());
+            return empleadoRepository.save(empleado);
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar el empleado: " + e.getMessage());
+        }
+    }
 }
