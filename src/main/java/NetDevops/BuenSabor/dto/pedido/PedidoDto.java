@@ -1,6 +1,7 @@
 package NetDevops.BuenSabor.dto.pedido;
 
 import NetDevops.BuenSabor.dto.BaseDto;
+import NetDevops.BuenSabor.entities.Domicilio;
 import NetDevops.BuenSabor.enums.Estado;
 import NetDevops.BuenSabor.enums.FormaPago;
 import NetDevops.BuenSabor.enums.TipoEnvio;
@@ -22,6 +23,7 @@ public class PedidoDto extends BaseDto {
     private LocalDate fechaPedido;
     private String preferenceMPId;
     private List<PedidoDetalleDto> pedidoDetalleDto;
+    private Domicilio domicilio;
 
 
 }

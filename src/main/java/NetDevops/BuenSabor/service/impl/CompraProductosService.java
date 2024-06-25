@@ -33,6 +33,8 @@ public class CompraProductosService {
     private IPedidoRepository pedidoRepository;
     @Autowired
     private ICategoriaRepository categoriaRepository;
+    @Autowired
+    private IClienteRepository clienteRepository;
 
   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
     // Obtener los artículos directamente asignados a la categoría padre
@@ -135,6 +137,10 @@ private CompraProductoDto convertToDto(Articulo articulo) {
         pedido.setHora(LocalTime.now());
         pedido.setTotal(compraPedidoDto.getTotal());
         pedido.setDomicilio(compraPedidoDto.getDomicilio());
+        pedido.setTipoEnvio(compraPedidoDto.getTipoEnvio());
+        pedido.setFormaPago(compraPedidoDto.getFormaPago());
+        pedido.setCliente(clienteRepository.findById(compraPedidoDto.getCliente().getId())
+                .orElseThrow(() -> new NoSuchElementException("Cliente no encontrado con id: " + compraPedidoDto.getCliente().getId())));
 
         List<PedidoDetalle> pedidoDetalles = new ArrayList<>();
         for (PedidoDetalleDto detalleDto : compraPedidoDto.getPedidoDetalle()) {

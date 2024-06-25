@@ -2,6 +2,9 @@ package NetDevops.BuenSabor.dto.compraProducto;
 
 import NetDevops.BuenSabor.dto.BaseDto;
 import NetDevops.BuenSabor.entities.*;
+import NetDevops.BuenSabor.enums.Estado;
+import NetDevops.BuenSabor.enums.FormaPago;
+import NetDevops.BuenSabor.enums.TipoEnvio;
 import lombok.Data;
 
 import java.util.List;
@@ -18,4 +21,7 @@ public class CompraPedidoDto extends BaseDto {
     private Cliente cliente;
     private List<PedidoDetalleDto> pedidoDetalle;
     private Factura factura;
+    private TipoEnvio tipoEnvio;
+    private FormaPago formaPago;
+
 }
