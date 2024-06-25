@@ -335,6 +335,7 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
     dto.setId(articulo.getId());
     dto.setCodigo(articulo.getCodigo());
     dto.setDenominacion(articulo.getDenominacion());
+    dto.setEliminado(articulo.isEliminado());
     if (!articulo.getImagenes().isEmpty()) {
         ImagenArticulo primeraImagen = articulo.getImagenes().iterator().next();
         String imagePath = primeraImagen.getUrl();
