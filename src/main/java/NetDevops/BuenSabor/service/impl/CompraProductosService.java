@@ -34,9 +34,24 @@ public class CompraProductosService {
     private ICategoriaRepository categoriaRepository;
 
   public List<CompraProductoDto> findArticulosByCategoria(Long categoriaId) {
-    Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(categoriaId);
+    // Obtener los artículos directamente asignados a la categoría padre
+    List<ArticuloManufacturado> articulosManufacturadosPadre = articuloManufacturadoRepository.findByCategoriaIdAndEliminadoFalse(categoriaId);
+    List<ArticuloInsumo> articulosInsumosPadre = articuloInsumoRepository.findByCategoriaIdAndEliminadoFalse(categoriaId);
 
     List<CompraProductoDto> articulos = new ArrayList<>();
+
+    // Procesar los artículos de la categoría padre
+    for (ArticuloManufacturado articulo : articulosManufacturadosPadre) {
+        CompraProductoDto dto = convertToDto(articulo);
+        articulos.add(dto);
+    }
+    for (ArticuloInsumo articulo : articulosInsumosPadre) {
+        CompraProductoDto dto = convertToDto(articulo);
+        articulos.add(dto);
+    }
+
+    // Obtener y procesar los artículos de las subcategorías
+    Set<Categoria> subcategorias = categoriaRepository.findByCategoriaPadre_IdAndEliminadoFalse(categoriaId);
     for (Categoria subcategoria : subcategorias) {
         List<ArticuloManufacturado> articulosManufacturados = articuloManufacturadoRepository.findByCategoriaIdAndEliminadoFalse(subcategoria.getId());
         List<ArticuloInsumo> articulosInsumos = articuloInsumoRepository.findByCategoriaIdAndEliminadoFalse(subcategoria.getId());
