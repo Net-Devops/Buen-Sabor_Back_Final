@@ -48,6 +48,20 @@ public class Funcionalidades {
 
         return imagenBase64;
     }
+    public String converImagenABase64(String rutaImagen) {
+        try {
+            // Leer el archivo de la imagen en un array de bytes
+            byte[] bytesImagen = Files.readAllBytes(Paths.get(rutaImagen));
+
+            // Codificar el array de bytes a un string en formato base64
+            String imagenBase64 = Base64.encodeBase64String(bytesImagen);
+
+            return imagenBase64;
+        } catch (IOException e) {
+            // Si ocurre una excepción (por ejemplo, el archivo no se encuentra), retornar null
+            return null;
+        }
+    }
 
     public boolean eliminarImagen(String rutaImagen) {
         // Crear un objeto File con la ruta de la imagen

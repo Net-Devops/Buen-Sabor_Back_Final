@@ -3,20 +3,19 @@ package NetDevops.BuenSabor.service.impl;
 import NetDevops.BuenSabor.dto.promocion.ArticuloPromocionDto;
 import NetDevops.BuenSabor.dto.promocion.PromocionDetalleDto;
 import NetDevops.BuenSabor.dto.promocion.PromocionDto;
-import NetDevops.BuenSabor.entities.ArticuloManufacturado;
-import NetDevops.BuenSabor.entities.ImagenPromocion;
-import NetDevops.BuenSabor.entities.Promocion;
-import NetDevops.BuenSabor.entities.PromocionDetalle;
+import NetDevops.BuenSabor.entities.*;
 import NetDevops.BuenSabor.repository.IPromocionDetalleRepository;
 import NetDevops.BuenSabor.repository.IPromocionRepository;
 import NetDevops.BuenSabor.service.IPromocionService;
+import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,20 +24,27 @@ public class PromocionService implements IPromocionService {
     private IPromocionRepository promocionRepository;
     @Autowired
     private IPromocionDetalleRepository promocionDetalleRepository;
+    @Autowired
+    private Funcionalidades funcionalidades;
 
     @Override
-public Promocion save(Promocion promocion) throws Exception {
-    try {
-        // Establecer la relación bidireccional con PromocionDetalle
-        for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
-            detalle.setPromocion(promocion);
-        }
+    public Promocion save(Promocion promocion) throws Exception {
+        try {
+            if (promocion.getImagen() != null) {
+                String rutaImagen = funcionalidades.guardarImagen(promocion.getImagen(), UUID.randomUUID().toString() + ".jpg");
+                promocion.setImagen(rutaImagen);
+            }
 
-        return promocionRepository.save(promocion);
-    } catch (Exception e) {
-        throw new Exception(e.getMessage());
+            // Establecer la relación bidireccional con PromocionDetalle
+            for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
+                detalle.setPromocion(promocion);
+            }
+
+            return promocionRepository.save(promocion);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
-}
 
     @Override
     public Set<Promocion> getAll() throws Exception {
@@ -51,13 +57,13 @@ public Promocion save(Promocion promocion) throws Exception {
 
     @Override
     public PromocionDto getById(Long id) throws Exception {
-    try {
-        Promocion promocion = promocionRepository.findById(id).get();
-        return convertToDto(promocion);
-    } catch (Exception e) {
-        throw new Exception(e.getMessage());
+        try {
+            Promocion promocion = promocionRepository.findById(id).get();
+            return convertToDto(promocion);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
-}
 
     public PromocionDto convertToDto(Promocion promocion) {
         PromocionDto dto = new PromocionDto();
@@ -105,85 +111,93 @@ public Promocion save(Promocion promocion) throws Exception {
     }
 
 
-@Override
-@Transactional
-public Promocion update(Long id, Promocion newPromocion) {
-    try {
-        if (promocionRepository.findById(id).isPresent()) {
-            Promocion existingPromocion = promocionRepository.findById(id).get();
+    @Override
+    @Transactional
+    public Promocion update(Long id, Promocion newPromocion) {
+        try {
+            if (promocionRepository.findById(id).isPresent()) {
+                Promocion existingPromocion = promocionRepository.findById(id).get();
 
-            if (newPromocion.getDenominacion() != null) {
-                existingPromocion.setDenominacion(newPromocion.getDenominacion());
-            }
-            if (newPromocion.getFechaDesde() != null) {
-                existingPromocion.setFechaDesde(newPromocion.getFechaDesde());
-            }
-            if (newPromocion.getFechaHasta() != null) {
-                existingPromocion.setFechaHasta(newPromocion.getFechaHasta());
-            }
-            if (newPromocion.getHoraDesde() != null) {
-                existingPromocion.setHoraDesde(newPromocion.getHoraDesde());
-            }
-            if (newPromocion.getHoraHasta() != null) {
-                existingPromocion.setHoraHasta(newPromocion.getHoraHasta());
-            }
-            if (newPromocion.getDescripcionDescuento() != null) {
-                existingPromocion.setDescripcionDescuento(newPromocion.getDescripcionDescuento());
-            }
-            if (newPromocion.getPrecioPromocional() != null) {
-                existingPromocion.setPrecioPromocional(newPromocion.getPrecioPromocional());
-            }
-            if (newPromocion.getTipoPromocion() != null) {
-                existingPromocion.setTipoPromocion(newPromocion.getTipoPromocion());
-            }
-            if (newPromocion.getImagen() !=null){
-                existingPromocion.setImagen(newPromocion.getImagen());
-            }
-
-
-            // Marcar como eliminadas las PromocionDetalle que no están en newPromocion
-            for (PromocionDetalle detalle : existingPromocion.getPromocionDetalles()) {
-                if (!newPromocion.getPromocionDetalles().contains(detalle)) {
-                    detalle.setEliminado(true);
+                if (newPromocion.getDenominacion() != null) {
+                    existingPromocion.setDenominacion(newPromocion.getDenominacion());
                 }
+                if (newPromocion.getFechaDesde() != null) {
+                    existingPromocion.setFechaDesde(newPromocion.getFechaDesde());
+                }
+                if (newPromocion.getFechaHasta() != null) {
+                    existingPromocion.setFechaHasta(newPromocion.getFechaHasta());
+                }
+                if (newPromocion.getHoraDesde() != null) {
+                    existingPromocion.setHoraDesde(newPromocion.getHoraDesde());
+                }
+                if (newPromocion.getHoraHasta() != null) {
+                    existingPromocion.setHoraHasta(newPromocion.getHoraHasta());
+                }
+                if (newPromocion.getDescripcionDescuento() != null) {
+                    existingPromocion.setDescripcionDescuento(newPromocion.getDescripcionDescuento());
+                }
+                if (newPromocion.getPrecioPromocional() != null) {
+                    existingPromocion.setPrecioPromocional(newPromocion.getPrecioPromocional());
+                }
+                if (newPromocion.getTipoPromocion() != null) {
+                    existingPromocion.setTipoPromocion(newPromocion.getTipoPromocion());
+                }
+                if (newPromocion.getImagen() != null ) {
+                    // Eliminar la imagen antigua
+                        if(existingPromocion.getImagen() != null){
+                            funcionalidades.eliminarImagen(existingPromocion.getImagen());
+                        }
+                    // Guardar la nueva imagen
+                    String rutaImagen = funcionalidades.guardarImagen(newPromocion.getImagen(), UUID.randomUUID().toString() + ".jpg");
+                    existingPromocion.setImagen(rutaImagen);
+                }
+
+
+
+
+
+                // Marcar como eliminadas las PromocionDetalle que no están en newPromocion
+                for (PromocionDetalle detalle : existingPromocion.getPromocionDetalles()) {
+                    if (!newPromocion.getPromocionDetalles().contains(detalle)) {
+                        detalle.setEliminado(true);
+                    }
+                }
+
+
+                return promocionRepository.save(existingPromocion);
+
+            } else {
+                throw new Exception("No existe la promoción con el id proporcionado");
             }
-
-
-            return promocionRepository.save(existingPromocion);
-
-        } else {
-            throw new Exception("No existe la promoción con el id proporcionado");
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar la promoción", e);
         }
-    } catch (Exception e) {
-        throw new RuntimeException("Error al actualizar la promoción", e);
     }
-}
 
 
-@Override
-public boolean delete(Long id) throws Exception {
-    try {
-        if (promocionRepository.existsById(id)) {
-            Promocion promocion = promocionRepository.findById(id).get();
-            boolean nuevoEstado = !promocion.isEliminado();
-            promocion.setEliminado(nuevoEstado);
+    @Override
+    public boolean delete(Long id) throws Exception {
+        try {
+            if (promocionRepository.existsById(id)) {
+                Promocion promocion = promocionRepository.findById(id).get();
+                boolean nuevoEstado = !promocion.isEliminado();
+                promocion.setEliminado(nuevoEstado);
 
 
+                // Cambiar el estado de eliminado de las PromocionDetalle asociadas
+                for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
+                    detalle.setEliminado(nuevoEstado);
+                }
 
-            // Cambiar el estado de eliminado de las PromocionDetalle asociadas
-            for (PromocionDetalle detalle : promocion.getPromocionDetalles()) {
-                detalle.setEliminado(nuevoEstado);
+                promocionRepository.save(promocion);
+                return true;
+            } else {
+                throw new Exception();
             }
-
-            promocionRepository.save(promocion);
-            return true;
-        } else {
-            throw new Exception();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
-    } catch (Exception e) {
-        throw new Exception(e.getMessage());
     }
-}
 
     @Override
     public Set<Promocion> getAllNotDeleted() throws Exception {
@@ -201,7 +215,6 @@ public boolean delete(Long id) throws Exception {
                 Promocion promocion = promocionRepository.findById(id).get();
                 if (promocion.isEliminado()) {
                     promocion.setEliminado(false);
-
 
 
                     // Reactivar las PromocionDetalle asociadas
@@ -224,20 +237,38 @@ public boolean delete(Long id) throws Exception {
         }
     }
 
-public void deleteAllPromocionDetalles(Long promocionId) throws Exception {
-    try {
-        List<PromocionDetalle> detalles = promocionDetalleRepository.findByPromocionId(promocionId);
-        for (PromocionDetalle detalle : detalles) {
-            Promocion promocion = detalle.getPromocion();
-            detalle.setPromocion(null);
-            promocion.getPromocionDetalles().remove(detalle); // Elimina la referencia en promocion_promocion_detalles
-            promocionDetalleRepository.save(detalle);
-            promocionDetalleRepository.delete(detalle);
+    public void deleteAllPromocionDetalles(Long promocionId) throws Exception {
+        try {
+            List<PromocionDetalle> detalles = promocionDetalleRepository.findByPromocionId(promocionId);
+            for (PromocionDetalle detalle : detalles) {
+                Promocion promocion = detalle.getPromocion();
+                detalle.setPromocion(null);
+                promocion.getPromocionDetalles().remove(detalle); // Elimina la referencia en promocion_promocion_detalles
+                promocionDetalleRepository.save(detalle);
+                promocionDetalleRepository.delete(detalle);
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
-    } catch (Exception e) {
-        throw new Exception(e.getMessage());
     }
-}
 
 
+    public PromocionDto getByIdBase64(Long id) throws Exception {
+        try {
+
+            Promocion promocion = promocionRepository.findById(id).get();
+            if(promocion == null){
+              throw new Exception("No existe la promoción con el id proporcionado");
+            }
+            if(promocion.getImagen() != null){
+                promocion.setImagen(funcionalidades.convertirImagenABase64(promocion.getImagen()));
+            }
+
+            return convertToDto(promocion);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+
+
+    }
 }

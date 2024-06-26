@@ -35,6 +35,16 @@ public class PromocionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/base64/{id}")
+    public ResponseEntity getByIdBase64(@PathVariable Long id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(promocionService.getByIdBase64(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/")
     public ResponseEntity save(@RequestBody Promocion promocion) {
         try {

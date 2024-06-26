@@ -70,12 +70,8 @@ public List<ArticuloInsumo> mostrarLista() throws Exception {
         for (ArticuloInsumo articulo : articulos) {
             if (articulo.getImagenes() != null) {
                 for (ImagenArticulo imagen : articulo.getImagenes()) {
-                    try {
-                        String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
-                        imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+                    imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
                 }
             }
         }
@@ -84,6 +80,29 @@ public List<ArticuloInsumo> mostrarLista() throws Exception {
         throw new Exception(e);
     }
 }
+
+
+//    @Override
+//    public List<ArticuloInsumo> mostrarLista() throws Exception {
+//        try {
+//            List<ArticuloInsumo> articulos = articuloInsumoRepository.findByEliminadoFalse();
+//            for (ArticuloInsumo articulo : articulos) {
+//                if (articulo.getImagenes() != null) {
+//                    for (ImagenArticulo imagen : articulo.getImagenes()) {
+//                        try {
+//                            String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+//                            imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
+//                        } catch (IOException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    }
+//                }
+//            }
+//            return articulos;
+//        } catch (Exception e) {
+//            throw new Exception(e);
+//        }
+//    }
     //endregion
 
     //region Cargar
@@ -135,12 +154,8 @@ public ArticuloInsumo buscarPorId(Long id) throws Exception {
 
         if (articuloInsumo.getImagenes() != null) {
             for (ImagenArticulo imagen : articuloInsumo.getImagenes()) {
-                try {
-                    String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
-                    imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+                imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
             }
         }
 

@@ -15,4 +15,5 @@ public interface IPromocionService {
     public Set<Promocion> getAllNotDeleted() throws Exception;
     public boolean reactivate(Long id) throws Exception;
     public PromocionDto getById(Long id) throws Exception;
+    public PromocionDto getByIdBase64(Long id) throws Exception;
 }

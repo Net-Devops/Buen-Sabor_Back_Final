@@ -196,6 +196,14 @@ private SubCategoriaDto agregarSubCategoriasNoAsociadasASucursalRecursivamente(C
         List<Promocion> promociones = promocionRepository.findBySucursales_Id(sucursalId);
         List<PromocionDto> dtos = new ArrayList<>();
         for (Promocion promocion : promociones) {
+
+           if (promocion.getImagen() != null && !promocion.getImagen().isEmpty()) {
+                String imagePath = promocion.getImagen();
+                    imagePath = imagePath.replace("src\\main\\resources\\images\\", "");
+                    promocion.setImagen(imagePath);
+           }
+
+
             dtos.add(convertToDto(promocion));
         }
         return dtos;
@@ -236,7 +244,10 @@ public PromocionDto convertToDto(Promocion promocion) {
     dto.setDescripcionDescuento(promocion.getDescripcionDescuento());
     dto.setPrecioPromocional(promocion.getPrecioPromocional());
     dto.setTipoPromocion(promocion.getTipoPromocion());
-    dto.setImagen(promocion.getImagen());
+    if(promocion.getImagen() != null){
+        dto.setImagen(promocion.getImagen());
+    }
+
 //    dto.setSucursales(promocion.getSucursales());
 //    for (PromocionDetalle promocionDetalle : promocion.getPromocionDetalles()) {
 //        dto.getPromocionDetallesDto().add(convertToDto(promocionDetalle));
