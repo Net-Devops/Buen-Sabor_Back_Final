@@ -63,7 +63,7 @@ public class PromocionController {
         }
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(promocionService.delete(id));
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class PromocionController {
     }
 
     @PostMapping("/reactivar/{id}")
-    public ResponseEntity reactivate(@PathVariable Long id) {
+    public ResponseEntity<?> reactivate(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(promocionService.reactivate(id));
         } catch (Exception e) {

@@ -80,11 +80,11 @@ public class UnidadMedidaController {
     }
 
     @PutMapping("/toggle-active/{id}")
-    public ResponseEntity toggleActive(@PathVariable Long id) {
+    public ResponseEntity<?> toggleActive(@PathVariable Long id) {
         try {
             boolean result = unidadMedidaService.toggleActive(id);
             if (result) {
-                return ResponseEntity.status(HttpStatus.OK).body("Estado de UnidadMedida cambiado exitosamente");
+                return ResponseEntity.status(HttpStatus.OK).body(result);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al cambiar el estado de UnidadMedida");
             }
