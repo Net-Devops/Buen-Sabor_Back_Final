@@ -335,6 +335,8 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
     dto.setId(articulo.getId());
     dto.setCodigo(articulo.getCodigo());
     dto.setDenominacion(articulo.getDenominacion());
+
+
     dto.setEliminado(articulo.isEliminado());
     if (!articulo.getImagenes().isEmpty()) {
         ImagenArticulo primeraImagen = articulo.getImagenes().iterator().next();
@@ -342,6 +344,7 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
         imagePath = imagePath.replace("src\\main\\resources\\images\\", "");
         dto.setImagen(imagePath);
     }
+
     dto.setPrecioVenta(articulo.getPrecioVenta());
     dto.setDescripcion(articulo.getDescripcion());
     dto.setTiempoEstimadoCocina(articulo.getTiempoEstimadoMinutos());

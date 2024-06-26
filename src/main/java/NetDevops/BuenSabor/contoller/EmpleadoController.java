@@ -55,5 +55,26 @@ public class EmpleadoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/sucursal/{sucursalId}")
+    public ResponseEntity<?> listaPorSucursal(@PathVariable Long sucursalId) {
+        try {
+            return ResponseEntity.ok().body(empleadoService.traerEmpleadosPorSucursal(sucursalId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarActualizando(@PathVariable Long id) {
+        try {
+            Empleado empleado = empleadoService.eliminarEmpleadoActualizando(id);
+            if (empleado != null) {
+                return ResponseEntity.ok().body(empleado);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
+    }
 }
