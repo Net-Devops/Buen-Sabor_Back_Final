@@ -1,6 +1,7 @@
 package NetDevops.BuenSabor.service.impl;
 
 import NetDevops.BuenSabor.dto.usuario.RegistroDto;
+import NetDevops.BuenSabor.dto.usuario.RegistroDtoEmpleado;
 import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
 import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.entities.Empleado;
@@ -150,5 +151,43 @@ public class UsuarioService implements IUsuarioService {
 
         return savedUsuario;
     }
+
+    public UsuarioEmpleado registrarEmpleado(RegistroDtoEmpleado registroDtoEmpleado) throws Exception {
+    // Check if the username already exists
+    if (usuarioEmpleadoRepository.existsByUsername(registroDtoEmpleado.getUsername())) {
+        throw new Exception("Username already exists");
+    }
+
+    // Create a new UsuarioEmpleado and set its properties from registroDto
+    UsuarioEmpleado usuario = new UsuarioEmpleado();
+    usuario.setUsername(registroDtoEmpleado.getUsername());
+
+    // Hash the password before saving it
+    String hashedPassword = seguridadService.hashWithSHA256(registroDtoEmpleado.getPassword());
+    usuario.setPassword(hashedPassword);
+
+    // Save the new UsuarioEmpleado to the database
+    UsuarioEmpleado savedUsuario = usuarioEmpleadoRepository.save(usuario);
+
+    // Create a new Empleado and set its properties from registroDto
+    Empleado empleado = new Empleado();
+    empleado.setNombre(registroDtoEmpleado.getEmpleado().getNombre());
+    empleado.setApellido(registroDtoEmpleado.getEmpleado().getApellido());
+    empleado.setTelefono(registroDtoEmpleado.getEmpleado().getTelefono());
+    empleado.setEmail(registroDtoEmpleado.getEmpleado().getEmail());
+    empleado.setFechaNacimiento(registroDtoEmpleado.getEmpleado().getFechaNacimiento());
+    empleado.setImagen(registroDtoEmpleado.getEmpleado().getImagen());
+    empleado.setSucursal(registroDtoEmpleado.getEmpleado().getSucursal());
+    empleado.setRol(registroDtoEmpleado.getEmpleado().getRol());
+
+    // Set the saved UsuarioEmpleado to the Empleado
+    empleado.setUsuarioEmpleado(savedUsuario);
+
+    // Save the Empleado to the database
+    empleadoRepository.save(empleado);
+
+    return savedUsuario;
+}
+
 
 }

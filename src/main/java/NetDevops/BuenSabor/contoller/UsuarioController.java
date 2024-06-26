@@ -1,6 +1,7 @@
 package NetDevops.BuenSabor.contoller;
 
 import NetDevops.BuenSabor.dto.usuario.RegistroDto;
+import NetDevops.BuenSabor.dto.usuario.RegistroDtoEmpleado;
 import NetDevops.BuenSabor.dto.usuario.UserResponseDto;
 import NetDevops.BuenSabor.dto.usuario.UsuarioDto;
 import NetDevops.BuenSabor.entities.UsuarioCliente;
@@ -68,6 +69,16 @@ public class UsuarioController {
     public ResponseEntity<?> registrarUsuario(@RequestBody RegistroDto registroDto) {
         try {
             UsuarioCliente usuario = usuarioService.registrarUsuario(registroDto);
+            return ResponseEntity.ok(usuario);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/registro/usuario-empleado")
+    public ResponseEntity<?> registrarEmpleado(@RequestBody RegistroDtoEmpleado registroDtoEmpleado) {
+        try {
+            UsuarioEmpleado usuario = usuarioService.registrarEmpleado(registroDtoEmpleado);
             return ResponseEntity.ok(usuario);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
