@@ -155,7 +155,8 @@ public List<Pedido> traerPedidos2(UsuarioEmpleado usuario) throws Exception{
 public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Exception {
     try {
         Pedido pedido = pedidoRepository.findById(id).orElse(null);
-        Cliente cliente = clienteRepository.findById(pedido.getCliente().getId()).orElse(null);
+        //Cliente cliente = clienteRepository.findById(pedido.getCliente().getId()).orElse(null);
+        Cliente cliente = clienteRepository.findById(7L).orElse(null);
         if (pedido == null) {
             throw new Exception("Pedido no encontrado");
         }
@@ -169,6 +170,7 @@ public PedidoDto cambiarEstadoPedido(Long id, Estado nuevoEstado) throws Excepti
         } else if(pedido.getEstado() == Estado.CANCELADO){
             throw new Exception("No se puede cambiar el estado de un pedido cancelado");
         }else if(nuevoEstado == Estado.ENTREGADO){
+
             // Generate PDF
             byte[] pdf = pdfService.createPdfPedido(pedido,cliente);
             // Send email
