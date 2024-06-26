@@ -15,4 +15,9 @@ import java.util.Map;
 public interface IPedidoRepository extends JpaRepository<Pedido, Long>{
     List<Pedido> findBySucursal_Id(Long sucursalId);
 
+    @Query("SELECT p.fechaPedido as fecha, SUM(p.total) as total FROM Pedido p WHERE p.fechaPedido BETWEEN :startDate AND :endDate AND p.sucursal.id = :sucursalId GROUP BY p.fechaPedido")
+    List<Object[]> sumTotalesPedidosPorRangoDeDias(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("sucursalId") Long sucursalId);
+
+    @Query("SELECT EXTRACT(MONTH FROM p.fechaPedido) as month, EXTRACT(YEAR FROM p.fechaPedido) as year, SUM(p.total) as total FROM Pedido p WHERE p.fechaPedido BETWEEN :startDate AND :endDate AND p.sucursal.id = :sucursalId GROUP BY month, year")
+List<Object[]> sumTotalesPedidosPorRangoDeMeses(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("sucursalId") Long sucursalId);
 }
