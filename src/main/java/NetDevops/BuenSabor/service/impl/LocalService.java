@@ -330,18 +330,21 @@ public ArticuloInsumo aumentarStock(Long id, Integer cantidad, Double nuevoPreci
 }
 
     //region Convertir a DTO
-    public ArticuloManufacturadoTablaDto convertirArticuloManufacturadoToDto(ArticuloManufacturado articulo) {
+   public ArticuloManufacturadoTablaDto convertirArticuloManufacturadoToDto(ArticuloManufacturado articulo) {
     ArticuloManufacturadoTablaDto dto = new ArticuloManufacturadoTablaDto();
     dto.setId(articulo.getId());
     dto.setCodigo(articulo.getCodigo());
     dto.setDenominacion(articulo.getDenominacion());
 
-    // Asegúrate de tener un método para obtener la URL de la imagen principal
-        if (!articulo.getImagenes().isEmpty()) {
-            ImagenArticulo primeraImagen = articulo.getImagenes().iterator().next();
-            dto.setImagen(primeraImagen.getUrl());
 
-        }
+    dto.setEliminado(articulo.isEliminado());
+    if (!articulo.getImagenes().isEmpty()) {
+        ImagenArticulo primeraImagen = articulo.getImagenes().iterator().next();
+        String imagePath = primeraImagen.getUrl();
+        imagePath = imagePath.replace("src\\main\\resources\\images\\", "");
+        dto.setImagen(imagePath);
+    }
+
     dto.setPrecioVenta(articulo.getPrecioVenta());
     dto.setDescripcion(articulo.getDescripcion());
     dto.setTiempoEstimadoCocina(articulo.getTiempoEstimadoMinutos());
