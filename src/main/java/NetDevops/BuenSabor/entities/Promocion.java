@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Getter
 @ToString
 @Builder
+@Audited
 public class Promocion extends Base{
 
     private String denominacion;

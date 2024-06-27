@@ -4,9 +4,11 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Data
+@Audited
 public class PedidoDetalle extends Base{
     private Integer cantidad;
 

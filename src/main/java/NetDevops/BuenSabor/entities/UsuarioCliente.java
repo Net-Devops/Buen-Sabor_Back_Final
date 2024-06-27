@@ -3,11 +3,13 @@ package NetDevops.BuenSabor.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 import javax.management.relation.Role;
 
 @Entity
 @Data
+@Audited
 public class UsuarioCliente extends Base{
     @Column(unique = true)
     private String username;

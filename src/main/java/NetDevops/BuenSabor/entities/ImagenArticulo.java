@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Entity
 @AllArgsConstructor
@@ -12,6 +13,7 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
+@Audited
 public class ImagenArticulo extends Base{
 
     private String url;

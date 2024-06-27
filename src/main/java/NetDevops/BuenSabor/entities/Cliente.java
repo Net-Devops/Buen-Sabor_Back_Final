@@ -3,12 +3,14 @@ package NetDevops.BuenSabor.entities;
 import NetDevops.BuenSabor.enums.Rol;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Data
+@Audited
 public class Cliente extends Base{
 
     private String nombre;
