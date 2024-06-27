@@ -1,9 +1,12 @@
 package NetDevops.BuenSabor.service.impl;
 
+import NetDevops.BuenSabor.dto.articuloInsumo.ArticuloInsumoDto;
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoDetalleDto;
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoDto;
 import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
-import NetDevops.BuenSabor.entities.ArticuloManufacturado;
-import NetDevops.BuenSabor.entities.ArticuloManufacturadoDetalle;
-import NetDevops.BuenSabor.entities.ImagenArticulo;
+import NetDevops.BuenSabor.dto.categoria.CategoriaDto;
+import NetDevops.BuenSabor.entities.*;
+import NetDevops.BuenSabor.mapeosDto.MapeoDto;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoDetalleRepository;
 import NetDevops.BuenSabor.repository.IArticuloManufacturadoRepository;
 import NetDevops.BuenSabor.repository.ImagenArticuloRepository;
@@ -32,6 +35,8 @@ public class ArticuloManufacturadoService implements IArticuloManufacturadoServi
     private ImagenService imagenService;
     @Autowired
     private Funcionalidades funcionalidades;
+    @Autowired
+    private MapeoDto mapeoDto;
 
 //region Crud Basico
 
@@ -318,30 +323,32 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
     }
 
     @Override
-    public ArticuloManufacturado  traerArticuloBase64(Long id) throws Exception {
-        try {
-            ArticuloManufacturado Manufacturado = articuloManufacturadoRepository.findByIdAndEliminadoFalse(id);
-            if (Manufacturado == null) {
-                throw new Exception("No se encontro el articulo");
-            }
+    public ArticuloManufacturadoDto traerArticuloBase64(Long id) throws Exception {
+    try {
+        ArticuloManufacturado Manufacturado = articuloManufacturadoRepository.findByIdAndEliminadoFalse(id);
+        if (Manufacturado == null) {
+            throw new Exception("No se encontro el articulo");
+        }
 
-            // Convertir las imágenes a base64
-            if (Manufacturado.getImagenes() != null) {
-                for (ImagenArticulo imagen : Manufacturado.getImagenes()) {
-                    try {
-                        String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
-                        imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+        // Convertir las imágenes a base64
+        if (Manufacturado.getImagenes() != null) {
+            for (ImagenArticulo imagen : Manufacturado.getImagenes()) {
+                try {
+                    String imagenBase64 = funcionalidades.convertirImagenABase64(imagen.getUrl());
+                    imagen.setUrl(imagenBase64); // Actualizar el campo url en ImagenArticulo con la imagen en base64
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
-
-            return Manufacturado;
-        } catch (Exception e) {
-            throw new Exception(e);
         }
+
+        return mapeoDto.convertManufacturadoDto(Manufacturado);
+    } catch (Exception e) {
+        throw new Exception(e);
     }
+}
+
+
 
 
     //endregion

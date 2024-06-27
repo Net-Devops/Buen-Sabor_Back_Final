@@ -1,5 +1,6 @@
 package NetDevops.BuenSabor.service;
 
+import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoDto;
 import NetDevops.BuenSabor.dto.articuloManufacturado.ArticuloManufacturadoTablaDto;
 import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 
@@ -15,5 +16,5 @@ public ArticuloManufacturado actualizarArticuloManufacturado(Long id, ArticuloMa
 public Set<ArticuloManufacturadoTablaDto> tablaArticuloManufacturado() throws Exception;
 public boolean reactivate(Long id) throws Exception;
 public List<ArticuloManufacturado> traerTodos() throws Exception;
-public ArticuloManufacturado  traerArticuloBase64(Long id) throws Exception;
+    public ArticuloManufacturadoDto traerArticuloBase64(Long id) throws Exception;
 }
