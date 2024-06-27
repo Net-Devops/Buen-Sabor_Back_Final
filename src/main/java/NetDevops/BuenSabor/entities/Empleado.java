@@ -5,11 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 import java.time.LocalDate;
 
 @Entity
 @Data
+@Audited
 public class Empleado extends Base {
 
     private String nombre;

@@ -3,6 +3,7 @@ package NetDevops.BuenSabor.entities;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Entity;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Getter
@@ -10,6 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Audited
 public class ArticuloInsumo extends Articulo{
 
 

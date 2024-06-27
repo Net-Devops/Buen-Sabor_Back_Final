@@ -41,6 +41,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'com.itextpdf:itext7-core:7.1.14'
 	implementation 'org.modelmapper:modelmapper:2.4.4'
+	implementation group: 'org.hibernate.orm', name: 'hibernate-envers', version: '6.5.2.Final'
 
 }
 

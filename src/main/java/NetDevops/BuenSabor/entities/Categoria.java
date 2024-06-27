@@ -2,6 +2,7 @@ package NetDevops.BuenSabor.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@Audited
 public class Categoria extends Base{
 
     @ManyToMany

@@ -5,6 +5,7 @@ import NetDevops.BuenSabor.enums.FormaPago;
 import NetDevops.BuenSabor.enums.TipoEnvio;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.envers.Audited;
 
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Audited
 public class Pedido extends Base{
     private LocalTime hora;
     private Double total;
