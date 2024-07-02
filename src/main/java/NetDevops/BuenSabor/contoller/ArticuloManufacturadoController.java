@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.entities.ArticuloManufacturado;
 import NetDevops.BuenSabor.service.IArticuloManufacturadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/articulos/manufacturados/
@@ -36,6 +37,7 @@ public class ArticuloManufacturadoController {
 
 
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> cargarArticuloManufacturado(@RequestBody ArticuloManufacturado articuloManufacturado) {
         try {
             return ResponseEntity.ok().body(articuloManufacturadoService.cargarArticuloManufacturado(articuloManufacturado));
@@ -44,6 +46,7 @@ public class ArticuloManufacturadoController {
         }
     }
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizarArticuloManufacturado(@PathVariable Long id, @RequestBody ArticuloManufacturado articuloManufacturado) {
         try {
             return ResponseEntity.status(200).body(articuloManufacturadoService.actualizarArticuloManufacturado(id, articuloManufacturado));
@@ -52,6 +55,7 @@ public class ArticuloManufacturadoController {
         }
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> eliminarArticuloManufacturado(@PathVariable Long id) {
         try {
             return ResponseEntity.status(200).body(articuloManufacturadoService.eliminarArticuloManufacturado(id));
@@ -75,6 +79,7 @@ public class ArticuloManufacturadoController {
     //endregion
 
     @PostMapping("/reactivate/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> reactivate(@PathVariable Long id) {
         try {
             articuloManufacturadoService.reactivate(id);

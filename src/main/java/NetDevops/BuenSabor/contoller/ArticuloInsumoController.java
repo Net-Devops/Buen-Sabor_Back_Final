@@ -19,7 +19,6 @@ public class ArticuloInsumoController {
 
     //region CRUD Basico
     @GetMapping("/")
-    @PreAuthorize("hasAuthority('Cocinero') or hasAuthority('Admin')")
     public ResponseEntity<?> buscarTodos() {
         try {
             return ResponseEntity.ok(articuloInsumoService.mostrarLista());
@@ -27,6 +26,7 @@ public class ArticuloInsumoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
@@ -37,6 +37,7 @@ public class ArticuloInsumoController {
         }
     }
 
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     @PostMapping("/")
     public ResponseEntity<?> guardar(@RequestBody ArticuloInsumo articuloInsumo) {
         try {
@@ -49,6 +50,7 @@ public class ArticuloInsumoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody ArticuloInsumo articuloInsumo) {
         try {
             return ResponseEntity.ok(articuloInsumoService.actualizar(id, articuloInsumo));
@@ -57,6 +59,7 @@ public class ArticuloInsumoController {
         }
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(articuloInsumoService.deleteById(id));
@@ -69,6 +72,7 @@ public class ArticuloInsumoController {
 
 
     @PostMapping("/reactivate/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> reactivate(@PathVariable Long id) {
         try {
             articuloInsumoService.reactivate(id);

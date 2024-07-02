@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.entities.Empleado;
 import NetDevops.BuenSabor.service.impl.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/empleado/
@@ -40,6 +41,7 @@ public class EmpleadoController {
         }
     }
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Empleado empleado) {
         try {
             return ResponseEntity.ok().body(empleadoService.actualizarEmpleado(id,empleado));
@@ -76,5 +78,14 @@ public class EmpleadoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
+    }
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Empleado> getEmpleadoByEmail(@PathVariable String email) {
+        Empleado empleado = empleadoService.buscarPorEmail(email);
+        if (empleado != null) {
+            return ResponseEntity.ok(empleado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

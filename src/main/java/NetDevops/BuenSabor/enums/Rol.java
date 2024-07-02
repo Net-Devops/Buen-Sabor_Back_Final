@@ -1,5 +1,7 @@
 package NetDevops.BuenSabor.enums;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 public enum Rol {
     ADMINISTRADOR,
     CLIENTE,

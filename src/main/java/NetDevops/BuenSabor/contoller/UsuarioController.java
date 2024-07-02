@@ -10,6 +10,7 @@ import NetDevops.BuenSabor.service.impl.UsuarioService;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/usuario/
@@ -76,6 +77,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/registro/usuario-empleado")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> registrarEmpleado(@RequestBody RegistroDtoEmpleado registroDtoEmpleado) {
         try {
             UsuarioEmpleado usuario = usuarioService.registrarEmpleado(registroDtoEmpleado);

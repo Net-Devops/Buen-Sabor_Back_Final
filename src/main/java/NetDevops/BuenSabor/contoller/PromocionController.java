@@ -7,6 +7,7 @@ import NetDevops.BuenSabor.service.impl.PromocionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 //     http://localhost:8080/api/promociones/
@@ -46,6 +47,7 @@ public class PromocionController {
     }
 
     @PostMapping("/")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity save(@RequestBody Promocion promocion) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(promocionService.save(promocion));
@@ -54,6 +56,7 @@ public class PromocionController {
         }
     }
     @PutMapping("/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity update(@PathVariable Long id, @RequestBody Promocion promocion) {
         try {
 
@@ -63,6 +66,7 @@ public class PromocionController {
         }
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(promocionService.delete(id));
@@ -81,6 +85,7 @@ public class PromocionController {
     }
 
     @DeleteMapping("/eliminar-detalles/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
 public ResponseEntity deleteAllPromocionDetalles(@PathVariable Long id) {
     try {
         promocionService.deleteAllPromocionDetalles(id);

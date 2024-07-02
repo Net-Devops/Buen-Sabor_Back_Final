@@ -85,6 +85,8 @@ public class EmpleadoService implements IEmpleadoService {
             throw new Exception("Error al eliminar el empleado: " + e.getMessage());
         }
     }
-
+    public Empleado buscarPorEmail(String email) {
+        return empleadoRepository.findByEmail(email);
+    }
 
 }

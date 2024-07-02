@@ -5,6 +5,7 @@ import NetDevops.BuenSabor.entities.Sucursal;
 import NetDevops.BuenSabor.service.ISucursalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/sucursal/
@@ -44,6 +45,7 @@ public class SucursalController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> deleteById(@PathVariable Long id){
         try {
             return ResponseEntity.ok(sucursalService.delete(id));
@@ -62,6 +64,7 @@ public class SucursalController {
 //    }
 
     @PutMapping("/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id,@RequestBody Sucursal sucursal){
         try {
             return ResponseEntity.ok(sucursalService.update(id, sucursal));
@@ -78,6 +81,7 @@ public class SucursalController {
         }
     }
     @PostMapping("/")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> guardarSucursalDto(@RequestBody SucursalDto sucursalDto){
         try {
             return ResponseEntity.ok(sucursalService.guardarSucursalDto(sucursalDto));

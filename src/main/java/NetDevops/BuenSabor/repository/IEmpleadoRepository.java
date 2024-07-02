@@ -11,4 +11,5 @@ import java.util.List;
 public interface IEmpleadoRepository extends JpaRepository<Empleado, Long> {
     Empleado findByUsuarioEmpleado_Id(Long idUsuarioCliente);
     List<Empleado> findBySucursalId(Long sucursalId);
+    Empleado findByEmail(String email);
 }

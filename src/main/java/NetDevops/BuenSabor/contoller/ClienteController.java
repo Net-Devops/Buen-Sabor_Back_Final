@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.entities.Cliente;
 import NetDevops.BuenSabor.service.impl.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/cliente/
@@ -39,6 +40,7 @@ public class ClienteController {
         }
     }
     @PutMapping("/actualizar/{id}")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
         try {
             return ResponseEntity.ok().body(clienteService.actualizarCliente(id, cliente));
@@ -47,6 +49,7 @@ public class ClienteController {
         }
     }
     @DeleteMapping("/eliminar/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         try {
             return ResponseEntity.ok().body(clienteService.eliminarCliente(id));

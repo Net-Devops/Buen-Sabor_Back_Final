@@ -5,6 +5,7 @@ import NetDevops.BuenSabor.service.impl.UnidadMedidaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/unidad-medida/
@@ -42,6 +43,7 @@ public class UnidadMedidaController {
         }
     }
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> actualizar(@PathVariable Long id,@RequestBody UnidadMedida unidadMedida){
         try {
             return ResponseEntity.ok(unidadMedidaService.actualizar(id, unidadMedida));
