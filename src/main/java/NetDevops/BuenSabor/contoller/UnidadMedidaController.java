@@ -53,6 +53,7 @@ public class UnidadMedidaController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> deleteById(@PathVariable Long id){
         try {
             return ResponseEntity.ok(unidadMedidaService.deleteById(id));
@@ -64,6 +65,7 @@ public class UnidadMedidaController {
     //endregion
 
     @PostMapping("/reactivate/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> reactivate(@PathVariable Long id) {
         try {
             unidadMedidaService.reactivate(id);
@@ -82,6 +84,7 @@ public class UnidadMedidaController {
     }
 
     @PutMapping("/toggle-active/{id}")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> toggleActive(@PathVariable Long id) {
         try {
             boolean result = unidadMedidaService.toggleActive(id);
