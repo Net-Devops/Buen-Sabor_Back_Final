@@ -47,7 +47,7 @@ public class EmpresaService implements IEmpresaService {
     }
 
 
-    @Override
+@Override
 public boolean delete(Long id) throws Exception {
     try {
         Empresa empresa = empresaRepository.findById(id).orElseThrow(() -> new Exception("No se encontró la empresa con el id proporcionado"));
@@ -55,10 +55,11 @@ public boolean delete(Long id) throws Exception {
         // Verificar si la empresa tiene alguna sucursal asociada activa
         List<Sucursal> sucursalesActivas = sucursalRepository.findByEmpresaIdAndEliminadoFalse(id);
         if (!sucursalesActivas.isEmpty()) {
-            throw new Exception("No se puede eliminar la empresa porque tiene una sucursal asociada activa");
+            throw new Exception("No se puede modificar el estado de la empresa porque tiene sucursales asociadas activas");
         }
 
-        empresa.setEliminado(true);
+        // Cambiar el estado de eliminado a no eliminado y viceversa
+        empresa.setEliminado(!empresa.isEliminado());
         empresaRepository.save(empresa);
         return true;
     } catch (Exception e) {

@@ -4,6 +4,7 @@ import NetDevops.BuenSabor.entities.Empresa;
 import NetDevops.BuenSabor.service.IEmpresaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // GET http://localhost:8080/api/empresa/
