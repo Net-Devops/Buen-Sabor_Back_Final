@@ -35,6 +35,7 @@ public class UnidadMedidaController {
         }
     }
     @PostMapping("/")
+    @PreAuthorize(" hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<?> cargar(@RequestBody UnidadMedida unidadMedida){
         try {
             return ResponseEntity.ok(unidadMedidaService.cargar(unidadMedida));

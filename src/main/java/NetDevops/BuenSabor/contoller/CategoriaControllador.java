@@ -40,7 +40,7 @@ public class CategoriaControllador {
         }
     }
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<?> cargar(@RequestBody Categoria categoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.cargar(categoria));
@@ -49,7 +49,7 @@ public class CategoriaControllador {
         }
     }
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody Categoria categoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.Actualizar(id, categoria));
@@ -58,7 +58,7 @@ public class CategoriaControllador {
         }
     }
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         try {
             return ResponseEntity.ok().body(categoriaService.eliminar(id));
@@ -69,7 +69,7 @@ public class CategoriaControllador {
 
     //agrega una subcategoria a una categoria
     @PostMapping("/agregar/subcategoria/{id}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<?> crearSubCategoria(@PathVariable Long id, @RequestBody Categoria categoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.agregarSubCategoria(id, categoria));
@@ -89,7 +89,7 @@ public class CategoriaControllador {
 //    }
 
    @PostMapping("/agregar/articulo")
-   @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
 public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCategoria, @RequestParam("idArticulo") Long idArticulo) {
     try {
         return ResponseEntity.ok().body(categoriaService.agregarArticulo(idCategoria, idArticulo));
@@ -109,7 +109,7 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
     }
 
     @DeleteMapping("/eliminar/articulo/{idSubCategoria}/{idArticulo}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<?> eliminarArticuloDeSubCategoria(@PathVariable Long idSubCategoria, @PathVariable Long idArticulo) {
         try {
             return ResponseEntity.ok().body(categoriaService.eliminarArticuloDeSubCategoria(idSubCategoria, idArticulo));
@@ -118,7 +118,7 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
         }
     }
     @PutMapping("/actualizar/subcategoria/{idSubCategoria}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<?> actualizarSubCategoria(@PathVariable Long idSubCategoria, @RequestBody Categoria nuevaSubCategoria) {
         try {
             return ResponseEntity.ok().body(categoriaService.actualizarSubCategoria(idSubCategoria, nuevaSubCategoria));
@@ -128,7 +128,7 @@ public ResponseEntity<?> agregarArticulo(@RequestParam("idCategoria") Long idCat
     }
 
     @DeleteMapping("/eliminar/subcategoria")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
 public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long idCategoria, @RequestParam("idSubCategoria") Long idSubCategoria) {
     try {
         return ResponseEntity.ok().body(categoriaService.eliminarSubCategoria(idCategoria, idSubCategoria));
@@ -138,7 +138,7 @@ public ResponseEntity<?> eliminarSubCategoria(@RequestParam("idCategoria") Long 
 }
 
     @PostMapping("/reactivate/{id}")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<?> reactivate(@PathVariable Long id) {
         try {
             categoriaService.reactivate(id);
@@ -190,20 +190,20 @@ public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
     private CategoriaService catService;
 
     @PostMapping("/porEmpresa")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<Categoria> crearCategoriaporEmpresa(@RequestBody CategoriaEmpresaDTO categoriaDTO) {
         Categoria nuevaCategoria = catService.crearCategoriaporEmpresa(categoriaDTO);
         return ResponseEntity.ok(nuevaCategoria);
     }
 
     @PutMapping("/{id}/denominacion")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<Categoria> actualizarDenominacion(@PathVariable Long id, @RequestBody String nuevaDenominacion) {
         Categoria categoriaActualizada = catService.actualizarDenominacion(id, nuevaDenominacion);
         return ResponseEntity.ok(categoriaActualizada);
     }
     @PutMapping("/{id}/eliminado")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<Categoria> cambiarEstadoEliminado(@PathVariable Long id) {
         Categoria categoriaActualizada = catService.cambiarEstadoEliminado(id);
         return ResponseEntity.ok(categoriaActualizada);
@@ -211,7 +211,7 @@ public ResponseEntity<?> obtenerCategoriasPadre(@PathVariable Long sucursalId) {
 
 
     @PostMapping("/subcategoriaConEmpresa")
-    @PreAuthorize("hasAuthority('EMPLEADO_COCINA') or hasAuthority('ADMINISTRADOR')")
+
     public ResponseEntity<Categoria> crearSubCategoriaConEmpresa(@RequestBody SubCategoriaConEmpresaDTO subCategoriaDTO) {
         Categoria nuevaSubCategoria = catService.crearSubCategoriaConEmpresa(subCategoriaDTO);
         return ResponseEntity.ok(nuevaSubCategoria);
