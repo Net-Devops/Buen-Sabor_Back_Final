@@ -15,8 +15,10 @@ public interface ISucursalRepository extends JpaRepository<Sucursal, Long> {
     boolean findByNombre(String nombre);
     boolean existsByIdAndEliminadoFalse(long id);
 
-    @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Sucursal s WHERE LOWER(s.nombre) = LOWER(:nombre) AND s.id != :id")
-    boolean existsByNombreAndNotId(@Param("nombre") String nombre, @Param("id") Long id);
+
 
     List<Sucursal> findByEliminadoFalse();
+
+    @Query("SELECT COUNT(s) > 0 FROM Sucursal s WHERE s.nombre = :nombre AND s.id <> :id")
+    boolean existsByNombreAndNotId(@Param("nombre") String nombre, @Param("id") Long id);
 }

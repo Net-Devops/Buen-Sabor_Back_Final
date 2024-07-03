@@ -4,10 +4,12 @@ import NetDevops.BuenSabor.dto.sucursal.SucursalDto;
 import NetDevops.BuenSabor.entities.*;
 import NetDevops.BuenSabor.repository.*;
 import NetDevops.BuenSabor.service.ISucursalService;
+import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SucursalService implements ISucursalService {
@@ -24,13 +26,18 @@ public class SucursalService implements ISucursalService {
     private IProvinciaRepository provinciaRepository;
     @Autowired
     private IPaisRepository paisRepository;
-
+    @Autowired
+    private Funcionalidades funcionalidades;
   @Override
 public Sucursal save(Sucursal sucursal) throws Exception {
     try {
 
         if (sucursalRepository.findByNombre(sucursal.getNombre())){
             throw new Exception("Ya existe una sucursal con el nombre proporcionado");
+        }
+        if (sucursal.getImagen() != null) {
+            String rutaImagen = funcionalidades.guardarImagen(sucursal.getImagen(), UUID.randomUUID().toString() + ".jpg");
+            sucursal.setImagen(rutaImagen);
         }
         return sucursalRepository.save(sucursal);
     } catch (Exception e) {
@@ -66,6 +73,23 @@ public Sucursal update(Long id, Sucursal sucursal) throws Exception {
         if (sucursal.getEmpresa() == null) {
             sucursal.setEmpresa(sucursalVieja.getEmpresa());
         }
+        if (sucursal.getDomicilio() == null) {
+            sucursal.setDomicilio(sucursalVieja.getDomicilio());
+        }
+        if (sucursal.getImagen() != null ) {
+            // Eliminar la imagen antigua
+            if(sucursalVieja.getImagen() != null){
+                funcionalidades.eliminarImagen(sucursalVieja.getImagen());
+            }
+            // Guardar la nueva imagen
+            String rutaImagen = funcionalidades.guardarImagen(sucursal.getImagen(), UUID.randomUUID().toString() + ".jpg");
+            sucursalVieja.setImagen(rutaImagen);
+            sucursal.setImagen(rutaImagen);
+        }else {
+            sucursal.setImagen(sucursalVieja.getImagen());
+        }
+
+
         return sucursalRepository.save(sucursal);
     } catch (Exception e) {
         throw new Exception(e.getMessage());

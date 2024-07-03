@@ -5,10 +5,12 @@ import NetDevops.BuenSabor.entities.Sucursal;
 import NetDevops.BuenSabor.repository.IEmpresaRepository;
 import NetDevops.BuenSabor.repository.ISucursalRepository;
 import NetDevops.BuenSabor.service.IEmpresaService;
+import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EmpresaService implements IEmpresaService {
@@ -16,7 +18,8 @@ public class EmpresaService implements IEmpresaService {
     private IEmpresaRepository empresaRepository;
     @Autowired
     private ISucursalRepository sucursalRepository;
-
+    @Autowired
+    private Funcionalidades funcionalidades;
     @Override
     public Empresa save(Empresa empresa) throws Exception {
         try {
@@ -27,6 +30,10 @@ public class EmpresaService implements IEmpresaService {
                 throw new Exception("Ya existe una empresa con el nombre proporcionado");
             }
 
+            if (empresa.getImagen() != null) {
+                String rutaImagen = funcionalidades.guardarImagen(empresa.getImagen(), UUID.randomUUID().toString() + ".jpg");
+                empresa.setImagen(rutaImagen);
+            }
             return empresaRepository.save(empresa);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -39,7 +46,23 @@ public class EmpresaService implements IEmpresaService {
             if (empresaRepository.existsByNombreAndNotId(empresa.getNombre(), id)) {
                 throw new Exception("Ya existe una empresa con el CUIL proporcionado");
             }
+            Empresa existingEmpresa = empresaRepository.findById(id).orElse(null);
             empresa.setId(id);
+
+            if (empresa.getImagen() != null ) {
+                // Eliminar la imagen antigua
+                if(existingEmpresa.getImagen() != null){
+                    funcionalidades.eliminarImagen(existingEmpresa.getImagen());
+                }
+                // Guardar la nueva imagen
+                String rutaImagen = funcionalidades.guardarImagen(empresa.getImagen(), UUID.randomUUID().toString() + ".jpg");
+                existingEmpresa.setImagen(rutaImagen);
+                empresa.setImagen(rutaImagen);
+            }else {
+                empresa.setImagen(existingEmpresa.getImagen());
+            }
+
+
             return empresaRepository.save(empresa);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
