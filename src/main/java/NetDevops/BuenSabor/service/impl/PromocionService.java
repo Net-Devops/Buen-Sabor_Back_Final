@@ -28,7 +28,7 @@ public class PromocionService implements IPromocionService {
     private Funcionalidades funcionalidades;
 
     @Override
-    public Promocion save(Promocion promocion) throws Exception {
+    public PromocionDto save(Promocion promocion) throws Exception {
         try {
             if (promocion.getImagen() != null) {
                 String rutaImagen = funcionalidades.guardarImagen(promocion.getImagen(), UUID.randomUUID().toString() + ".jpg");
@@ -40,7 +40,8 @@ public class PromocionService implements IPromocionService {
                 detalle.setPromocion(promocion);
             }
 
-            return promocionRepository.save(promocion);
+            PromocionDto dto = convertToDto(promocionRepository.save(promocion));
+            return dto;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -113,7 +114,7 @@ public class PromocionService implements IPromocionService {
 
     @Override
     @Transactional
-    public Promocion update(Long id, Promocion newPromocion) {
+    public PromocionDto update(Long id, Promocion newPromocion) {
         try {
             if (promocionRepository.findById(id).isPresent()) {
                 Promocion existingPromocion = promocionRepository.findById(id).get();
@@ -153,18 +154,16 @@ public class PromocionService implements IPromocionService {
                 }
 
 
-
-
-
                 // Marcar como eliminadas las PromocionDetalle que no están en newPromocion
                 for (PromocionDetalle detalle : existingPromocion.getPromocionDetalles()) {
                     if (!newPromocion.getPromocionDetalles().contains(detalle)) {
                         detalle.setEliminado(true);
                     }
                 }
-
-
-                return promocionRepository.save(existingPromocion);
+                existingPromocion.setPromocionDetalles(newPromocion.getPromocionDetalles());
+                   Promocion promocionAcutalizada = promocionRepository.save(existingPromocion);
+                    PromocionDto dto = convertToDto(promocionAcutalizada);
+                return dto;
 
             } else {
                 throw new Exception("No existe la promoción con el id proporcionado");
