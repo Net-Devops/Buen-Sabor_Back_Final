@@ -118,6 +118,14 @@ public boolean delete(Long id) throws Exception {
             throw new Exception(e.getMessage());
         }
     }
+    @Override
+    public List<Empresa> traerTodoNoEliminado() throws Exception {
+        try {
+            return empresaRepository.findByEliminadoFalse();
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
 
     @Override
     public Empresa traerPorId(Long id) throws Exception {

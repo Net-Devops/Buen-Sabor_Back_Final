@@ -17,14 +17,24 @@ public class EmpresaController {
 
     //region CRUD Basico
 
-    @GetMapping("/traer-todo/")
-    public ResponseEntity<?> mostrarLista(){
+    @GetMapping("/traer-todo/eliminado/")
+    public ResponseEntity<?> mostrarListaCompleta(){
         try {
             return ResponseEntity.ok(empresaService.traerTodo());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/traer-todo/")
+    public ResponseEntity<?> mostrarLista(){
+        try {
+            return ResponseEntity.ok(empresaService.traerTodoNoEliminado());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id){

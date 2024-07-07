@@ -12,10 +12,13 @@ import NetDevops.BuenSabor.repository.IEmpleadoRepository;
 import NetDevops.BuenSabor.repository.IUsuarioClienteRepository;
 import NetDevops.BuenSabor.repository.IUsuarioEmpleadoRepository;
 import NetDevops.BuenSabor.service.IUsuarioService;
+import NetDevops.BuenSabor.service.funcionalidades.Funcionalidades;
 import NetDevops.BuenSabor.service.funcionalidades.SeguridadService;
 import org.apache.http.auth.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UsuarioService implements IUsuarioService {
@@ -30,6 +33,8 @@ public class UsuarioService implements IUsuarioService {
     private IEmpleadoRepository empleadoRepository;
     @Autowired
     private SeguridadService seguridadService;
+    @Autowired
+    private Funcionalidades funcionalidades;
 
     @Override
     public UsuarioCliente crearUsuarioCliente(UsuarioCliente usuario) throws Exception {
@@ -176,6 +181,11 @@ public class UsuarioService implements IUsuarioService {
     empleado.setTelefono(registroDtoEmpleado.getEmpleado().getTelefono());
     empleado.setEmail(registroDtoEmpleado.getEmpleado().getEmail());
     empleado.setFechaNacimiento(registroDtoEmpleado.getEmpleado().getFechaNacimiento());
+
+        if (registroDtoEmpleado.getEmpleado().getImagen() != null) {
+            String rutaImagen = funcionalidades.guardarImagen(registroDtoEmpleado.getEmpleado().getImagen(), UUID.randomUUID().toString() + ".jpg");
+            registroDtoEmpleado.getEmpleado().setImagen(rutaImagen);
+        }
     empleado.setImagen(registroDtoEmpleado.getEmpleado().getImagen());
     empleado.setSucursal(registroDtoEmpleado.getEmpleado().getSucursal());
     empleado.setRol(registroDtoEmpleado.getEmpleado().getRol());
